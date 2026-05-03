@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SNDR. — AI-Powered Cold Email Outreach</title>
+  <meta name="description" content="Find contacts on LinkedIn, build campaigns, and track opens — all from your browser." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0f; --bg2: #111118; --bg3: #1a1a24;
+      --border: rgba(255,255,255,0.08); --green: #00e676; --green2: #00c853;
+      --text: #f0f0f5; --muted: #8888a0; --card-bg: rgba(255,255,255,0.04);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(10,10,15,0.85); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.5px; }
+    .logo span { color: var(--green); }
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color .2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { background: var(--green); color: #000; padding: 0.5rem 1.25rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; text-decoration: none; transition: opacity .2s; }
+    .nav-cta:hover { opacity: 0.85; }
+
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 8rem 1.5rem 4rem; position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 800px;
+      background: radial-gradient(circle, rgba(0,230,118,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.25);
+      color: var(--green); padding: 0.35rem 1rem; border-radius: 999px;
+      font-size: 0.8rem; font-weight: 600; margin-bottom: 1.5rem; letter-spacing: 0.5px;
+    }
+    .badge-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    h1 { font-size: clamp(2.5rem, 7vw, 5.5rem); font-weight: 900; line-height: 1.05; letter-spacing: -2px; max-width: 900px; margin-bottom: 1.5rem; }
+    h1 em { font-style: normal; color: var(--green); }
+    .hero-sub { font-size: clamp(1rem, 2.5vw, 1.25rem); color: var(--muted); max-width: 560px; margin-bottom: 2.5rem; line-height: 1.7; }
+
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--green); color: #000; padding: 0.85rem 2rem; border-radius: 10px;
+      font-weight: 800; font-size: 1rem; text-decoration: none; transition: all .2s;
+      box-shadow: 0 0 30px rgba(0,230,118,0.3);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(0,230,118,0.45); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--card-bg); border: 1px solid var(--border); color: var(--text);
+      padding: 0.85rem 2rem; border-radius: 10px; font-weight: 600; font-size: 1rem;
+      text-decoration: none; transition: all .2s;
+    }
+    .btn-secondary:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.07); }
+
+    .hero-stats { display: flex; gap: 3rem; margin-top: 4rem; flex-wrap: wrap; justify-content: center; }
+    .stat { text-align: center; }
+    .stat-num { font-size: 2rem; font-weight: 900; color: var(--green); letter-spacing: -1px; }
+    .stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; }
+
+    section { padding: 5rem 1.5rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--green); margin-bottom: 0.75rem; }
+    .section-title { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 900; letter-spacing: -1px; margin-bottom: 1rem; }
+    .section-sub { color: var(--muted); max-width: 540px; font-size: 1.05rem; line-height: 1.7; }
+
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+    .step { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; transition: border-color .2s; }
+    .step:hover { border-color: rgba(0,230,118,0.3); }
+    .step-num { font-size: 3rem; font-weight: 900; color: rgba(0,230,118,0.15); line-height: 1; margin-bottom: 1rem; }
+    .step h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .step p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+    .feature-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem; transition: all .2s; }
+    .feature-card:hover { border-color: rgba(0,230,118,0.25); transform: translateY(-3px); }
+    .feature-icon { width: 44px; height: 44px; border-radius: 10px; background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 1rem; }
+    .feature-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .feature-card p { color: var(--muted); font-size: 0.875rem; line-height: 1.6; }
+
+    .metrics { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 3rem 1.5rem; }
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem; max-width: 900px; margin: 0 auto; text-align: center; }
+    .metric-num { font-size: 2.5rem; font-weight: 900; color: var(--green); letter-spacing: -1px; }
+    .metric-label { color: var(--muted); font-size: 0.85rem; margin-top: 0.25rem; }
+
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 3rem; max-width: 700px; }
+    .plan { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 2rem; }
+    .plan.popular { border-color: var(--green); box-shadow: 0 0 40px rgba(0,230,118,0.1); position: relative; }
+    .popular-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--green); color: #000; font-size: 0.7rem; font-weight: 800; letter-spacing: 1px; padding: 0.2rem 0.75rem; border-radius: 999px; text-transform: uppercase; }
+    .plan-name { font-size: 0.85rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+    .plan-price { font-size: 3rem; font-weight: 900; letter-spacing: -2px; margin: 0.5rem 0; }
+    .plan-price span { font-size: 1rem; font-weight: 400; color: var(--muted); }
+    .plan-desc { color: var(--muted); font-size: 0.875rem; margin-bottom: 1.5rem; }
+    .plan-features { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 1.75rem; }
+    .plan-features li { font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem; }
+    .plan-features li::before { content: "✓"; color: var(--green); font-weight: 700; flex-shrink: 0; }
+    .plan-btn { display: block; text-align: center; padding: 0.75rem; border-radius: 10px; font-weight: 700; font-size: 0.9rem; text-decoration: none; transition: all .2s; }
+    .plan-btn.green { background: var(--green); color: #000; }
+    .plan-btn.green:hover { opacity: 0.85; }
+    .plan-btn.outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .plan-btn.outline:hover { border-color: rgba(255,255,255,0.2); }
+
+    .cta-block { background: linear-gradient(135deg, rgba(0,230,118,0.08) 0%, rgba(124,58,237,0.08) 100%); border: 1px solid rgba(0,230,118,0.15); border-radius: 24px; padding: 4rem 2rem; text-align: center; margin: 0 auto; max-width: 700px; }
+    .cta-block h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; letter-spacing: -1px; margin-bottom: 1rem; }
+    .cta-block p { color: var(--muted); margin-bottom: 2rem; font-size: 1.05rem; }
+
+    footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    footer .logo { font-size: 1.1rem; }
+    footer p { color: var(--muted); font-size: 0.8rem; }
+
+    @media (max-width: 600px) { .nav-links { display: none; } .hero-stats { gap: 1.5rem; } .pricing-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">SNDR<span>.</span></div>
+  <div class="nav-links">
+    <a href="#how">How it works</a>
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+  </div>
+  <a href="#" class="nav-cta">Add to Chrome — Free</a>
+</nav>
+
+<section class="hero">
+  <div class="badge"><span class="badge-dot"></span> Now live — version 2.0</div>
+  <h1>Cold email that<br/><em>actually converts</em></h1>
+  <p class="hero-sub">Find contacts on LinkedIn, discover their emails with AI, build campaigns, and track every open — all from one Chrome extension.</p>
+  <div class="hero-btns">
+    <a href="#" class="btn-primary">Add to Chrome — Free</a>
+    <a href="#how" class="btn-secondary">See how it works →</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">50K+</div><div class="stat-label">Emails sent</div></div>
+    <div class="stat"><div class="stat-num">21%</div><div class="stat-label">Avg open rate</div></div>
+    <div class="stat"><div class="stat-num">6%</div><div class="stat-label">Avg reply rate</div></div>
+    <div class="stat"><div class="stat-num">&lt;2%</div><div class="stat-label">Bounce rate</div></div>
+  </div>
+</section>
+
+<div class="metrics">
+  <div class="metrics-grid">
+    <div><div class="metric-num">10x</div><div class="metric-label">Faster than manual prospecting</div></div>
+    <div><div class="metric-num">500+</div><div class="metric-label">Contacts per campaign</div></div>
+    <div><div class="metric-num">100%</div><div class="metric-label">GDPR-safe open tracking</div></div>
+    <div><div class="metric-num">Free</div><div class="metric-label">To get started</div></div>
+  </div>
+</div>
+
+<section id="how">
+  <div class="container">
+    <div class="section-label">How it works</div>
+    <h2 class="section-title">From LinkedIn to inbox<br/>in 4 steps</h2>
+    <p class="section-sub">No exports, no spreadsheets, no switching tabs. SNDR. lives in your browser and handles everything.</p>
+    <div class="steps">
+      <div class="step"><div class="step-num">01</div><h3>Find your prospects</h3><p>Search for people on LinkedIn. SNDR. scrapes names, titles, and companies directly from search results.</p></div>
+      <div class="step"><div class="step-num">02</div><h3>Discover their emails</h3><p>Our AI engine finds and verifies professional email addresses using domain detection and SMTP verification.</p></div>
+      <div class="step"><div class="step-num">03</div><h3>Build your campaign</h3><p>Write your email once. Add personalization tokens. Set follow-up timing. SNDR. handles the rest.</p></div>
+      <div class="step"><div class="step-num">04</div><h3>Track every open</h3><p>See who opened, when, and how many times. Get notified the moment a prospect shows interest.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="features" style="background: var(--bg2);">
+  <div class="container">
+    <div class="section-label">Features</div>
+    <h2 class="section-title">Everything you need.<br/>Nothing you don't.</h2>
+    <p class="section-sub">Built for founders, sales teams, and recruiters who want results without the complexity.</p>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-icon">🔍</div><h3>LinkedIn Scraper</h3><p>Scrape prospect names, titles, and companies directly from LinkedIn search results and company pages.</p></div>
+      <div class="feature-card"><div class="feature-icon">✉️</div><h3>AI Email Finder</h3><p>Automatically detect company email formats and verify addresses via SMTP — no guessing.</p></div>
+      <div class="feature-card"><div class="feature-icon">🚀</div><h3>Campaign Manager</h3><p>Upload contacts, write your email, set delays, and send campaigns directly from your Gmail account.</p></div>
+      <div class="feature-card"><div class="feature-icon">📊</div><h3>Open Tracking</h3><p>Track opens, clicks, and replies in real-time. See engagement heatmaps and best sending times.</p></div>
+      <div class="feature-card"><div class="feature-icon">🔁</div><h3>Auto Follow-ups</h3><p>Set follow-up emails to send automatically if a prospect doesn't reply within your chosen timeframe.</p></div>
+      <div class="feature-card"><div class="feature-icon">📈</div><h3>Analytics Dashboard</h3><p>Full-screen analytics with campaign funnels, response splits, sender health scores, and more.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="container">
+    <div class="section-label">Pricing</div>
+    <h2 class="section-title">Simple, honest pricing</h2>
+    <p class="section-sub">Start free. Upgrade when you're ready to scale.</p>
+    <div class="pricing-grid">
+      <div class="plan">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">$0 <span>/ month</span></div>
+        <div class="plan-desc">Perfect for getting started</div>
+        <ul class="plan-features">
+          <li>50 emails per week</li>
+          <li>LinkedIn scraper</li>
+          <li>AI email finder</li>
+          <li>Open tracking</li>
+          <li>1 Gmail account</li>
+        </ul>
+        <a href="#" class="plan-btn outline">Add to Chrome</a>
+      </div>
+      <div class="plan popular">
+        <div class="popular-badge">Most Popular</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">$29 <span>/ month</span></div>
+        <div class="plan-desc">For serious outreach at scale</div>
+        <ul class="plan-features">
+          <li>200 emails per day</li>
+          <li>Everything in Free</li>
+          <li>Auto follow-ups</li>
+          <li>Full analytics dashboard</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="#" class="plan-btn green">Get Pro</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="cta-block">
+      <h2>Start sending smarter<br/>emails today</h2>
+      <p>Join hundreds of founders and sales teams using SNDR. to land more meetings.</p>
+      <a href="#" class="btn-primary">Add to Chrome — It's Free</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="logo">SNDR<span style="color:var(--green)">.</span></div>
+  <p>© 2026 SNDR. All rights reserved.</p>
+  <p>Built for closers.</p>
+</footer>
+
+</body>
+</html>

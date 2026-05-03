@@ -51,11 +51,12 @@
       border-bottom: 1px solid var(--border);
     }
     .nav-logo {
-      display: flex; align-items: center; gap: 0.4rem;
-      text-decoration: none; font-size: 1.35rem; font-weight: 900;
-      letter-spacing: -0.5px; color: var(--text);
+      display: flex; align-items: center; gap: 0;
+      text-decoration: none; font-size: 1.4rem; font-weight: 900;
+      letter-spacing: 0.04em; color: var(--lime);
+      font-family: 'Inter', monospace;
     }
-    .nav-logo span { color: var(--lime); }
+    .nav-logo span { color: var(--lime); opacity: 0.7; }
     .nav-links { display: flex; gap: 0.2rem; }
     .nav-links a {
       color: var(--text2); text-decoration: none; font-size: 0.875rem;
@@ -135,19 +136,54 @@
       margin-top: 1.25rem; font-size: 0.8rem; color: var(--muted); font-weight: 400;
     }
 
-    /* ── SOCIAL PROOF BAR ── */
-    .proof-bar {
-      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-      background: var(--navy2); padding: 1.1rem 3rem;
-      display: flex; align-items: center; justify-content: center; gap: 3rem;
-      flex-wrap: wrap;
+    /* ── COLLEGE TICKER ── */
+    .colleges-section {
+      background: var(--navy2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 2.5rem 0;
+      overflow: hidden;
     }
-    .proof-item {
-      display: flex; align-items: center; gap: 0.6rem;
-      font-size: 0.82rem; color: var(--muted); font-weight: 500;
+    .colleges-header {
+      text-align: center;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 1.5rem;
     }
-    .proof-item svg { color: var(--lime); }
-    .proof-divider { width: 1px; height: 20px; background: var(--border); }
+    .colleges-header strong { color: var(--lime); }
+    .ticker-track {
+      display: flex; overflow: hidden;
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+      mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    }
+    .ticker-inner {
+      display: flex; gap: 1rem; align-items: center;
+      animation: ticker-scroll 28s linear infinite;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    @keyframes ticker-scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .ticker-inner:hover { animation-play-state: paused; }
+    .college-chip {
+      display: inline-flex; align-items: center; gap: 0.55rem;
+      padding: 0.55rem 1.1rem; border-radius: 8px;
+      background: var(--navy3); border: 1px solid var(--border);
+      flex-shrink: 0; transition: border-color .2s;
+    }
+    .college-chip:hover { border-color: var(--border2); }
+    .college-abbr {
+      font-size: 0.82rem; font-weight: 800; color: var(--lime);
+      letter-spacing: 0.03em;
+    }
+    .college-name {
+      font-size: 0.78rem; color: var(--text2); font-weight: 500;
+    }
+    .college-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--border2); flex-shrink: 0;
+    }
 
     /* ── STATS ── */
     .stats {
@@ -403,8 +439,7 @@
       .feature-row.reverse { direction: ltr; }
       .tgrid { grid-template-columns: 1fr 1fr; }
       .pgrid { grid-template-columns: 1fr; }
-      .proof-bar { padding: 1rem 1.5rem; gap: 1.5rem; }
-      .proof-divider { display: none; }
+      .colleges-section { padding: 2rem 0; }
     }
     @media (max-width: 600px) {
       .stats { grid-template-columns: 1fr 1fr; }
@@ -454,28 +489,46 @@
   <p class="hero-note">No credit card required &nbsp;·&nbsp; 50 free emails/month &nbsp;·&nbsp; Cancel anytime</p>
 </section>
 
-<!-- ───────────────── PROOF BAR ───────────────── -->
-<div class="proof-bar">
-  <div class="proof-item">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-    2,400+ active users
+<!-- ───────────────── COLLEGE TICKER ───────────────── -->
+<section class="colleges-section">
+  <div class="colleges-header">
+    Used by students &amp; campus entrepreneurs across &mdash; <strong>IITD &middot; IITB &middot; IITG &middot; SRCC &middot; HINDU &middot; HANSRAJ &middot; BITS &middot; IIM &middot; LSR &middot; IITK &middot; IITM &middot; NIT</strong>
   </div>
-  <div class="proof-divider"></div>
-  <div class="proof-item">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-    68% average open rate
+  <div class="ticker-track">
+    <div class="ticker-inner">
+      <!-- First set -->
+      <div class="college-chip"><span class="college-abbr">IIT Delhi</span><span class="college-dot"></span><span class="college-name">Indian Institute of Technology</span></div>
+      <div class="college-chip"><span class="college-abbr">IIT Bombay</span><span class="college-dot"></span><span class="college-name">Indian Institute of Technology</span></div>
+      <div class="college-chip"><span class="college-abbr">SRCC</span><span class="college-dot"></span><span class="college-name">Shri Ram College of Commerce</span></div>
+      <div class="college-chip"><span class="college-abbr">Hindu College</span><span class="college-dot"></span><span class="college-name">University of Delhi</span></div>
+      <div class="college-chip"><span class="college-abbr">Hansraj</span><span class="college-dot"></span><span class="college-name">Hansraj College, DU</span></div>
+      <div class="college-chip"><span class="college-abbr">IIT Guwahati</span><span class="college-dot"></span><span class="college-name">Indian Institute of Technology</span></div>
+      <div class="college-chip"><span class="college-abbr">BITS Pilani</span><span class="college-dot"></span><span class="college-name">Birla Institute of Technology</span></div>
+      <div class="college-chip"><span class="college-abbr">IIM Ahmedabad</span><span class="college-dot"></span><span class="college-name">Indian Institute of Management</span></div>
+      <div class="college-chip"><span class="college-abbr">LSR</span><span class="college-dot"></span><span class="college-name">Lady Shri Ram College</span></div>
+      <div class="college-chip"><span class="college-abbr">IIT Kanpur</span><span class="college-dot"></span><span class="college-name">Indian Institute of Technology</span></div>
+      <div class="college-chip"><span class="college-abbr">IIT Madras</span><span class="college-dot"></span><span class="college-name">Indian Institute of Technology</span></div>
+      <div class="college-chip"><span class="college-abbr">NIT Trichy</span><span class="college-dot"></span><span class="college-name">National Institute of Technology</span></div>
+      <div class="college-chip"><span class="college-abbr">St. Stephen's</span><span class="college-dot"></span><span class="college-name">University of Delhi</span></div>
+      <div class="college-chip"><span class="college-abbr">IIM Bangalore</span><span class="college-dot"></span><span class="college-name">Indian Institute of Management</span></div>
+      <!-- Duplicate for seamless loop -->
+      <div class="college-chip"><span class="college-abbr">IIT Delhi</span><span class="college-dot"></span><span class="college-name">Indian Institute of Technology</span></div>
+      <div class="college-chip"><span class="college-abbr">IIT Bombay</span><span class="college-dot"></span><span class="college-name">Indian Institute of Technology</span></div>
+      <div class="college-chip"><span class="college-abbr">SRCC</span><span class="college-dot"></span><span class="college-name">Shri Ram College of Commerce</span></div>
+      <div class="college-chip"><span class="college-abbr">Hindu College</span><span class="college-dot"></span><span class="college-name">University of Delhi</span></div>
+      <div class="college-chip"><span class="college-abbr">Hansraj</span><span class="college-dot"></span><span class="college-name">Hansraj College, DU</span></div>
+      <div class="college-chip"><span class="college-abbr">IIT Guwahati</span><span class="college-dot"></span><span class="college-name">Indian Institute of Technology</span></div>
+      <div class="college-chip"><span class="college-abbr">BITS Pilani</span><span class="college-dot"></span><span class="college-name">Birla Institute of Technology</span></div>
+      <div class="college-chip"><span class="college-abbr">IIM Ahmedabad</span><span class="college-dot"></span><span class="college-name">Indian Institute of Management</span></div>
+      <div class="college-chip"><span class="college-abbr">LSR</span><span class="college-dot"></span><span class="college-name">Lady Shri Ram College</span></div>
+      <div class="college-chip"><span class="college-abbr">IIT Kanpur</span><span class="college-dot"></span><span class="college-name">Indian Institute of Technology</span></div>
+      <div class="college-chip"><span class="college-abbr">IIT Madras</span><span class="college-dot"></span><span class="college-name">Indian Institute of Technology</span></div>
+      <div class="college-chip"><span class="college-abbr">NIT Trichy</span><span class="college-dot"></span><span class="college-name">National Institute of Technology</span></div>
+      <div class="college-chip"><span class="college-abbr">St. Stephen's</span><span class="college-dot"></span><span class="college-name">University of Delhi</span></div>
+      <div class="college-chip"><span class="college-abbr">IIM Bangalore</span><span class="college-dot"></span><span class="college-name">Indian Institute of Management</span></div>
+    </div>
   </div>
-  <div class="proof-divider"></div>
-  <div class="proof-item">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-    4.8 / 5 stars on Chrome Web Store
-  </div>
-  <div class="proof-divider"></div>
-  <div class="proof-item">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-    1.2M emails delivered
-  </div>
-</div>
+</section>
 
 <!-- ───────────────── STATS ───────────────── -->
 <div class="stats">
@@ -831,7 +884,7 @@
 
     <div class="pcard">
       <div class="pcard-name">Starter</div>
-      <div class="pcard-price">Free <span>/ month</span></div>
+      <div class="pcard-price">₹0 <span>/ month</span></div>
       <p class="pcard-desc">For individuals testing the water. Everything you need to close your first few deals.</p>
       <ul class="pcard-features">
         <li>
@@ -857,7 +910,7 @@
     <div class="pcard featured">
       <div class="pcard-badge">Most popular</div>
       <div class="pcard-name">Growth</div>
-      <div class="pcard-price">₹1,499 <span>/ month</span></div>
+      <div class="pcard-price">₹99 <span>/ month</span></div>
       <p class="pcard-desc">For sales reps and founders running consistent outbound. Unlimited sequences, real analytics.</p>
       <ul class="pcard-features">
         <li>
@@ -890,7 +943,7 @@
 
     <div class="pcard">
       <div class="pcard-name">Team</div>
-      <div class="pcard-price">₹3,999 <span>/ month</span></div>
+      <div class="pcard-price">₹499 <span>/ month</span></div>
       <p class="pcard-desc">For growing sales teams. Shared prospect lists, team analytics, and admin controls.</p>
       <ul class="pcard-features">
         <li>

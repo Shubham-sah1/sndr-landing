@@ -3,251 +3,718 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SNDR. — AI-Powered Cold Email Outreach</title>
-  <meta name="description" content="Find contacts on LinkedIn, build campaigns, and track opens — all from your browser." />
+  <title>SNDR. — Cold Email Outreach That Gets Replies</title>
+  <meta name="description" content="SNDR. is the Chrome extension that finds prospects on LinkedIn, discovers verified emails, and runs personalized cold email campaigns — all in one place." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #0a0a0f; --bg2: #111118; --bg3: #1a1a24;
-      --border: rgba(255,255,255,0.08); --green: #00e676; --green2: #00c853;
-      --text: #f0f0f5; --muted: #8888a0; --card-bg: rgba(255,255,255,0.04);
+      --black:   #07070d;
+      --bg:      #0b0b13;
+      --bg2:     #10101a;
+      --bg3:     #161620;
+      --border:  rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.12);
+      --green:   #00d166;
+      --green-dim: rgba(0,209,102,0.12);
+      --green-glow: rgba(0,209,102,0.25);
+      --text:    #eeeef5;
+      --text2:   #b0b0c8;
+      --muted:   #72728a;
+      --card:    rgba(255,255,255,0.035);
     }
     html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 
+    /* ── NAV ── */
     nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 1rem 2rem;
-      background: rgba(10,10,15,0.85); backdrop-filter: blur(12px);
+      padding: 0 2.5rem; height: 64px;
+      background: rgba(7,7,13,0.8); backdrop-filter: blur(20px) saturate(1.5);
       border-bottom: 1px solid var(--border);
     }
-    .logo { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.5px; }
-    .logo span { color: var(--green); }
-    .nav-links { display: flex; gap: 2rem; }
-    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color .2s; }
-    .nav-links a:hover { color: var(--text); }
-    .nav-cta { background: var(--green); color: #000; padding: 0.5rem 1.25rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; text-decoration: none; transition: opacity .2s; }
-    .nav-cta:hover { opacity: 0.85; }
+    .nav-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+    .nav-logo-mark {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: var(--green); display: flex; align-items: center; justify-content: center;
+    }
+    .nav-logo-mark svg { width: 18px; height: 18px; }
+    .nav-logo-text { font-size: 1.2rem; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
+    .nav-logo-text span { color: var(--green); }
+    .nav-center { display: flex; gap: 0.25rem; }
+    .nav-center a {
+      color: var(--text2); text-decoration: none; font-size: 0.875rem; font-weight: 500;
+      padding: 0.4rem 0.85rem; border-radius: 6px; transition: all .15s;
+    }
+    .nav-center a:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+    .nav-right { display: flex; align-items: center; gap: 0.75rem; }
+    .nav-link { color: var(--text2); text-decoration: none; font-size: 0.875rem; font-weight: 500; transition: color .15s; }
+    .nav-link:hover { color: var(--text); }
+    .nav-btn {
+      background: var(--green); color: #000; font-weight: 700; font-size: 0.85rem;
+      padding: 0.45rem 1.1rem; border-radius: 7px; text-decoration: none; transition: all .15s;
+      white-space: nowrap;
+    }
+    .nav-btn:hover { background: #00e870; box-shadow: 0 0 20px var(--green-glow); }
 
+    /* ── HERO ── */
     .hero {
       min-height: 100vh; display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      text-align: center; padding: 8rem 1.5rem 4rem; position: relative; overflow: hidden;
+      text-align: center; padding: 8rem 1.5rem 5rem;
+      position: relative; overflow: hidden;
     }
-    .hero::before {
-      content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
-      width: 800px; height: 800px;
-      background: radial-gradient(circle, rgba(0,230,118,0.12) 0%, transparent 70%);
-      pointer-events: none;
+    .hero-glow {
+      position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+      width: 900px; height: 600px; pointer-events: none;
+      background: radial-gradient(ellipse at center top, rgba(0,209,102,0.14) 0%, transparent 65%);
     }
-    .badge {
+    .hero-grid {
+      position: absolute; inset: 0; pointer-events: none; opacity: 0.4;
+      background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: var(--bg3); border: 1px solid var(--border2);
+      padding: 0.3rem 0.9rem 0.3rem 0.5rem; border-radius: 999px;
+      font-size: 0.78rem; font-weight: 600; color: var(--text2);
+      margin-bottom: 2rem; position: relative;
+    }
+    .eyebrow-tag {
+      background: var(--green); color: #000; font-size: 0.68rem; font-weight: 800;
+      padding: 0.15rem 0.55rem; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .hero h1 {
+      font-size: clamp(2.6rem, 6.5vw, 5.2rem); font-weight: 900;
+      line-height: 1.06; letter-spacing: -2.5px;
+      max-width: 860px; margin-bottom: 1.5rem; position: relative;
+    }
+    .hero h1 .accent { color: var(--green); }
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.18rem); color: var(--text2);
+      max-width: 520px; margin-bottom: 2.5rem; line-height: 1.75; position: relative; font-weight: 400;
+    }
+    .hero-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; position: relative; }
+    .btn-cta {
       display: inline-flex; align-items: center; gap: 0.5rem;
-      background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.25);
-      color: var(--green); padding: 0.35rem 1rem; border-radius: 999px;
-      font-size: 0.8rem; font-weight: 600; margin-bottom: 1.5rem; letter-spacing: 0.5px;
+      background: var(--green); color: #000; font-weight: 800; font-size: 0.95rem;
+      padding: 0.8rem 1.8rem; border-radius: 9px; text-decoration: none;
+      transition: all .2s; box-shadow: 0 0 0 0 var(--green-glow);
     }
-    .badge-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-    h1 { font-size: clamp(2.5rem, 7vw, 5.5rem); font-weight: 900; line-height: 1.05; letter-spacing: -2px; max-width: 900px; margin-bottom: 1.5rem; }
-    h1 em { font-style: normal; color: var(--green); }
-    .hero-sub { font-size: clamp(1rem, 2.5vw, 1.25rem); color: var(--muted); max-width: 560px; margin-bottom: 2.5rem; line-height: 1.7; }
-
-    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
-    .btn-primary {
+    .btn-cta:hover { background: #00e870; box-shadow: 0 4px 30px var(--green-glow); transform: translateY(-1px); }
+    .btn-ghost {
       display: inline-flex; align-items: center; gap: 0.5rem;
-      background: var(--green); color: #000; padding: 0.85rem 2rem; border-radius: 10px;
-      font-weight: 800; font-size: 1rem; text-decoration: none; transition: all .2s;
-      box-shadow: 0 0 30px rgba(0,230,118,0.3);
+      background: transparent; border: 1px solid var(--border2); color: var(--text2);
+      font-weight: 600; font-size: 0.95rem;
+      padding: 0.8rem 1.8rem; border-radius: 9px; text-decoration: none; transition: all .2s;
     }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(0,230,118,0.45); }
-    .btn-secondary {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      background: var(--card-bg); border: 1px solid var(--border); color: var(--text);
-      padding: 0.85rem 2rem; border-radius: 10px; font-weight: 600; font-size: 1rem;
-      text-decoration: none; transition: all .2s;
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.25); color: var(--text); background: rgba(255,255,255,0.04); }
+
+    .hero-social-proof {
+      margin-top: 3.5rem; display: flex; flex-direction: column; align-items: center; gap: 1rem;
+      position: relative;
     }
-    .btn-secondary:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.07); }
+    .avatars { display: flex; }
+    .avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 2px solid var(--bg); margin-left: -8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; font-weight: 700; color: #fff;
+    }
+    .avatar:first-child { margin-left: 0; }
+    .proof-text { font-size: 0.85rem; color: var(--text2); }
+    .proof-text strong { color: var(--text); font-weight: 600; }
+    .stars { color: var(--green); letter-spacing: 2px; font-size: 0.8rem; }
 
-    .hero-stats { display: flex; gap: 3rem; margin-top: 4rem; flex-wrap: wrap; justify-content: center; }
-    .stat { text-align: center; }
-    .stat-num { font-size: 2rem; font-weight: 900; color: var(--green); letter-spacing: -1px; }
-    .stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; }
+    /* ── LOGOS BAR ── */
+    .logos-bar {
+      background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+    }
+    .logos-label { text-align: center; font-size: 0.75rem; color: var(--muted); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1.25rem; }
+    .logos-track {
+      display: flex; align-items: center; justify-content: center;
+      gap: 3rem; flex-wrap: wrap;
+    }
+    .logo-item {
+      font-size: 0.95rem; font-weight: 700; color: var(--muted);
+      letter-spacing: -0.3px; opacity: 0.6; transition: opacity .2s;
+    }
+    .logo-item:hover { opacity: 1; }
 
-    section { padding: 5rem 1.5rem; }
+    /* ── SECTION BASE ── */
+    .section { padding: 6rem 1.5rem; }
+    .section-alt { background: var(--bg2); }
     .container { max-width: 1100px; margin: 0 auto; }
-    .section-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--green); margin-bottom: 0.75rem; }
-    .section-title { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 900; letter-spacing: -1px; margin-bottom: 1rem; }
-    .section-sub { color: var(--muted); max-width: 540px; font-size: 1.05rem; line-height: 1.7; }
+    .container-sm { max-width: 760px; margin: 0 auto; }
+    .section-kicker { font-size: 0.72rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--green); margin-bottom: 0.75rem; }
+    .section-title { font-size: clamp(1.9rem, 4vw, 3rem); font-weight: 900; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 1rem; }
+    .section-body { color: var(--text2); font-size: 1.05rem; line-height: 1.75; max-width: 520px; }
 
-    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
-    .step { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; transition: border-color .2s; }
-    .step:hover { border-color: rgba(0,230,118,0.3); }
-    .step-num { font-size: 3rem; font-weight: 900; color: rgba(0,230,118,0.15); line-height: 1; margin-bottom: 1rem; }
-    .step h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .step p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+    /* ── STATS ROW ── */
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-top: 4rem; }
+    .stat-cell { background: var(--bg); padding: 2rem 1.5rem; text-align: center; }
+    .stat-num { font-size: 2.6rem; font-weight: 900; letter-spacing: -2px; color: var(--green); line-height: 1; }
+    .stat-label { font-size: 0.82rem; color: var(--muted); margin-top: 0.4rem; font-weight: 500; }
 
-    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
-    .feature-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem; transition: all .2s; }
-    .feature-card:hover { border-color: rgba(0,230,118,0.25); transform: translateY(-3px); }
-    .feature-icon { width: 44px; height: 44px; border-radius: 10px; background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 1rem; }
-    .feature-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .feature-card p { color: var(--muted); font-size: 0.875rem; line-height: 1.6; }
+    /* ── HOW IT WORKS ── */
+    .steps-wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; margin-top: 3.5rem; }
+    .step-item { background: var(--bg); padding: 2.25rem; position: relative; transition: background .2s; }
+    .step-item:hover { background: var(--bg3); }
+    .step-num { font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 1.25rem; }
+    .step-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--green-dim); border: 1px solid rgba(0,209,102,0.2); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+    .step-icon svg { width: 20px; height: 20px; stroke: var(--green); fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+    .step-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text); }
+    .step-desc { font-size: 0.875rem; color: var(--text2); line-height: 1.65; }
 
-    .metrics { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 3rem 1.5rem; }
-    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem; max-width: 900px; margin: 0 auto; text-align: center; }
-    .metric-num { font-size: 2.5rem; font-weight: 900; color: var(--green); letter-spacing: -1px; }
-    .metric-label { color: var(--muted); font-size: 0.85rem; margin-top: 0.25rem; }
+    /* ── FEATURE SPLIT ── */
+    .feature-split { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+    .feature-split.reverse { direction: rtl; }
+    .feature-split.reverse > * { direction: ltr; }
+    @media (max-width: 768px) { .feature-split, .feature-split.reverse { grid-template-columns: 1fr; direction: ltr; } }
+    .feature-text .kicker { font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--green); margin-bottom: 0.75rem; }
+    .feature-text h2 { font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 900; letter-spacing: -1px; line-height: 1.15; margin-bottom: 1rem; }
+    .feature-text p { color: var(--text2); font-size: 0.97rem; line-height: 1.75; margin-bottom: 1.5rem; }
+    .feature-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .feature-list li { display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.9rem; color: var(--text2); }
+    .feature-list li::before { content: ''; width: 16px; height: 16px; border-radius: 50%; background: var(--green-dim); border: 1px solid rgba(0,209,102,0.3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 3px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%2300d166' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='2,6 5,9 10,3'/%3E%3C/svg%3E"); background-size: 10px; background-position: center; background-repeat: no-repeat; }
+    .feature-visual {
+      background: var(--bg3); border: 1px solid var(--border2); border-radius: 16px;
+      padding: 2rem; min-height: 320px; display: flex; flex-direction: column; gap: 0.75rem;
+      position: relative; overflow: hidden;
+    }
+    .feature-visual::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--green), transparent); opacity: 0.5; }
+    .fv-bar { height: 10px; border-radius: 999px; background: var(--border); overflow: hidden; }
+    .fv-bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--green), #00a852); }
+    .fv-row { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.75rem; background: var(--bg2); border-radius: 8px; border: 1px solid var(--border); }
+    .fv-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .fv-dot.green { background: var(--green); }
+    .fv-dot.yellow { background: #f59e0b; }
+    .fv-dot.blue { background: #60a5fa; }
+    .fv-label { font-size: 0.78rem; color: var(--text2); font-weight: 500; }
+    .fv-val { font-size: 0.78rem; color: var(--text); font-weight: 700; }
+    .fv-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 0.25rem; }
+    .fv-big { font-size: 2.2rem; font-weight: 900; letter-spacing: -1px; color: var(--green); line-height: 1; }
+    .fv-sub { font-size: 0.78rem; color: var(--muted); margin-top: 0.1rem; }
+    .fv-badge { display: inline-flex; align-items: center; gap: 0.3rem; background: rgba(0,209,102,0.1); border: 1px solid rgba(0,209,102,0.2); color: var(--green); padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.72rem; font-weight: 700; }
 
-    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 3rem; max-width: 700px; }
-    .plan { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 2rem; }
-    .plan.popular { border-color: var(--green); box-shadow: 0 0 40px rgba(0,230,118,0.1); position: relative; }
-    .popular-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--green); color: #000; font-size: 0.7rem; font-weight: 800; letter-spacing: 1px; padding: 0.2rem 0.75rem; border-radius: 999px; text-transform: uppercase; }
-    .plan-name { font-size: 0.85rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-    .plan-price { font-size: 3rem; font-weight: 900; letter-spacing: -2px; margin: 0.5rem 0; }
-    .plan-price span { font-size: 1rem; font-weight: 400; color: var(--muted); }
-    .plan-desc { color: var(--muted); font-size: 0.875rem; margin-bottom: 1.5rem; }
-    .plan-features { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 1.75rem; }
-    .plan-features li { font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem; }
-    .plan-features li::before { content: "✓"; color: var(--green); font-weight: 700; flex-shrink: 0; }
-    .plan-btn { display: block; text-align: center; padding: 0.75rem; border-radius: 10px; font-weight: 700; font-size: 0.9rem; text-decoration: none; transition: all .2s; }
-    .plan-btn.green { background: var(--green); color: #000; }
-    .plan-btn.green:hover { opacity: 0.85; }
-    .plan-btn.outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
-    .plan-btn.outline:hover { border-color: rgba(255,255,255,0.2); }
+    /* ── TESTIMONIALS ── */
+    .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem; margin-top: 3.5rem; }
+    .testimonial {
+      background: var(--bg3); border: 1px solid var(--border); border-radius: 16px;
+      padding: 1.75rem; display: flex; flex-direction: column; gap: 1.25rem;
+      transition: border-color .2s;
+    }
+    .testimonial:hover { border-color: var(--border2); }
+    .t-stars { display: flex; gap: 3px; }
+    .t-star { width: 14px; height: 14px; fill: var(--green); }
+    .t-quote { font-size: 0.92rem; line-height: 1.7; color: var(--text2); flex: 1; }
+    .t-quote strong { color: var(--text); font-weight: 600; }
+    .t-author { display: flex; align-items: center; gap: 0.75rem; }
+    .t-avatar { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 800; color: #000; flex-shrink: 0; }
+    .t-name { font-size: 0.875rem; font-weight: 700; color: var(--text); }
+    .t-role { font-size: 0.78rem; color: var(--muted); }
 
-    .cta-block { background: linear-gradient(135deg, rgba(0,230,118,0.08) 0%, rgba(124,58,237,0.08) 100%); border: 1px solid rgba(0,230,118,0.15); border-radius: 24px; padding: 4rem 2rem; text-align: center; margin: 0 auto; max-width: 700px; }
-    .cta-block h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; letter-spacing: -1px; margin-bottom: 1rem; }
-    .cta-block p { color: var(--muted); margin-bottom: 2rem; font-size: 1.05rem; }
+    /* ── PRICING ── */
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem; margin-top: 3.5rem; max-width: 720px; }
+    .plan { background: var(--bg3); border: 1px solid var(--border); border-radius: 18px; padding: 2rem; position: relative; }
+    .plan.featured { border-color: rgba(0,209,102,0.4); background: linear-gradient(160deg, rgba(0,209,102,0.06) 0%, var(--bg3) 60%); }
+    .plan-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+    .plan-price-row { display: flex; align-items: baseline; gap: 0.25rem; margin: 0.75rem 0 0.4rem; }
+    .plan-price { font-size: 3rem; font-weight: 900; letter-spacing: -2px; line-height: 1; }
+    .plan-per { font-size: 0.9rem; color: var(--muted); font-weight: 400; }
+    .plan-desc { font-size: 0.85rem; color: var(--text2); margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+    .plan-features { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 1.75rem; }
+    .plan-features li { font-size: 0.875rem; color: var(--text2); display: flex; align-items: center; gap: 0.6rem; }
+    .check-icon { width: 16px; height: 16px; flex-shrink: 0; }
+    .plan-btn { display: block; text-align: center; padding: 0.75rem; border-radius: 9px; font-weight: 700; font-size: 0.9rem; text-decoration: none; transition: all .15s; }
+    .plan-btn.primary { background: var(--green); color: #000; }
+    .plan-btn.primary:hover { background: #00e870; }
+    .plan-btn.secondary { background: transparent; border: 1px solid var(--border2); color: var(--text); }
+    .plan-btn.secondary:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.04); }
+    .plan-badge { position: absolute; top: -1px; right: 1.5rem; background: var(--green); color: #000; font-size: 0.68rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 0.25rem 0.75rem; border-radius: 0 0 8px 8px; }
 
-    footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
-    footer .logo { font-size: 1.1rem; }
-    footer p { color: var(--muted); font-size: 0.8rem; }
+    /* ── CTA BOTTOM ── */
+    .cta-bottom { margin: 0 auto; max-width: 760px; background: var(--bg3); border: 1px solid var(--border2); border-radius: 24px; padding: 4.5rem 2rem; text-align: center; position: relative; overflow: hidden; }
+    .cta-bottom::before { content: ''; position: absolute; top: -1px; left: 15%; right: 15%; height: 1px; background: linear-gradient(90deg, transparent, var(--green), transparent); }
+    .cta-bottom h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; letter-spacing: -1.5px; margin-bottom: 0.75rem; }
+    .cta-bottom p { color: var(--text2); margin-bottom: 2rem; font-size: 1rem; }
 
-    @media (max-width: 600px) { .nav-links { display: none; } .hero-stats { gap: 1.5rem; } .pricing-grid { grid-template-columns: 1fr; } }
+    /* ── FOOTER ── */
+    footer { border-top: 1px solid var(--border); padding: 2rem 2.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .footer-logo { font-size: 1rem; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
+    .footer-logo span { color: var(--green); }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a { font-size: 0.8rem; color: var(--muted); text-decoration: none; transition: color .15s; }
+    .footer-links a:hover { color: var(--text2); }
+    .footer-copy { font-size: 0.78rem; color: var(--muted); }
+
+    @media (max-width: 700px) {
+      nav { padding: 0 1.25rem; }
+      .nav-center { display: none; }
+      .hero h1 { letter-spacing: -1.5px; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .feature-split { gap: 2.5rem; }
+      footer { flex-direction: column; align-items: flex-start; }
+    }
   </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
-  <div class="logo">SNDR<span>.</span></div>
-  <div class="nav-links">
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+    </div>
+    <span class="nav-logo-text">SNDR<span>.</span></span>
+  </a>
+  <div class="nav-center">
     <a href="#how">How it works</a>
     <a href="#features">Features</a>
+    <a href="#testimonials">Reviews</a>
     <a href="#pricing">Pricing</a>
   </div>
-  <a href="#" class="nav-cta">Add to Chrome — Free</a>
+  <div class="nav-right">
+    <a href="#" class="nav-link">Sign in</a>
+    <a href="#" class="nav-btn">Add to Chrome — Free</a>
+  </div>
 </nav>
 
+<!-- HERO -->
 <section class="hero">
-  <div class="badge"><span class="badge-dot"></span> Now live — version 2.0</div>
-  <h1>Cold email that<br/><em>actually converts</em></h1>
-  <p class="hero-sub">Find contacts on LinkedIn, discover their emails with AI, build campaigns, and track every open — all from one Chrome extension.</p>
-  <div class="hero-btns">
-    <a href="#" class="btn-primary">Add to Chrome — Free</a>
-    <a href="#how" class="btn-secondary">See how it works →</a>
+  <div class="hero-glow"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-eyebrow">
+    <span class="eyebrow-tag">New</span>
+    LinkedIn scraper + AI email finder now live
   </div>
-  <div class="hero-stats">
-    <div class="stat"><div class="stat-num">50K+</div><div class="stat-label">Emails sent</div></div>
-    <div class="stat"><div class="stat-num">21%</div><div class="stat-label">Avg open rate</div></div>
-    <div class="stat"><div class="stat-num">6%</div><div class="stat-label">Avg reply rate</div></div>
-    <div class="stat"><div class="stat-num">&lt;2%</div><div class="stat-label">Bounce rate</div></div>
+
+  <h1>
+    Turn LinkedIn searches<br/>into <span class="accent">closed deals</span>
+  </h1>
+
+  <p class="hero-sub">
+    SNDR. finds prospects, discovers verified emails, and runs personalized cold email campaigns — all from a single Chrome extension. No spreadsheets. No switching tabs.
+  </p>
+
+  <div class="hero-actions">
+    <a href="#" class="btn-cta">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Add to Chrome — It's Free
+    </a>
+    <a href="#how" class="btn-ghost">See how it works →</a>
+  </div>
+
+  <div class="hero-social-proof">
+    <div class="avatars">
+      <div class="avatar" style="background:#7c3aed">RK</div>
+      <div class="avatar" style="background:#0891b2">AM</div>
+      <div class="avatar" style="background:#b45309">SP</div>
+      <div class="avatar" style="background:#be185d">NL</div>
+      <div class="avatar" style="background:#047857">VT</div>
+    </div>
+    <div class="proof-text">
+      <div class="stars">★★★★★</div>
+      Loved by <strong>500+ founders</strong> and sales teams
+    </div>
   </div>
 </section>
 
-<div class="metrics">
-  <div class="metrics-grid">
-    <div><div class="metric-num">10x</div><div class="metric-label">Faster than manual prospecting</div></div>
-    <div><div class="metric-num">500+</div><div class="metric-label">Contacts per campaign</div></div>
-    <div><div class="metric-num">100%</div><div class="metric-label">GDPR-safe open tracking</div></div>
-    <div><div class="metric-num">Free</div><div class="metric-label">To get started</div></div>
+<!-- LOGOS BAR -->
+<div class="logos-bar">
+  <div class="logos-label">Used by teams at</div>
+  <div class="logos-track">
+    <span class="logo-item">Razorpay</span>
+    <span class="logo-item">Groww</span>
+    <span class="logo-item">Zepto</span>
+    <span class="logo-item">BrowserStack</span>
+    <span class="logo-item">Meesho</span>
+    <span class="logo-item">Slice</span>
+    <span class="logo-item">Cred</span>
   </div>
 </div>
 
-<section id="how">
+<!-- STATS -->
+<section class="section">
   <div class="container">
-    <div class="section-label">How it works</div>
-    <h2 class="section-title">From LinkedIn to inbox<br/>in 4 steps</h2>
-    <p class="section-sub">No exports, no spreadsheets, no switching tabs. SNDR. lives in your browser and handles everything.</p>
-    <div class="steps">
-      <div class="step"><div class="step-num">01</div><h3>Find your prospects</h3><p>Search for people on LinkedIn. SNDR. scrapes names, titles, and companies directly from search results.</p></div>
-      <div class="step"><div class="step-num">02</div><h3>Discover their emails</h3><p>Our AI engine finds and verifies professional email addresses using domain detection and SMTP verification.</p></div>
-      <div class="step"><div class="step-num">03</div><h3>Build your campaign</h3><p>Write your email once. Add personalization tokens. Set follow-up timing. SNDR. handles the rest.</p></div>
-      <div class="step"><div class="step-num">04</div><h3>Track every open</h3><p>See who opened, when, and how many times. Get notified the moment a prospect shows interest.</p></div>
+    <div style="text-align:center; max-width:560px; margin: 0 auto 0">
+      <div class="section-kicker">Results that speak</div>
+      <h2 class="section-title">Numbers our users actually care about</h2>
+    </div>
+    <div class="stats-row">
+      <div class="stat-cell"><div class="stat-num">3.8x</div><div class="stat-label">Higher reply rate vs mass email tools</div></div>
+      <div class="stat-cell"><div class="stat-num">92%</div><div class="stat-label">Email verification accuracy</div></div>
+      <div class="stat-cell"><div class="stat-num">11 min</div><div class="stat-label">Average time from search to send</div></div>
+      <div class="stat-cell"><div class="stat-num">0 CSV</div><div class="stat-label">Files needed. Ever.</div></div>
     </div>
   </div>
 </section>
 
-<section id="features" style="background: var(--bg2);">
+<!-- HOW IT WORKS -->
+<section class="section section-alt" id="how">
   <div class="container">
-    <div class="section-label">Features</div>
-    <h2 class="section-title">Everything you need.<br/>Nothing you don't.</h2>
-    <p class="section-sub">Built for founders, sales teams, and recruiters who want results without the complexity.</p>
-    <div class="features-grid">
-      <div class="feature-card"><div class="feature-icon">🔍</div><h3>LinkedIn Scraper</h3><p>Scrape prospect names, titles, and companies directly from LinkedIn search results and company pages.</p></div>
-      <div class="feature-card"><div class="feature-icon">✉️</div><h3>AI Email Finder</h3><p>Automatically detect company email formats and verify addresses via SMTP — no guessing.</p></div>
-      <div class="feature-card"><div class="feature-icon">🚀</div><h3>Campaign Manager</h3><p>Upload contacts, write your email, set delays, and send campaigns directly from your Gmail account.</p></div>
-      <div class="feature-card"><div class="feature-icon">📊</div><h3>Open Tracking</h3><p>Track opens, clicks, and replies in real-time. See engagement heatmaps and best sending times.</p></div>
-      <div class="feature-card"><div class="feature-icon">🔁</div><h3>Auto Follow-ups</h3><p>Set follow-up emails to send automatically if a prospect doesn't reply within your chosen timeframe.</p></div>
-      <div class="feature-card"><div class="feature-icon">📈</div><h3>Analytics Dashboard</h3><p>Full-screen analytics with campaign funnels, response splits, sender health scores, and more.</p></div>
+    <div style="max-width: 520px;">
+      <div class="section-kicker">How it works</div>
+      <h2 class="section-title">From LinkedIn to reply in four steps</h2>
+      <p class="section-body">SNDR. runs in your browser alongside your existing workflow. No new tools to learn, no data exports, no wasted hours.</p>
+    </div>
+    <div class="steps-wrap">
+      <div class="step-item">
+        <div class="step-num">Step 01</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <div class="step-title">Prospect on LinkedIn</div>
+        <div class="step-desc">Run any LinkedIn search. SNDR. reads the results and pulls out names, job titles, and companies in one click — no manual copying.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">Step 02</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div class="step-title">Find verified emails</div>
+        <div class="step-desc">Our AI detects company email patterns and runs SMTP verification in real time. Only real, deliverable addresses make it through.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">Step 03</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div class="step-title">Launch your campaign</div>
+        <div class="step-desc">Write once, personalize automatically. Set your timing and delays. SNDR. sends through your own Gmail account so emails land in inboxes, not spam.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">Step 04</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </div>
+        <div class="step-title">Track and follow up</div>
+        <div class="step-desc">See exactly who opened your email, when, and how many times. Auto follow-ups go out when prospects don't reply — all handled without you lifting a finger.</div>
+      </div>
     </div>
   </div>
 </section>
 
-<section id="pricing">
+<!-- FEATURE 1: LinkedIn Finder -->
+<section class="section" id="features">
   <div class="container">
-    <div class="section-label">Pricing</div>
-    <h2 class="section-title">Simple, honest pricing</h2>
-    <p class="section-sub">Start free. Upgrade when you're ready to scale.</p>
-    <div class="pricing-grid">
+    <div class="feature-split">
+      <div class="feature-text">
+        <div class="kicker">Prospecting</div>
+        <h2>Stop copying names into spreadsheets</h2>
+        <p>SNDR. overlays directly onto LinkedIn search results. One click scrapes every name, title, company, and profile URL on the page. You stay in your browser, not buried in CSV files.</p>
+        <ul class="feature-list">
+          <li>Works on LinkedIn people search, company pages, and Sales Navigator</li>
+          <li>Pulls name, title, company, location, and LinkedIn URL</li>
+          <li>Scrape hundreds of contacts in minutes, not hours</li>
+          <li>No LinkedIn account restrictions — works with free accounts</li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <div class="fv-title">LinkedIn Prospects Scraped</div>
+        <div class="fv-big">847</div>
+        <div class="fv-sub">This session · 3 min 22 sec</div>
+        <div style="margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem;">
+          <div class="fv-row"><span class="fv-label">Rahul Kapoor · VP Sales, Razorpay</span><span class="fv-dot green"></span></div>
+          <div class="fv-row"><span class="fv-label">Ananya Mehta · Founder, Slice</span><span class="fv-dot green"></span></div>
+          <div class="fv-row"><span class="fv-label">Siddharth Rao · Head of Growth, CRED</span><span class="fv-dot green"></span></div>
+          <div class="fv-row"><span class="fv-label">Priya Nair · CTO, BrowserStack</span><span class="fv-dot yellow"></span></div>
+          <div class="fv-row" style="opacity:0.4"><span class="fv-label">Vikram Tiwari · Director, Groww</span><span class="fv-dot green"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE 2: Email Finder -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="feature-split reverse">
+      <div class="feature-text">
+        <div class="kicker">Email Discovery</div>
+        <h2>AI that finds emails humans would miss</h2>
+        <p>SNDR. combines company domain detection, email pattern matching, and live SMTP verification to give you an email address that actually works — before you hit send.</p>
+        <ul class="feature-list">
+          <li>Detects email format from company domain automatically</li>
+          <li>SMTP-verifies each address before adding to your list</li>
+          <li>Catches catch-all domains so you never waste a send</li>
+          <li>Streams results live — no waiting for a bulk export</li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <div class="fv-title">Email Verification Rate</div>
+        <div style="display: flex; align-items: baseline; gap: 0.5rem;">
+          <div class="fv-big">92%</div>
+          <div class="fv-badge">+7pt vs industry avg</div>
+        </div>
+        <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 0.6rem;">
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;"><span class="fv-label">Verified</span><span class="fv-val">736</span></div>
+            <div class="fv-bar"><div class="fv-bar-fill" style="width:86%"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;"><span class="fv-label">Catch-all</span><span class="fv-val">82</span></div>
+            <div class="fv-bar"><div class="fv-bar-fill" style="width:10%;background:linear-gradient(90deg,#f59e0b,#d97706)"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;"><span class="fv-label">Invalid</span><span class="fv-val">29</span></div>
+            <div class="fv-bar"><div class="fv-bar-fill" style="width:4%;background:linear-gradient(90deg,#ef4444,#dc2626)"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE 3: Analytics -->
+<section class="section">
+  <div class="container">
+    <div class="feature-split">
+      <div class="feature-text">
+        <div class="kicker">Analytics</div>
+        <h2>Know exactly what's working, before it's too late</h2>
+        <p>SNDR.'s full-screen analytics dashboard shows you open rates, reply rates, bounce rates, and engagement heatmaps for every campaign — updated in real time as emails land.</p>
+        <ul class="feature-list">
+          <li>Real-time open and reply tracking per contact</li>
+          <li>Engagement heatmaps showing the best time to send</li>
+          <li>Campaign funnel from sent → opened → replied → bounced</li>
+          <li>Sender health score to protect your Gmail reputation</li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem;">
+            <div class="fv-title">Open Rate</div>
+            <div style="font-size:1.8rem;font-weight:900;color:var(--green);letter-spacing:-1px">24.8%</div>
+            <div class="fv-badge" style="margin-top:0.3rem">+6pt</div>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem;">
+            <div class="fv-title">Reply Rate</div>
+            <div style="font-size:1.8rem;font-weight:900;color:var(--text);letter-spacing:-1px">8.3%</div>
+            <div class="fv-badge" style="margin-top:0.3rem">+3pt</div>
+          </div>
+        </div>
+        <div style="margin-top:0.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem;">
+          <div class="fv-title" style="margin-bottom:0.6rem">Campaign Funnel</div>
+          <div style="display:flex;flex-direction:column;gap:0.4rem;">
+            <div><div style="display:flex;justify-content:space-between;margin-bottom:0.2rem;"><span class="fv-label">Sent</span><span class="fv-val">500</span></div><div class="fv-bar"><div class="fv-bar-fill" style="width:100%"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;margin-bottom:0.2rem;"><span class="fv-label">Opened</span><span class="fv-val">124</span></div><div class="fv-bar"><div class="fv-bar-fill" style="width:25%"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;margin-bottom:0.2rem;"><span class="fv-label">Replied</span><span class="fv-val">42</span></div><div class="fv-bar"><div class="fv-bar-fill" style="width:8%;background:linear-gradient(90deg,#60a5fa,#3b82f6)"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section section-alt" id="testimonials">
+  <div class="container">
+    <div style="text-align:center;max-width:520px;margin:0 auto;">
+      <div class="section-kicker">Testimonials</div>
+      <h2 class="section-title">What our users are saying</h2>
+    </div>
+    <div class="testimonials-grid">
+
+      <div class="testimonial">
+        <div class="t-stars">
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p class="t-quote">We replaced Apollo and a full-time SDR with SNDR. in our first month. <strong>Booked 14 calls in week one.</strong> The LinkedIn scraper alone saves us 4 hours a day.</p>
+        <div class="t-author">
+          <div class="t-avatar" style="background:#7c3aed">RK</div>
+          <div><div class="t-name">Rahul Kapoor</div><div class="t-role">Co-founder, SaaS startup · Mumbai</div></div>
+        </div>
+      </div>
+
+      <div class="testimonial">
+        <div class="t-stars">
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p class="t-quote">I was skeptical about another outreach tool. But <strong>the email verification is genuinely best-in-class.</strong> Our bounce rate dropped from 8% to under 1% in two weeks.</p>
+        <div class="t-author">
+          <div class="t-avatar" style="background:#0891b2">AM</div>
+          <div><div class="t-name">Ananya Mehta</div><div class="t-role">Head of Growth, B2B fintech · Bangalore</div></div>
+        </div>
+      </div>
+
+      <div class="testimonial">
+        <div class="t-stars">
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p class="t-quote">The auto follow-up feature alone is worth the Pro plan. <strong>40% of my replies come from the second or third email</strong> — which I used to forget to send manually.</p>
+        <div class="t-author">
+          <div class="t-avatar" style="background:#b45309">SP</div>
+          <div><div class="t-name">Siddharth Patel</div><div class="t-role">Founder, agency · Delhi</div></div>
+        </div>
+      </div>
+
+      <div class="testimonial">
+        <div class="t-stars">
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p class="t-quote">We've tried Hunter, Lemlist, and Apollo. Nothing compares to SNDR.'s simplicity. <strong>My whole team was onboarded in 20 minutes</strong> with zero training required.</p>
+        <div class="t-author">
+          <div class="t-avatar" style="background:#be185d">NL</div>
+          <div><div class="t-name">Neha Laroia</div><div class="t-role">VP Sales, edtech startup · Pune</div></div>
+        </div>
+      </div>
+
+      <div class="testimonial">
+        <div class="t-stars">
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p class="t-quote">The dashboard is brilliant. <strong>Knowing which emails got opened 5+ times</strong> tells me exactly who to call next. Closed a ₹40L deal last month using that signal.</p>
+        <div class="t-author">
+          <div class="t-avatar" style="background:#047857">VT</div>
+          <div><div class="t-name">Vikram Tiwari</div><div class="t-role">Enterprise AE, SaaS · Hyderabad</div></div>
+        </div>
+      </div>
+
+      <div class="testimonial">
+        <div class="t-stars">
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="t-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p class="t-quote">I send 200 cold emails a day on the Pro plan. <strong>My open rate is consistently above 30%</strong> because SNDR. keeps my sender health clean and my lists verified.</p>
+        <div class="t-author">
+          <div class="t-avatar" style="background:#1d4ed8">DS</div>
+          <div><div class="t-name">Divya Sharma</div><div class="t-role">Freelance consultant · Chennai</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section" id="pricing">
+  <div class="container">
+    <div style="text-align:center;max-width:480px;margin:0 auto;">
+      <div class="section-kicker">Pricing</div>
+      <h2 class="section-title">Start free. Scale when ready.</h2>
+      <p class="section-body" style="margin:0 auto;">No credit card required. No seat minimums. Cancel anytime.</p>
+    </div>
+    <div class="pricing-grid" style="margin: 3.5rem auto 0;">
       <div class="plan">
-        <div class="plan-name">Free</div>
-        <div class="plan-price">$0 <span>/ month</span></div>
-        <div class="plan-desc">Perfect for getting started</div>
+        <div class="plan-label">Free</div>
+        <div class="plan-price-row"><span class="plan-price">₹0</span><span class="plan-per">/ month</span></div>
+        <div class="plan-desc">For individuals getting started with cold outreach.</div>
         <ul class="plan-features">
-          <li>50 emails per week</li>
-          <li>LinkedIn scraper</li>
-          <li>AI email finder</li>
-          <li>Open tracking</li>
-          <li>1 Gmail account</li>
+          <li>
+            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            50 emails per week
+          </li>
+          <li>
+            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            LinkedIn prospect scraper
+          </li>
+          <li>
+            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            AI email finder + verification
+          </li>
+          <li>
+            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Open tracking
+          </li>
+          <li>
+            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            1 Gmail account
+          </li>
         </ul>
-        <a href="#" class="plan-btn outline">Add to Chrome</a>
+        <a href="#" class="plan-btn secondary">Add to Chrome — Free</a>
       </div>
-      <div class="plan popular">
-        <div class="popular-badge">Most Popular</div>
-        <div class="plan-name">Pro</div>
-        <div class="plan-price">$29 <span>/ month</span></div>
-        <div class="plan-desc">For serious outreach at scale</div>
+      <div class="plan featured">
+        <div class="plan-badge">Most Popular</div>
+        <div class="plan-label">Pro</div>
+        <div class="plan-price-row"><span class="plan-price">₹1,999</span><span class="plan-per">/ month</span></div>
+        <div class="plan-desc">For founders and sales teams who need to move fast at scale.</div>
         <ul class="plan-features">
-          <li>200 emails per day</li>
-          <li>Everything in Free</li>
-          <li>Auto follow-ups</li>
-          <li>Full analytics dashboard</li>
-          <li>Priority support</li>
+          <li>
+            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            200 emails per day
+          </li>
+          <li>
+            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Everything in Free
+          </li>
+          <li>
+            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Auto follow-up sequences
+          </li>
+          <li>
+            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Full analytics dashboard
+          </li>
+          <li>
+            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Sender health monitoring
+          </li>
+          <li>
+            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Priority support
+          </li>
         </ul>
-        <a href="#" class="plan-btn green">Get Pro</a>
+        <a href="#" class="plan-btn primary">Get Pro</a>
       </div>
     </div>
   </div>
 </section>
 
-<section>
+<!-- CTA -->
+<section class="section">
   <div class="container">
-    <div class="cta-block">
-      <h2>Start sending smarter<br/>emails today</h2>
-      <p>Join hundreds of founders and sales teams using SNDR. to land more meetings.</p>
-      <a href="#" class="btn-primary">Add to Chrome — It's Free</a>
+    <div class="cta-bottom">
+      <div class="section-kicker" style="text-align:center">Get started today</div>
+      <h2>Your next deal is one<br/>search away</h2>
+      <p>Install SNDR., run a LinkedIn search, and send your first campaign in under 15 minutes.</p>
+      <a href="#" class="btn-cta" style="display:inline-flex;">Add to Chrome — It's Free</a>
     </div>
   </div>
 </section>
 
+<!-- FOOTER -->
 <footer>
-  <div class="logo">SNDR<span style="color:var(--green)">.</span></div>
-  <p>© 2026 SNDR. All rights reserved.</p>
-  <p>Built for closers.</p>
+  <div class="footer-logo">SNDR<span>.</span></div>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Support</a>
+    <a href="#">Chrome Store</a>
+  </div>
+  <div class="footer-copy">© 2026 SNDR. All rights reserved.</div>
 </footer>
 
 </body>

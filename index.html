@@ -504,6 +504,35 @@ footer {
 .f-links a:hover { color: var(--text); }
 .f-copy { font-size: 12px; color: var(--text3); }
 
+/* ── R CODE SECTION ── */
+.rcode-grid { display: flex; flex-direction: column; gap: 20px; max-width: 960px; }
+.rcode-box { border: 1px solid var(--border2); border-radius: var(--radius); overflow: hidden; transition: border-color 0.2s; }
+.rcode-box:hover { border-color: rgba(181,75,42,0.3); }
+.rcode-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 18px; background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+}
+.rcode-badge {
+  font-family: var(--b); font-size: 10px; font-weight: 700;
+  padding: 3px 10px; border-radius: 4px; letter-spacing: 0.5px; text-transform: uppercase;
+}
+.rcode-b1 { background: rgba(99,135,230,0.14); color: #5574c8; }
+.rcode-b2 { background: rgba(52,168,83,0.12); color: #2e7d50; }
+.rcode-b3 { background: rgba(181,120,0,0.12); color: #8a5c00; }
+.rcode-title { font-family: var(--h); font-size: 14px; font-weight: 600; color: var(--text); }
+.rcode-sub { font-size: 11px; color: var(--text3); margin-left: auto; font-family: 'Courier New', monospace; }
+.rcode-box pre {
+  margin: 0; padding: 18px; overflow-x: auto;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px; line-height: 1.75; color: #c9d1d9; background: #0d1117;
+}
+.rc-kw { color: #ff7b72; }
+.rc-fn { color: #79c0ff; }
+.rc-cm { color: #8b949e; font-style: italic; }
+.rc-st { color: #a5d6ff; }
+.rc-nm { color: #f8c555; }
+
 /* ── REVEAL ANIMATIONS ── */
 .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.55s ease, transform 0.55s ease; }
 .reveal.in { opacity: 1; transform: translateY(0); }
@@ -554,6 +583,7 @@ footer {
   <ul class="nav-links">
     <li><a href="#how">How it works</a></li>
     <li><a href="#features">Features</a></li>
+    <li><a href="#analysis">Analysis</a></li>
     <li><a href="#pricing">Pricing</a></li>
   </ul>
   <div class="nav-right">
@@ -758,6 +788,148 @@ footer {
         <p class="testi-body">Our BD team of two is now outperforming our previous team of six. <strong>SNDR is the closest thing to an AI-powered SDR</strong> that actually understands outreach context.</p>
         <div class="testi-foot"><div class="testi-av">IS</div><div><div class="testi-name">Ishaan Saxena</div><div class="testi-title">Head of BD, NexStack</div></div></div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- R CODE ANALYSIS -->
+<hr class="divider">
+<div class="section" id="analysis">
+  <div class="section-inner">
+    <div class="eyebrow">Data Analysis</div>
+    <h2 class="section-title">R code <em>exercises.</em></h2>
+    <div class="rcode-grid">
+
+      <div class="rcode-box reveal">
+        <div class="rcode-header">
+          <span class="rcode-badge rcode-b1">Box 1</span>
+          <span class="rcode-title">Descriptive Statistics &amp; Visualisation</span>
+          <span class="rcode-sub">mean · sd · quantile · hist · boxplot · cor</span>
+        </div>
+        <pre><code><span class="rc-cm"># Build employee data frame</span>
+db &lt;- data.frame(
+  empid = c(<span class="rc-st">"E01","E02","E03","E04","E05"</span>),
+  dept  = <span class="rc-fn">as.factor</span>(c(<span class="rc-st">"Finance","HR","Finance","HR","Sales"</span>)),
+  ename = c(<span class="rc-st">"Ram","Tom","Ricky","Winston","Trump"</span>),
+  ey    = <span class="rc-fn">as.integer</span>(c(<span class="rc-nm">5,10,20,40,20</span>)),
+  wh    = <span class="rc-fn">as.numeric</span>(c(<span class="rc-nm">10,40,20,70,25</span>)),
+  ms    = <span class="rc-fn">as.numeric</span>(c(<span class="rc-nm">100,200,300,600,900</span>)),
+  gs    = <span class="rc-fn">as.numeric</span>(c(<span class="rc-nm">10000,10000,30000,10000,40000</span>))
+)
+db$txs &lt;- <span class="rc-nm">0.10</span> * db$gs
+db$ns  &lt;- db$gs - db$txs
+
+<span class="rc-cm"># Means</span>
+<span class="rc-fn">mean</span>(db$ey);  <span class="rc-fn">mean</span>(db$wh);  <span class="rc-fn">mean</span>(db$ms)
+<span class="rc-fn">mean</span>(db$gs);  <span class="rc-fn">mean</span>(db$txs); <span class="rc-fn">mean</span>(db$ns)
+
+<span class="rc-cm"># Standard deviations</span>
+<span class="rc-fn">sd</span>(db$ey);  <span class="rc-fn">sd</span>(db$wh);  <span class="rc-fn">sd</span>(db$ms)
+<span class="rc-fn">sd</span>(db$gs);  <span class="rc-fn">sd</span>(db$txs); <span class="rc-fn">sd</span>(db$ns)
+
+<span class="rc-cm"># Quantiles</span>
+<span class="rc-fn">quantile</span>(db$ey);  <span class="rc-fn">quantile</span>(db$wh);  <span class="rc-fn">quantile</span>(db$ms)
+<span class="rc-fn">quantile</span>(db$gs);  <span class="rc-fn">quantile</span>(db$txs); <span class="rc-fn">quantile</span>(db$ns)
+
+<span class="rc-cm"># Plots</span>
+<span class="rc-fn">hist</span>(db$ns,    main=<span class="rc-st">"Histogram of Net Salary"</span>,    xlab=<span class="rc-st">"Net Salary"</span>, col=<span class="rc-st">"skyblue"</span>)
+<span class="rc-fn">boxplot</span>(db$ey, main=<span class="rc-st">"Box Plot of Experience"</span>,     ylab=<span class="rc-st">"Years"</span>,      col=<span class="rc-st">"orange"</span>)
+<span class="rc-fn">plot</span>(db$wh,    main=<span class="rc-st">"Scatter Plot of Weekly Hours"</span>, ylab=<span class="rc-st">"Years"</span>, pch=<span class="rc-nm">19</span>, col=<span class="rc-st">"darkgreen"</span>)
+
+<span class="rc-cm"># Covariance &amp; correlation</span>
+<span class="rc-fn">cov</span>(db$ey, db$ns)
+<span class="rc-fn">cor</span>(db$ey, db$ns)
+<span class="rc-fn">cor</span>(db$ms, db$ns)^<span class="rc-nm">2</span></code></pre>
+      </div>
+
+      <div class="rcode-box reveal">
+        <div class="rcode-header">
+          <span class="rcode-badge rcode-b2">Box 2</span>
+          <span class="rcode-title">Text Mining &amp; Sentiment Analysis</span>
+          <span class="rcode-sub">tm · wordcloud · syuzhet · NRC sentiment</span>
+        </div>
+        <pre><code><span class="rc-fn">install.packages</span>(<span class="rc-st">"tm"</span>)
+<span class="rc-fn">install.packages</span>(<span class="rc-st">"wordcloud"</span>)
+<span class="rc-fn">install.packages</span>(<span class="rc-st">"syuzhet"</span>)
+<span class="rc-kw">library</span>(tm); <span class="rc-kw">library</span>(wordcloud); <span class="rc-kw">library</span>(syuzhet)
+
+text_data &lt;- <span class="rc-st">"Hon'ble Members,
+It gives me immense pleasure to address this session of Parliament.
+Just two months ago, we celebrated the 75th anniversary of adoption of our
+Constitution, and only a few days ago, the Indian Republic completed 75 years
+of its journey. This occasion will elevate India pride as the mother of democracy
+to new heights. On behalf of all the citizens of the country, I pay tribute to
+Babasaheb Ambedkar and all the framers of the Constitution.
+The historic festival of Mahakumbh is also underway in the country. Mahakumbh
+is a festival of India cultural tradition and social consciousness. Millions of
+devotees from across the country and the world have taken the holy dip at
+Prayagraj. I express my sorrow over the unfortunate incident that occurred on
+Mauni Amavasya and wish for the speedy recovery of the injured.
+A few days ago, we lost the former Prime Minister of the country, Dr. Manmohan
+Singhji. He served the nation as Prime Minister for ten years and was a long-time
+member of Parliament. I offer my heartfelt tribute to Manmohan Singhji."</span>
+
+<span class="rc-cm"># Build and clean corpus</span>
+corpus &lt;- <span class="rc-fn">Corpus</span>(<span class="rc-fn">VectorSource</span>(text_data))
+corpus &lt;- <span class="rc-fn">tm_map</span>(corpus, <span class="rc-fn">content_transformer</span>(tolower))
+corpus &lt;- <span class="rc-fn">tm_map</span>(corpus, removePunctuation)
+corpus &lt;- <span class="rc-fn">tm_map</span>(corpus, removeNumbers)
+corpus &lt;- <span class="rc-fn">tm_map</span>(corpus, stripWhitespace)
+corpus &lt;- <span class="rc-fn">tm_map</span>(corpus, removeWords, <span class="rc-fn">stopwords</span>(<span class="rc-st">"en"</span>))
+
+<span class="rc-cm"># Word cloud</span>
+<span class="rc-fn">wordcloud</span>(corpus, min.freq=<span class="rc-nm">3</span>, random.order=<span class="rc-kw">FALSE</span>,
+          colors=<span class="rc-fn">rainbow</span>(<span class="rc-nm">8</span>), scale=c(<span class="rc-nm">3</span>, <span class="rc-nm">0.5</span>))
+
+<span class="rc-cm"># NRC sentiment scores</span>
+sentiment_scores &lt;- <span class="rc-fn">get_nrc_sentiment</span>(text_data)
+sentiment_sum    &lt;- <span class="rc-fn">colSums</span>(sentiment_scores)
+<span class="rc-fn">barplot</span>(sentiment_sum, col=<span class="rc-fn">rainbow</span>(<span class="rc-nm">10</span>),
+        main=<span class="rc-st">"barplot is my god"</span>,
+        xlab=<span class="rc-st">"emotions"</span>, ylab=<span class="rc-st">"frequency"</span>, las=<span class="rc-nm">2</span>)</code></pre>
+      </div>
+
+      <div class="rcode-box reveal">
+        <div class="rcode-header">
+          <span class="rcode-badge rcode-b3">Box 3</span>
+          <span class="rcode-title">Multiple Linear Regression</span>
+          <span class="rcode-sub">lmtest · advertising spend → sales prediction</span>
+        </div>
+        <pre><code><span class="rc-fn">install.packages</span>(<span class="rc-st">"lmtest"</span>)
+<span class="rc-kw">library</span>(lmtest)
+
+db &lt;- data.frame(
+  Facebook  = c(<span class="rc-nm">230.1,44.5,17.2,151.5,180.8,8.7,57.5,120.2,8.6,199.8,
+                66.1,214.7,23.8,97.5,204.1,195.4,67.8,281.4,69.2,147.3,
+                218.4,237.4,13.2,228.3,62.3</span>),
+  Instagram = c(<span class="rc-nm">37.8,39.3,45.9,41.3,10.8,48.9,32.8,19.6,2.1,2.6,
+                5.8,24.0,35.1,7.6,32.9,47.7,36.6,39.6,20.5,23.9,
+                27.7,5.1,15.9,16.9,12.6</span>),
+  Twitter   = c(<span class="rc-nm">69.2,45.1,69.3,58.5,58.4,75.0,23.5,11.6,1.0,21.2,
+                24.2,4.0,65.9,7.2,46.0,52.9,114.0,55.8,18.3,19.1,
+                53.4,23.5,49.6,26.2,18.3</span>),
+  Sales     = c(<span class="rc-nm">22.1,10.4,12.0,16.5,17.9,7.2,11.8,13.2,15.5,15.6,
+                12.6,17.4,9.2,13.7,19.0,22.4,12.5,24.4,11.3,14.6,
+                18.0,17.5,5.6,20.5,9.7</span>)
+)
+
+<span class="rc-cm"># Fit model</span>
+model &lt;- <span class="rc-fn">lm</span>(Sales ~ Facebook + Instagram + Twitter, data=db)
+<span class="rc-fn">summary</span>(model)
+<span class="rc-fn">par</span>(mfrow=c(<span class="rc-nm">2</span>,<span class="rc-nm">2</span>)); <span class="rc-fn">plot</span>(model)
+<span class="rc-fn">coef</span>(model)
+
+<span class="rc-cm"># Predict sales with 10% more Facebook spend</span>
+avg_facebook &lt;- <span class="rc-fn">mean</span>(db$Facebook)
+new_facebook  &lt;- avg_facebook * <span class="rc-nm">1.10</span>
+new_data &lt;- data.frame(
+  Facebook  = new_facebook,
+  Instagram = <span class="rc-fn">mean</span>(db$Instagram),
+  Twitter   = <span class="rc-fn">mean</span>(db$Twitter)
+)
+<span class="rc-fn">predict</span>(model, newdata=new_data)</code></pre>
+      </div>
+
     </div>
   </div>
 </div>

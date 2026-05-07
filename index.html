@@ -1,1068 +1,771 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SNDR - Turn LinkedIn Into a Revenue Channel</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SNDR. - Outreach at the Speed of Thought</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-on-surface": "#eaf1ff",
+                    "background": "#f8f9ff",
+                    "surface-variant": "#d3e4fe",
+                    "inverse-primary": "#adc6ff",
+                    "primary-fixed": "#d8e2ff",
+                    "surface-container-highest": "#d3e4fe",
+                    "surface": "#f8f9ff",
+                    "outline-variant": "#c2c6d6",
+                    "on-secondary-fixed-variant": "#2f2ebe",
+                    "tertiary-container": "#008376",
+                    "surface-tint": "#005ac2",
+                    "primary": "#0058be",
+                    "tertiary": "#00685d",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed": "#07006c",
+                    "surface-dim": "#cbdbf5",
+                    "on-primary-container": "#fefcff",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed-variant": "#004395",
+                    "secondary": "#4648d4",
+                    "on-tertiary-fixed": "#00201c",
+                    "on-surface": "#0b1c30",
+                    "on-primary-fixed": "#001a42",
+                    "primary-fixed-dim": "#adc6ff",
+                    "tertiary-fixed": "#71f8e4",
+                    "secondary-fixed": "#e1e0ff",
+                    "on-primary": "#ffffff",
+                    "on-secondary-container": "#fffbff",
+                    "error-container": "#ffdad6",
+                    "on-background": "#0b1c30",
+                    "tertiary-fixed-dim": "#4fdbc8",
+                    "on-tertiary-container": "#f4fffb",
+                    "secondary-fixed-dim": "#c0c1ff",
+                    "outline": "#727785",
+                    "primary-container": "#2170e4",
+                    "surface-container-high": "#dce9ff",
+                    "inverse-surface": "#213145",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "on-surface-variant": "#424754",
+                    "surface-container-low": "#eff4ff",
+                    "on-error": "#ffffff",
+                    "secondary-container": "#6063ee",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-fixed-variant": "#005048",
+                    "surface-bright": "#f8f9ff",
+                    "surface-container": "#e5eeff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "8px",
+                    "lg": "12px",
+                    "xl": "20px",
+                    "2xl": "32px",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "base": "8px",
+                    "section-padding": "120px",
+                    "container-max": "1280px",
+                    "gutter": "24px",
+                    "margin-safe": "32px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["Manrope"],
+                    "button": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-md": ["Manrope"],
+                    "display-lg": ["Manrope"],
+                    "display-xl": ["Manrope"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-sm": ["24px", {"lineHeight": "1.4", "letterSpacing": "0em", "fontWeight": "600"}],
+                    "button": ["16px", {"lineHeight": "1", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "800"}],
+                    "display-xl": ["72px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "letterSpacing": "0.01em", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg:       #f5edd8;
-  --bg2:      #ede4cb;
-  --bg3:      #e4d9bb;
-  --accent:   #b54b2a;
-  --accent2:  #8b3820;
-  --text:     #1c1409;
-  --text2:    rgba(28,20,9,0.52);
-  --text3:    rgba(28,20,9,0.3);
-  --border:   rgba(28,20,9,0.1);
-  --border2:  rgba(28,20,9,0.18);
-  --pad:      clamp(20px, 5vw, 72px);
-  --h:        'Cormorant Garamond', Georgia, serif;
-  --b:        'DM Sans', system-ui, sans-serif;
-  --radius:   10px;
-}
-html { scroll-behavior: smooth; }
-body {
-  font-family: var(--b);
-  background: var(--bg);
-  color: var(--text);
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* ── VIEWPORT BORDER SVG ── */
-#vp-border {
-  position: fixed; inset: 0;
-  width: 100vw; height: 100vh;
-  pointer-events: none; z-index: 9998;
-  overflow: visible;
-}
-#vp-border rect {
-  fill: none;
-  stroke: url(#borderGrad);
-  stroke-width: 2.5;
-}
-
-/* ── NAV ── */
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
-  height: 60px;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 var(--pad);
-  border-bottom: 1px solid var(--border);
-  background: rgba(245,237,216,0.88);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  transition: background 0.3s;
-}
-.nav-brand { display: flex; align-items: center; gap: 9px; text-decoration: none; }
-.nav-brand-mark {
-  width: 30px; height: 30px; border-radius: 50%;
-  background: var(--accent);
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--h); font-size: 13px; font-weight: 700;
-  color: #fff; letter-spacing: -0.5px;
-}
-.nav-brand-name {
-  font-family: var(--h); font-size: 20px; font-weight: 700;
-  color: var(--text); letter-spacing: -0.5px;
-}
-.nav-links { display: flex; gap: 32px; list-style: none; }
-.nav-links a {
-  font-family: var(--b); font-size: 13.5px; font-weight: 500;
-  color: var(--text2); text-decoration: none; transition: color 0.15s;
-}
-.nav-links a:hover { color: var(--text); }
-.nav-right { display: flex; align-items: center; gap: 14px; }
-.nav-signin {
-  font-family: var(--b); font-size: 13px; font-weight: 500;
-  color: var(--text2); text-decoration: none; transition: color 0.15s;
-}
-.nav-signin:hover { color: var(--text); }
-.btn-accent {
-  font-family: var(--b); font-size: 13px; font-weight: 600;
-  color: #fff; background: var(--accent);
-  border: none; padding: 8px 20px;
-  border-radius: 6px; text-decoration: none;
-  display: inline-flex; align-items: center; gap: 6px;
-  transition: background 0.15s, transform 0.1s;
-  cursor: pointer;
-}
-.btn-accent:hover { background: var(--accent2); transform: translateY(-1px); }
-.btn-ghost {
-  font-family: var(--b); font-size: 13px; font-weight: 500;
-  color: var(--text); background: transparent;
-  border: 1px solid var(--border2); padding: 8px 18px;
-  border-radius: 6px; text-decoration: none;
-  display: inline-flex; align-items: center; gap: 6px;
-  transition: background 0.15s, border-color 0.15s;
-}
-.btn-ghost:hover { background: rgba(28,20,9,0.05); }
-
-/* ── HERO ── */
-.hero {
-  min-height: 100vh;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  text-align: center;
-  padding: 120px var(--pad) 80px;
-  position: relative;
-}
-.hero-badge {
-  display: inline-flex; align-items: center; gap: 7px;
-  background: rgba(181,75,42,0.08);
-  border: 1px solid rgba(181,75,42,0.2);
-  border-radius: 100px; padding: 5px 14px 5px 8px;
-  font-family: var(--b); font-size: 12px; font-weight: 500;
-  color: var(--accent); margin-bottom: 32px;
-}
-.hero-badge-dot {
-  width: 18px; height: 18px; background: rgba(181,75,42,0.12);
-  border-radius: 50%; display: flex; align-items: center; justify-content: center;
-}
-.hero-badge-dot::after {
-  content: ''; width: 7px; height: 7px;
-  background: var(--accent); border-radius: 50%;
-  animation: pulse 2.2s infinite;
-}
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.45; transform: scale(0.8); }
-}
-.hero h1 {
-  font-family: var(--h);
-  font-size: clamp(42px, 6.5vw, 82px);
-  font-weight: 600; line-height: 1.08;
-  letter-spacing: -1px;
-  color: var(--text);
-  max-width: 860px; margin-bottom: 24px;
-}
-.hero h1 em {
-  font-style: italic; font-weight: 700;
-  color: var(--accent);
-  position: relative; display: inline-block;
-}
-.hero h1 .circled {
-  position: relative; display: inline-block;
-}
-.hero h1 .circled svg {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -52%);
-  width: calc(100% + 40px);
-  height: calc(100% + 30px);
-  pointer-events: none; overflow: visible;
-}
-.hero h1 .circled svg ellipse {
-  fill: none;
-  stroke: var(--text);
-  stroke-width: 2.2;
-  stroke-dasharray: 640;
-  stroke-dashoffset: 640;
-  animation: drawCircle 1.1s 0.6s cubic-bezier(0.4,0,0.2,1) forwards;
-}
-@keyframes drawCircle {
-  to { stroke-dashoffset: 0; }
-}
-.hero-sub {
-  font-family: var(--b);
-  font-size: clamp(15px, 1.6vw, 17px);
-  color: var(--text2); max-width: 500px;
-  line-height: 1.75; margin-bottom: 36px;
-}
-.hero-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: center; margin-bottom: 18px; }
-.btn-accent-lg {
-  font-family: var(--b); font-size: 14.5px; font-weight: 600;
-  color: #fff; background: var(--accent);
-  border: none; padding: 14px 30px;
-  border-radius: 7px; text-decoration: none;
-  display: inline-flex; align-items: center; gap: 8px;
-  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
-  cursor: pointer;
-}
-.btn-accent-lg:hover { background: var(--accent2); transform: translateY(-1px); box-shadow: 0 6px 24px rgba(181,75,42,0.25); }
-.btn-ghost-lg {
-  font-family: var(--b); font-size: 14px; font-weight: 500;
-  color: var(--text); background: transparent;
-  border: 1px solid var(--border2); padding: 13px 28px;
-  border-radius: 7px; text-decoration: none;
-  display: inline-flex; align-items: center; gap: 8px;
-  transition: background 0.15s, border-color 0.15s;
-}
-.btn-ghost-lg:hover { background: rgba(28,20,9,0.04); }
-.hero-caption { font-family: var(--b); font-size: 12.5px; color: var(--text3); display: flex; align-items: center; gap: 18px; flex-wrap: wrap; justify-content: center; }
-.hero-caption span { display: flex; align-items: center; gap: 5px; }
-
-/* ── STATS ── */
-.stats-row {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  max-width: 900px; margin: 60px auto 0;
-  border: 1px solid var(--border); border-radius: var(--radius);
-  overflow: hidden; width: 100%;
-  background: rgba(255,255,255,0.4);
-}
-.stat-cell {
-  padding: 26px 20px; border-right: 1px solid var(--border);
-  transition: background 0.2s;
-}
-.stat-cell:last-child { border-right: none; }
-.stat-cell:hover { background: rgba(181,75,42,0.04); }
-.stat-val {
-  font-family: var(--h); font-size: clamp(28px, 3.5vw, 42px);
-  font-weight: 700; color: var(--accent);
-  letter-spacing: -1px; line-height: 1;
-  margin-bottom: 6px; display: block;
-}
-.stat-lbl { font-size: 12px; color: var(--text2); line-height: 1.45; }
-
-/* ── LOGO STRIP ── */
-.logo-strip {
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  padding: 0; overflow: hidden; position: relative;
-  background: rgba(237,228,203,0.6);
-}
-.logo-strip::before, .logo-strip::after {
-  content: ''; position: absolute; top: 0; bottom: 0;
-  width: 100px; z-index: 2; pointer-events: none;
-}
-.logo-strip::before { left: 0; background: linear-gradient(90deg, var(--bg2), transparent); }
-.logo-strip::after  { right: 0; background: linear-gradient(-90deg, var(--bg2), transparent); }
-.logo-strip-label {
-  font-family: var(--b); font-size: 11px; font-weight: 500;
-  color: var(--text3); letter-spacing: 2px; text-transform: uppercase;
-  text-align: center; padding: 18px var(--pad) 14px;
-}
-.logo-track {
-  display: inline-flex; align-items: center; white-space: nowrap;
-  animation: scroll 45s linear infinite; will-change: transform;
-  padding-bottom: 18px;
-}
-@keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-.logo-item {
-  display: inline-flex; align-items: center; gap: 9px;
-  padding: 0 28px; border-right: 1px solid var(--border); flex-shrink: 0;
-}
-.logo-item img {
-  height: 28px; width: auto; object-fit: contain;
-  filter: grayscale(1) brightness(0) opacity(0.28);
-  transition: filter 0.2s;
-}
-.logo-item:hover img { filter: grayscale(1) brightness(0) opacity(0.55); }
-.logo-lbl { font-family: var(--b); font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: 0.5px; text-transform: uppercase; }
-
-/* ── TICKER ── */
-.ticker {
-  overflow: hidden; padding: 10px 0;
-  border-bottom: 1px solid var(--border);
-  background: rgba(237,228,203,0.5);
-}
-.ticker-track {
-  display: inline-flex; white-space: nowrap;
-  animation: scroll 30s linear infinite;
-}
-.ticker-item {
-  font-family: var(--b); font-size: 11px; font-weight: 500;
-  letter-spacing: 2.5px; text-transform: uppercase;
-  color: var(--accent); opacity: 0.6;
-  padding: 0 24px; border-right: 1px solid rgba(181,75,42,0.15);
-  display: inline-flex; align-items: center; gap: 8px;
-}
-.ticker-item svg { width: 8px; height: 8px; opacity: 0.7; }
-
-/* ── SECTION ── */
-.section { padding: clamp(64px, 9vh, 110px) var(--pad); }
-.section-inner { max-width: 1160px; margin: 0 auto; }
-.divider { border: none; border-top: 1px solid var(--border); }
-.eyebrow {
-  font-family: var(--b); font-size: 11px; font-weight: 600;
-  letter-spacing: 2.5px; text-transform: uppercase;
-  color: var(--accent); display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
-}
-.eyebrow::before {
-  content: ''; width: 16px; height: 1.5px;
-  background: var(--accent); border-radius: 2px; display: block;
-}
-.section-title {
-  font-family: var(--h);
-  font-size: clamp(30px, 4vw, 54px); font-weight: 600;
-  line-height: 1.1; letter-spacing: -0.5px;
-  max-width: 600px; margin-bottom: 52px;
-}
-.section-title em { font-style: italic; color: var(--accent); font-weight: 700; }
-
-/* ── STEPS ── */
-.steps-grid {
-  display: grid; grid-template-columns: repeat(2, 1fr);
-  gap: 1px; background: var(--border);
-  border: 1px solid var(--border); border-radius: var(--radius);
-  overflow: hidden; max-width: 920px;
-}
-.step {
-  background: var(--bg); padding: 38px 36px;
-  transition: background 0.2s; position: relative;
-}
-.step:hover { background: var(--bg2); }
-.step-icon {
-  width: 40px; height: 40px; border-radius: 10px;
-  background: rgba(181,75,42,0.07); border: 1px solid rgba(181,75,42,0.14);
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 20px;
-}
-.step-icon svg { width: 18px; height: 18px; stroke: var(--accent); }
-.step-num {
-  position: absolute; top: 22px; right: 26px;
-  font-family: var(--h); font-size: 13px; font-weight: 600;
-  color: var(--text3); letter-spacing: 0.5px; font-style: italic;
-}
-.step h3 {
-  font-family: var(--h); font-size: 20px; font-weight: 600;
-  margin-bottom: 10px; letter-spacing: -0.2px;
-}
-.step p { font-size: 13.5px; color: var(--text2); line-height: 1.8; }
-
-/* ── BENTO ── */
-.bento {
-  display: grid;
-  grid-template-columns: 1.45fr 1fr 1fr;
-  gap: 1px; background: var(--border);
-  border: 1px solid var(--border); border-radius: var(--radius);
-  overflow: hidden; max-width: 1160px;
-}
-.bc {
-  background: var(--bg); padding: 32px 36px;
-  transition: background 0.2s; position: relative;
-}
-.bc:hover { background: var(--bg2); }
-.bc-span { grid-column: 1; grid-row: 1 / 3; }
-.bc-icon {
-  width: 36px; height: 36px; border-radius: 9px;
-  background: rgba(181,75,42,0.07); border: 1px solid rgba(181,75,42,0.14);
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 16px;
-}
-.bc-icon svg { width: 16px; height: 16px; stroke: var(--accent); }
-.bc-label {
-  font-family: var(--b); font-size: 11px; font-weight: 600;
-  letter-spacing: 2px; text-transform: uppercase;
-  color: var(--accent); opacity: 0.8; margin-bottom: 10px; display: block;
-}
-.bc h3 { font-family: var(--h); font-size: 20px; font-weight: 600; margin-bottom: 10px; }
-.bc p { font-size: 13px; color: var(--text2); line-height: 1.8; }
-.bc-big {
-  font-family: var(--h);
-  font-size: clamp(52px, 6vw, 70px); font-weight: 700;
-  color: var(--accent); line-height: 1;
-  margin: 12px 0 10px; letter-spacing: -2px; font-style: italic;
-}
-
-/* PROSPECT TABLE */
-.p-table { margin-top: 20px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-.p-head {
-  display: flex; justify-content: space-between;
-  padding: 8px 14px; background: rgba(28,20,9,0.03);
-  border-bottom: 1px solid var(--border);
-  font-size: 10px; font-weight: 600; letter-spacing: 1.5px;
-  text-transform: uppercase; color: var(--text3);
-}
-.p-row {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 14px; border-bottom: 1px solid rgba(28,20,9,0.05);
-  transition: background 0.15s;
-}
-.p-row:last-child { border-bottom: none; }
-.p-row:hover { background: rgba(181,75,42,0.03); }
-.p-name { font-size: 12.5px; font-weight: 600; }
-.p-co { font-size: 11px; color: var(--text2); margin-top: 1px; }
-.chip {
-  font-size: 10px; font-weight: 600; letter-spacing: 0.5px;
-  padding: 3px 9px; border-radius: 100px; white-space: nowrap;
-}
-.chip-g { background: var(--accent); color: #fff; }
-.chip-o { border: 1px solid rgba(181,75,42,0.35); color: var(--accent); }
-.chip-d { border: 1px solid var(--border2); color: var(--text2); }
-
-/* ── TESTIMONIALS ── */
-.testi-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 1px; background: var(--border);
-  border: 1px solid var(--border); border-radius: var(--radius);
-  overflow: hidden;
-}
-.testi {
-  background: var(--bg); padding: 28px 30px;
-  display: flex; flex-direction: column; transition: background 0.2s;
-}
-.testi:hover { background: var(--bg2); }
-.stars { display: flex; gap: 3px; margin-bottom: 16px; }
-.stars svg { width: 14px; height: 14px; fill: var(--accent); stroke: none; }
-.testi-body {
-  font-family: var(--b); font-size: 13.5px; color: var(--text2);
-  line-height: 1.8; margin-bottom: 24px; flex: 1;
-}
-.testi-body strong { color: var(--text); font-weight: 600; }
-.testi-foot {
-  display: flex; align-items: center; gap: 12px;
-  padding-top: 20px; border-top: 1px solid var(--border);
-}
-.testi-av {
-  width: 36px; height: 36px; border-radius: 50%;
-  background: rgba(181,75,42,0.12); border: 1px solid rgba(181,75,42,0.2);
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--h); font-size: 13px; font-weight: 700;
-  color: var(--accent); flex-shrink: 0;
-}
-.testi-name { font-family: var(--h); font-size: 15px; font-weight: 600; }
-.testi-title { font-size: 11.5px; color: var(--text2); margin-top: 1px; }
-
-/* ── PRICING ── */
-.pricing-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 1px; background: var(--border);
-  border: 1px solid var(--border); border-radius: var(--radius);
-  overflow: hidden; max-width: 960px;
-}
-.plan { background: var(--bg); padding: 36px; position: relative; transition: background 0.2s; }
-.plan:hover { background: var(--bg2); }
-.plan.featured {
-  background: var(--bg2);
-  outline: 1px solid rgba(181,75,42,0.3);
-  outline-offset: -1px;
-}
-.plan-tag {
-  display: inline-flex; align-items: center;
-  background: var(--accent); color: #fff;
-  font-family: var(--b); font-size: 10px; font-weight: 700;
-  letter-spacing: 1px; text-transform: uppercase;
-  padding: 3px 10px; border-radius: 100px; margin-bottom: 16px;
-}
-.plan-name { font-family: var(--h); font-size: 13px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text2); margin-bottom: 14px; }
-.plan-price { font-family: var(--h); font-size: clamp(38px, 4vw, 52px); font-weight: 700; color: var(--text); line-height: 1; margin-bottom: 3px; letter-spacing: -2px; }
-.plan-price .cur { font-size: 22px; vertical-align: super; letter-spacing: 0; font-weight: 500; color: var(--text2); }
-.plan-period { font-size: 13px; color: var(--text2); margin-bottom: 18px; }
-.plan-desc { font-size: 13px; color: var(--text2); line-height: 1.65; margin-bottom: 24px; min-height: 44px; }
-.plan-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
-.plan-features li { font-size: 13px; color: var(--text2); display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; }
-.plan-features li svg { width: 15px; height: 15px; stroke: var(--accent); flex-shrink: 0; margin-top: 1px; }
-.btn-plan-p {
-  font-family: var(--b); font-size: 13.5px; font-weight: 600;
-  color: #fff; background: var(--accent); border: none;
-  padding: 13px; border-radius: 7px;
-  display: block; text-align: center; width: 100%;
-  text-decoration: none; transition: background 0.15s, box-shadow 0.15s; cursor: pointer;
-}
-.btn-plan-p:hover { background: var(--accent2); box-shadow: 0 4px 20px rgba(181,75,42,0.2); }
-.btn-plan-s {
-  font-family: var(--b); font-size: 13.5px; font-weight: 500;
-  color: var(--text); background: transparent;
-  border: 1px solid var(--border2); padding: 12px;
-  border-radius: 7px; display: block; text-align: center; width: 100%;
-  text-decoration: none; transition: background 0.15s, border-color 0.15s; cursor: pointer;
-}
-.btn-plan-s:hover { background: rgba(28,20,9,0.04); }
-
-/* ── CTA ── */
-.cta-section {
-  border-top: 1px solid var(--border);
-  background: rgba(237,228,203,0.5);
-}
-.cta-inner {
-  max-width: 680px; margin: 0 auto;
-  padding: clamp(72px, 11vh, 130px) var(--pad);
-  text-align: center;
-}
-.cta-inner h2 {
-  font-family: var(--h); font-size: clamp(34px, 5vw, 64px);
-  font-weight: 600; line-height: 1.1; margin-bottom: 16px;
-  letter-spacing: -1px; color: var(--text);
-}
-.cta-inner h2 em { font-style: italic; font-weight: 700; color: var(--accent); }
-.cta-inner p { font-size: 15px; color: var(--text2); max-width: 440px; margin: 0 auto 36px; line-height: 1.75; }
-.cta-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 16px; }
-.cta-note { font-size: 12px; color: var(--text3); }
-
-/* ── FOOTER ── */
-footer {
-  border-top: 1px solid var(--border);
-  padding: 24px var(--pad);
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 14px;
-}
-.f-brand { display: flex; align-items: center; gap: 9px; text-decoration: none; }
-.f-brand-mark {
-  width: 24px; height: 24px; border-radius: 50%;
-  background: var(--accent);
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--h); font-size: 11px; font-weight: 700; color: #fff;
-}
-.f-brand-name { font-family: var(--h); font-size: 17px; font-weight: 700; color: var(--text); }
-.f-links { display: flex; gap: 20px; list-style: none; flex-wrap: wrap; }
-.f-links a { font-size: 12.5px; color: var(--text2); text-decoration: none; transition: color 0.15s; }
-.f-links a:hover { color: var(--text); }
-.f-copy { font-size: 12px; color: var(--text3); }
-
-/* ── R CODE SECTION ── */
-.rcode-grid { display: flex; flex-direction: column; gap: 20px; max-width: 960px; }
-.rcode-box { border: 1px solid var(--border2); border-radius: var(--radius); overflow: hidden; transition: border-color 0.2s; }
-.rcode-box:hover { border-color: rgba(181,75,42,0.3); }
-.rcode-header {
-  display: flex; align-items: center; gap: 10px;
-  padding: 12px 18px; background: var(--bg3);
-  border-bottom: 1px solid var(--border);
-}
-.rcode-badge {
-  font-family: var(--b); font-size: 10px; font-weight: 700;
-  padding: 3px 10px; border-radius: 4px; letter-spacing: 0.5px; text-transform: uppercase;
-}
-.rcode-b1 { background: rgba(99,135,230,0.14); color: #5574c8; }
-.rcode-b2 { background: rgba(52,168,83,0.12); color: #2e7d50; }
-.rcode-b3 { background: rgba(181,120,0,0.12); color: #8a5c00; }
-.rcode-title { font-family: var(--h); font-size: 14px; font-weight: 600; color: var(--text); }
-.rcode-sub { font-size: 11px; color: var(--text3); margin-left: auto; font-family: 'Courier New', monospace; }
-.rcode-box pre {
-  margin: 0; padding: 18px; overflow-x: auto;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 12px; line-height: 1.75; color: #c9d1d9; background: #0d1117;
-}
-.rc-kw { color: #ff7b72; }
-.rc-fn { color: #79c0ff; }
-.rc-cm { color: #8b949e; font-style: italic; }
-.rc-st { color: #a5d6ff; }
-.rc-nm { color: #f8c555; }
-
-/* ── REVEAL ANIMATIONS ── */
-.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.55s ease, transform 0.55s ease; }
-.reveal.in { opacity: 1; transform: translateY(0); }
-
-/* ── RESPONSIVE ── */
-@media (max-width: 1024px) {
-  .bento { grid-template-columns: 1fr 1fr; }
-  .bc-span { grid-column: 1 / 3; grid-row: auto; }
-}
-@media (max-width: 768px) {
-  .nav-links, .nav-signin { display: none; }
-  .stats-row { grid-template-columns: repeat(2, 1fr); }
-  .steps-grid { grid-template-columns: 1fr; }
-  .bento { grid-template-columns: 1fr; }
-  .bc-span { grid-column: 1; }
-  .testi-grid { grid-template-columns: 1fr; }
-  .pricing-grid { grid-template-columns: 1fr; }
-  footer { flex-direction: column; align-items: flex-start; }
-  .cta-actions { flex-direction: column; align-items: stretch; }
-  .cta-actions a { text-align: center; }
-}
-@media (max-width: 480px) {
-  .hero-actions { flex-direction: column; align-items: stretch; }
-  .hero-actions a { text-align: center; justify-content: center; }
-}
-</style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        #cursor-hand {
+            transition: transform 0.15s cubic-bezier(0.33, 1, 0.68, 1), top 0.15s cubic-bezier(0.33, 1, 0.68, 1), left 0.15s cubic-bezier(0.33, 1, 0.68, 1);
+            pointer-events: none;
+            z-index: 50;
+        }
+        #mail-btn-interactive {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, opacity 0.4s ease;
+        }
+        #mail-btn-interactive.clicked {
+            transform: scale(0.92);
+        }
+        #paper-plane {
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+        }
+        #paper-plane.launched {
+            opacity: 1;
+            transform: translate(400px, -400px) rotate(45deg) scale(0.4);
+        }
+        @keyframes rotate-center {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-rotate-slow {
+            animation: rotate-center 12s linear infinite;
+        }
+        .animate-rotate-fast {
+            animation: rotate-center 6s linear infinite reverse;
+        }
+        .lead-node, .sent-node {
+            transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease;
+        }
+        .premium-shadow {
+            box-shadow: 0 10px 30px -10px rgba(0, 88, 190, 0.1), 0 4px 10px -5px rgba(0, 0, 0, 0.05);
+        }
+        .glass-premium {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        .premium-card {
+            background: white;
+            border: 1px solid rgba(0, 88, 190, 0.08);
+            box-shadow: 0 20px 40px -10px rgba(0, 88, 190, 0.05);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .premium-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 88, 190, 0.2);
+            box-shadow: 0 30px 60px -15px rgba(0, 88, 190, 0.1);
+        }
+        .pricing-card-shadow {
+            box-shadow: 0 40px 100px -20px rgba(0, 88, 190, 0.12);
+        }
+        .bento-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 2.5rem;
+            border: 1px solid rgba(194, 198, 214, 0.3);
+            transition: all 0.5s;
+            background: white;
+        }
+        .bento-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom right, transparent, transparent);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .bento-item:hover::before {
+            opacity: 0.1;
+        }
+        .glass-ui {
+            background: rgba(255,255,255,0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.4);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        }
+    </style>
 </head>
-<body>
-
-<!-- VIEWPORT BORDER -->
-<svg id="vp-border" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%"   stop-color="#7c3cff"/>
-      <stop offset="50%"  stop-color="#a855f7"/>
-      <stop offset="100%" stop-color="#6366f1"/>
-    </linearGradient>
-  </defs>
-  <rect id="vp-rect" x="12" y="12" rx="4" ry="4"/>
-</svg>
-
-<!-- NAV -->
-<nav id="nav">
-  <a href="#" class="nav-brand">
-    <div class="nav-brand-mark">Sn</div>
-    <span class="nav-brand-name">SNDR</span>
-  </a>
-  <ul class="nav-links">
-    <li><a href="#how">How it works</a></li>
-    <li><a href="#features">Features</a></li>
-    <li><a href="#analysis">Analysis</a></li>
-    <li><a href="#pricing">Pricing</a></li>
-  </ul>
-  <div class="nav-right">
-    <a href="#" class="nav-signin">Sign in</a>
-    <a href="#pricing" class="btn-accent">Get started free</a>
-  </div>
+<body class="bg-background text-on-background font-body-md overflow-x-hidden selection:bg-primary/10 selection:text-primary">
+<nav class="fixed top-0 left-0 w-full z-[100] flex justify-between items-center px-margin-safe py-6 bg-white/70 backdrop-blur-xl border-b border-outline-variant/20">
+<div class="flex items-center gap-2">
+<span class="text-headline-sm font-headline-sm font-extrabold text-primary tracking-tighter">SNDR<span class="text-secondary">.</span></span>
+</div>
+<div class="hidden md:flex items-center gap-10">
+<a class="text-on-surface font-semibold hover:text-primary transition-colors" href="#">Features</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#conversion-steps">Solutions</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#pricing">Pricing</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="bg-primary text-white px-8 py-3 rounded-full font-button text-button shadow-[0_8px_20px_-4px_rgba(0,88,190,0.4)] hover:shadow-[0_12px_24px_-4px_rgba(0,88,190,0.5)] transition-all active:scale-95 duration-200">
+            Add to Browser
+        </button>
+</div>
 </nav>
-
-<!-- HERO -->
-<section class="hero" id="top">
-  <div class="hero-badge">
-    <div class="hero-badge-dot"></div>
-    Chrome Extension &mdash; Available Now
-  </div>
-  <h1>Turn LinkedIn into<br><span class="circled">a <em>revenue</em> channel<svg viewBox="0 0 320 80" xmlns="http://www.w3.org/2000/svg"><ellipse cx="160" cy="40" rx="152" ry="33"/></svg></span></h1>
-  <p class="hero-sub">Find prospects, discover verified emails, and send personalized sequences without leaving your browser. Built for founders and sales teams.</p>
-  <div class="hero-actions">
-    <a href="https://chrome.google.com/webstore" class="btn-accent-lg">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Add to Chrome &mdash; Free
-    </a>
-    <a href="#how" class="btn-ghost-lg">
-      See how it works
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-    </a>
-  </div>
-  <p class="hero-caption">
-    <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>No credit card required</span>
-    <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>50 free emails per month</span>
-    <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Setup in 4 minutes</span>
-  </p>
-  <div class="stats-row reveal">
-    <div class="stat-cell"><span class="stat-val">68%</span><span class="stat-lbl">Average open rate vs 21% industry</span></div>
-    <div class="stat-cell"><span class="stat-val">14%</span><span class="stat-lbl">Reply rate on first-touch sequences</span></div>
-    <div class="stat-cell"><span class="stat-val">3.2x</span><span class="stat-lbl">More meetings booked per week</span></div>
-    <div class="stat-cell"><span class="stat-val">4 min</span><span class="stat-lbl">From LinkedIn search to first email</span></div>
-  </div>
+<section class="relative pt-52 pb-32 px-margin-safe container mx-auto flex flex-col items-center text-center">
+<div class="max-w-5xl z-10 reveal active">
+<h1 class="font-display-xl text-display-xl text-on-background mb-8 tracking-tight">Outreach at the <span class="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Speed of Thought.</span></h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-16 max-w-2xl mx-auto leading-relaxed">
+            Automate bulk mail, scrape leads, and scale your growth with the most powerful outreach extension ever built for sales professionals.
+        </p>
+<div class="relative w-full max-w-2xl mx-auto h-72 mb-16 group">
+<div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 glass-premium p-12 rounded-2xl shadow-2xl flex items-center gap-8 border border-outline-variant/30 scale-125" id="mail-btn-interactive">
+<div class="bg-primary shadow-lg shadow-primary/20 w-16 h-16 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-4xl">mail</span>
+</div>
+<div class="text-left">
+<p class="font-bold text-on-surface text-xl">Start Campaign</p>
+<p class="text-sm text-on-surface-variant">Ready for 1,240 verified prospects</p>
+</div>
+</div>
+<span class="material-symbols-outlined absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-primary text-7xl pointer-events-none" id="paper-plane">send</span>
+<div class="absolute left-[85%] top-[85%] scale-150 drop-shadow-2xl" id="cursor-hand">
+<span class="material-symbols-outlined text-on-surface text-7xl rotate-[-15deg]">front_hand</span>
+</div>
+<div class="absolute inset-0 flex items-center justify-center opacity-0 transition-all duration-700 pointer-events-none scale-150" id="completion-ui">
+<div class="bg-green-50 px-8 py-4 rounded-full border border-green-200 flex items-center gap-3 shadow-xl">
+<span class="material-symbols-outlined text-green-600 text-3xl font-bold">check_circle</span>
+<span class="text-green-800 font-bold text-lg">100% Delivered</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row gap-6 justify-center">
+<button class="bg-primary text-white px-12 py-5 rounded-full font-button text-button shadow-[0_12px_28px_-6px_rgba(0,88,190,0.4)] hover:scale-105 transition-all flex items-center gap-3"><span class="material-symbols-outlined">rocket_launch</span> Add to Chrome - It's Free</button>
+<button class="bg-white border-2 border-outline-variant/50 text-on-surface px-12 py-5 rounded-full font-button text-button hover:bg-surface-container-low transition-all">
+                View Live Demo
+            </button>
+</div>
+</div>
 </section>
-
-<!-- LOGO STRIP -->
-<div class="logo-strip">
-  <p class="logo-strip-label">Trusted by students and professionals from</p>
-  <div class="logo-track">
-    <span class="logo-item"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f3/IIT_Delhi_logo.svg/120px-IIT_Delhi_logo.svg.png" alt="IIT Delhi"><span class="logo-lbl">IIT Delhi</span></span>
-    <span class="logo-item"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/6/61/IIT_Bombay_Logo.svg/120px-IIT_Bombay_Logo.svg.png" alt="IIT Bombay"><span class="logo-lbl">IIT Bombay</span></span>
-    <span class="logo-item"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/2/21/SRCC_logo.png/120px-SRCC_logo.png" alt="SRCC"><span class="logo-lbl">SRCC</span></span>
-    <span class="logo-item"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/d/d3/BITS_Pilani-Logo.svg/120px-BITS_Pilani-Logo.svg.png" alt="BITS Pilani"><span class="logo-lbl">BITS Pilani</span></span>
-    <span class="logo-item"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/1/10/IIM_Ahmedabad_Logo.svg/120px-IIM_Ahmedabad_Logo.svg.png" alt="IIM-A"><span class="logo-lbl">IIM Ahmedabad</span></span>
-    <span class="logo-item"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/42/IIM_Bangalore_Logo.svg/120px-IIM_Bangalore_Logo.svg.png" alt="IIM-B"><span class="logo-lbl">IIM Bangalore</span></span>
-    <span class="logo-item"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c6/Indian_Institute_of_Management_Calcutta_Logo.svg/120px-Indian_Institute_of_Management_Calcutta_Logo.svg.png" alt="IIM-C"><span class="logo-lbl">IIM Calcutta</span></span>
-    <span class="logo-item"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/8/8d/IIT_Kanpur_Logo.svg/120px-IIT_Kanpur_Logo.svg.png" alt="IIT Kanpur"><span class="logo-lbl">IIT Kanpur</span></span>
-    <span class="logo-item"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/6/69/IIT_Madras_Logo.svg/120px-IIT_Madras_Logo.svg.png" alt="IIT Madras"><span class="logo-lbl">IIT Madras</span></span>
-    <span class="logo-item"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/4c/Hansraj_College_logo.png/120px-Hansraj_College_logo.png" alt="Hansraj"><span class="logo-lbl">Hansraj College</span></span>
-    <span class="logo-item"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f3/IIT_Delhi_logo.svg/120px-IIT_Delhi_logo.svg.png" alt="IIT Delhi"><span class="logo-lbl">IIT Delhi</span></span>
-    <span class="logo-item"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/6/61/IIT_Bombay_Logo.svg/120px-IIT_Bombay_Logo.svg.png" alt="IIT Bombay"><span class="logo-lbl">IIT Bombay</span></span>
-    <span class="logo-item"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/2/21/SRCC_logo.png/120px-SRCC_logo.png" alt="SRCC"><span class="logo-lbl">SRCC</span></span>
-    <span class="logo-item"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/d/d3/BITS_Pilani-Logo.svg/120px-BITS_Pilani-Logo.svg.png" alt="BITS Pilani"><span class="logo-lbl">BITS Pilani</span></span>
-    <span class="logo-item"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/1/10/IIM_Ahmedabad_Logo.svg/120px-IIM_Ahmedabad_Logo.svg.png" alt="IIM-A"><span class="logo-lbl">IIM Ahmedabad</span></span>
-    <span class="logo-item"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/42/IIM_Bangalore_Logo.svg/120px-IIM_Bangalore_Logo.svg.png" alt="IIM-B"><span class="logo-lbl">IIM Bangalore</span></span>
-    <span class="logo-item"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c6/Indian_Institute_of_Management_Calcutta_Logo.svg/120px-Indian_Institute_of_Management_Calcutta_Logo.svg.png" alt="IIM-C"><span class="logo-lbl">IIM Calcutta</span></span>
-    <span class="logo-item"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/8/8d/IIT_Kanpur_Logo.svg/120px-IIT_Kanpur_Logo.svg.png" alt="IIT Kanpur"><span class="logo-lbl">IIT Kanpur</span></span>
-    <span class="logo-item"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/6/69/IIT_Madras_Logo.svg/120px-IIT_Madras_Logo.svg.png" alt="IIT Madras"><span class="logo-lbl">IIT Madras</span></span>
-    <span class="logo-item"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/4c/Hansraj_College_logo.png/120px-Hansraj_College_logo.png" alt="Hansraj"><span class="logo-lbl">Hansraj College</span></span>
-  </div>
+<section class="relative min-h-[100vh] flex flex-col items-center justify-center bg-white overflow-hidden py-section-padding" id="engine-animation-section">
+<div class="text-center mb-24 relative z-20 reveal">
+<h2 class="font-display-lg text-headline-md md:text-display-lg mb-6">The SNDR. Engine</h2>
+<p class="text-on-surface-variant max-w-lg mx-auto text-lg">Witness the transformation of raw prospecting data into high-intent conversions.</p>
 </div>
-
-<!-- TICKER -->
-<div class="ticker">
-  <div class="ticker-track">
-    <span class="ticker-item"><svg viewBox="0 0 10 10" fill="var(--accent)"><circle cx="5" cy="5" r="3"/></svg>LinkedIn Prospecting</span>
-    <span class="ticker-item"><svg viewBox="0 0 10 10" fill="var(--accent)"><circle cx="5" cy="5" r="3"/></svg>Email Verification</span>
-    <span class="ticker-item"><svg viewBox="0 0 10 10" fill="var(--accent)"><circle cx="5" cy="5" r="3"/></svg>Personalized Sequences</span>
-    <span class="ticker-item"><svg viewBox="0 0 10 10" fill="var(--accent)"><circle cx="5" cy="5" r="3"/></svg>Smart Pause on Reply</span>
-    <span class="ticker-item"><svg viewBox="0 0 10 10" fill="var(--accent)"><circle cx="5" cy="5" r="3"/></svg>Real-time Analytics</span>
-    <span class="ticker-item"><svg viewBox="0 0 10 10" fill="var(--accent)"><circle cx="5" cy="5" r="3"/></svg>Zero Tab Switching</span>
-    <span class="ticker-item"><svg viewBox="0 0 10 10" fill="var(--accent)"><circle cx="5" cy="5" r="3"/></svg>Chrome Extension</span>
-    <span class="ticker-item"><svg viewBox="0 0 10 10" fill="var(--accent)"><circle cx="5" cy="5" r="3"/></svg>ICP-Based Filtering</span>
-    <span class="ticker-item"><svg viewBox="0 0 10 10" fill="var(--accent)"><circle cx="5" cy="5" r="3"/></svg>LinkedIn Prospecting</span>
-    <span class="ticker-item"><svg viewBox="0 0 10 10" fill="var(--accent)"><circle cx="5" cy="5" r="3"/></svg>Email Verification</span>
-    <span class="ticker-item"><svg viewBox="0 0 10 10" fill="var(--accent)"><circle cx="5" cy="5" r="3"/></svg>Personalized Sequences</span>
-    <span class="ticker-item"><svg viewBox="0 0 10 10" fill="var(--accent)"><circle cx="5" cy="5" r="3"/></svg>Smart Pause on Reply</span>
-    <span class="ticker-item"><svg viewBox="0 0 10 10" fill="var(--accent)"><circle cx="5" cy="5" r="3"/></svg>Real-time Analytics</span>
-    <span class="ticker-item"><svg viewBox="0 0 10 10" fill="var(--accent)"><circle cx="5" cy="5" r="3"/></svg>Zero Tab Switching</span>
-    <span class="ticker-item"><svg viewBox="0 0 10 10" fill="var(--accent)"><circle cx="5" cy="5" r="3"/></svg>Chrome Extension</span>
-    <span class="ticker-item"><svg viewBox="0 0 10 10" fill="var(--accent)"><circle cx="5" cy="5" r="3"/></svg>ICP-Based Filtering</span>
-  </div>
+<div class="relative w-full max-w-7xl h-[700px] flex items-center justify-center">
+<div class="absolute left-0 top-0 bottom-0 w-1/3 flex flex-col justify-around px-8" id="leads-container">
+<div class="lead-node flex items-center gap-4 bg-white p-5 rounded-xl premium-shadow border border-outline-variant/20 transform -translate-x-[250%] opacity-0">
+<div class="w-12 h-12 bg-surface-container-high rounded-full flex items-center justify-center text-primary text-sm font-black">ID</div>
+<div><p class="text-sm font-bold">LinkedIn Extractor</p><p class="text-xs text-on-surface-variant">Gathering profile context</p></div>
 </div>
-
-<!-- HOW IT WORKS -->
-<hr class="divider">
-<div class="section" id="how">
-  <div class="section-inner">
-    <div class="eyebrow">How it works</div>
-    <h2 class="section-title">From LinkedIn profile to <em>booked meeting</em> in minutes.</h2>
-    <div class="steps-grid">
-      <div class="step reveal">
-        <span class="step-num">01</span>
-        <div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-        <h3>Find your prospects</h3>
-        <p>Browse LinkedIn normally. SNDR captures anyone you click on across search results, company pages, and profiles without any extra steps from you.</p>
-      </div>
-      <div class="step reveal">
-        <span class="step-num">02</span>
-        <div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
-        <h3>Discover verified emails</h3>
-        <p>One click. SNDR cross-references multiple data sources to find a verified professional email address. No guessing, no bounces.</p>
-      </div>
-      <div class="step reveal">
-        <span class="step-num">03</span>
-        <div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg></div>
-        <h3>Write once, personalize always</h3>
-        <p>Build a sequence template with merge fields for name, company, and role. SNDR fills them in automatically so every email feels handwritten.</p>
-      </div>
-      <div class="step reveal">
-        <span class="step-num">04</span>
-        <div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-        <h3>Track every open and reply</h3>
-        <p>See who opened, when, and how many times. SNDR auto-pauses sequences the moment someone replies so you never double-message an active thread.</p>
-      </div>
-    </div>
-  </div>
+<div class="lead-node flex items-center gap-4 bg-white p-5 rounded-xl premium-shadow border border-outline-variant/20 transform -translate-x-[250%] opacity-0">
+<div class="w-12 h-12 bg-surface-container-high rounded-full flex items-center justify-center text-primary text-sm font-black">VR</div>
+<div><p class="text-sm font-bold">Inbox Validation</p><p class="text-xs text-on-surface-variant">99.9% Zero-bounce check</p></div>
 </div>
-
-<!-- FEATURES -->
-<hr class="divider">
-<div class="section" id="features">
-  <div class="section-inner">
-    <div class="eyebrow">Features</div>
-    <h2 class="section-title">Everything you need. <em>Nothing you don't.</em></h2>
-    <div class="bento">
-      <div class="bc bc-span reveal">
-        <div class="bc-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-        <h3>Build your list without leaving LinkedIn</h3>
-        <p>No tab switching. No CSV exports. Capture prospects at the speed you browse. Auto-detects role, company size, industry, and seniority. Filters duplicates and already-contacted leads automatically.</p>
-        <div class="p-table">
-          <div class="p-head"><span>Prospect</span><span>Status</span></div>
-          <div class="p-row"><div><div class="p-name">Arjun Kapoor</div><div class="p-co">Head of Sales, Razorpay</div></div><span class="chip chip-g">Replied</span></div>
-          <div class="p-row"><div><div class="p-name">Sneha Patil</div><div class="p-co">VP Marketing, Zepto</div></div><span class="chip chip-o">Opened 3x</span></div>
-          <div class="p-row"><div><div class="p-name">Rahul Verma</div><div class="p-co">Founder, BuildFast.ai</div></div><span class="chip chip-d">Sending</span></div>
-          <div class="p-row"><div><div class="p-name">Neha Mehta</div><div class="p-co">CTO, FinStack</div></div><span class="chip chip-o">Email found</span></div>
-          <div class="p-row"><div><div class="p-name">Dev Sharma</div><div class="p-co">Director BD, Meesho</div></div><span class="chip chip-o">Email found</span></div>
-        </div>
-      </div>
-      <div class="bc reveal">
-        <div class="bc-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
-        <h3>Human, not automated</h3>
-        <p>Multi-step sequences with configurable delays. Dynamic merge fields pull LinkedIn data automatically. Smart pause stops sequences the instant a reply lands.</p>
-      </div>
-      <div class="bc reveal">
-        <span class="bc-label">Average Open Rate</span>
-        <div class="bc-big">68%</div>
-        <p>vs 21% industry benchmark. No tricks, just personalization that actually lands in the inbox.</p>
-      </div>
-      <div class="bc reveal">
-        <div class="bc-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
-        <h3>Know what's working</h3>
-        <p>Live open and reply tracking across every active sequence. Per-template performance metrics. CSV export for CRM sync.</p>
-      </div>
-      <div class="bc reveal">
-        <span class="bc-label">Reply Rate</span>
-        <div class="bc-big">14%</div>
-        <p>First-touch personalized sequences. Industry average is 2 to 3 percent.</p>
-      </div>
-    </div>
-  </div>
+<div class="lead-node flex items-center gap-4 bg-white p-5 rounded-xl premium-shadow border border-outline-variant/20 transform -translate-x-[250%] opacity-0">
+<div class="w-12 h-12 bg-surface-container-high rounded-full flex items-center justify-center text-primary text-sm font-black">IN</div>
+<div><p class="text-sm font-bold">Company Insights</p><p class="text-xs text-on-surface-variant">Mapping firmographic data</p></div>
 </div>
-
-<!-- TESTIMONIALS -->
-<hr class="divider">
-<div class="section">
-  <div class="section-inner">
-    <div class="eyebrow">Social Proof</div>
-    <h2 class="section-title">Trusted by founders and <em>sales teams</em> across India.</h2>
-    <div class="testi-grid">
-      <div class="testi reveal">
-        <div class="stars"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-        <p class="testi-body">We were spending 3 hours a day on manual prospecting. <strong>SNDR cut that to under 20 minutes.</strong> The personalization is so good our prospects think we researched them individually.</p>
-        <div class="testi-foot"><div class="testi-av">PK</div><div><div class="testi-name">Priya Kulkarni</div><div class="testi-title">Co-founder, TalentBridge</div></div></div>
-      </div>
-      <div class="testi reveal">
-        <div class="stars"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-        <p class="testi-body">I was skeptical about another cold email tool. But <strong>the LinkedIn-to-inbox workflow is genuinely different.</strong> Booked 11 demos in two weeks, more than the previous quarter combined.</p>
-        <div class="testi-foot"><div class="testi-av">AR</div><div><div class="testi-name">Aditya Rao</div><div class="testi-title">Head of Sales, LogicLoop</div></div></div>
-      </div>
-      <div class="testi reveal">
-        <div class="stars"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-        <p class="testi-body">As a solo founder SNDR is like having a full-time SDR. <strong>Smart pause alone saved me from embarrassing follow-ups</strong> to people who had already replied positively.</p>
-        <div class="testi-foot"><div class="testi-av">MS</div><div><div class="testi-name">Meera Soni</div><div class="testi-title">Founder, ClearGrade</div></div></div>
-      </div>
-      <div class="testi reveal">
-        <div class="stars"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-        <p class="testi-body">We tested four outreach tools in Q1. SNDR had the best reply rates by a wide margin. <strong>Our open rate jumped from 19% to 71%</strong> just by switching over.</p>
-        <div class="testi-foot"><div class="testi-av">VN</div><div><div class="testi-name">Vikram Nair</div><div class="testi-title">VP Growth, ShipEasy</div></div></div>
-      </div>
-      <div class="testi reveal">
-        <div class="stars"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-        <p class="testi-body">Setup took literally 4 minutes. <strong>By end of day one I had a sequence running to 40 decision-makers.</strong> Cleaner and more integrated than Lemlist or Instantly.</p>
-        <div class="testi-foot"><div class="testi-av">KC</div><div><div class="testi-name">Karan Chadha</div><div class="testi-title">Founder, DriftMark</div></div></div>
-      </div>
-      <div class="testi reveal">
-        <div class="stars"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-        <p class="testi-body">Our BD team of two is now outperforming our previous team of six. <strong>SNDR is the closest thing to an AI-powered SDR</strong> that actually understands outreach context.</p>
-        <div class="testi-foot"><div class="testi-av">IS</div><div><div class="testi-name">Ishaan Saxena</div><div class="testi-title">Head of BD, NexStack</div></div></div>
-      </div>
-    </div>
-  </div>
 </div>
-
-<!-- R CODE ANALYSIS -->
-<hr class="divider">
-<div class="section" id="analysis">
-  <div class="section-inner">
-    <div class="eyebrow">Data Analysis</div>
-    <h2 class="section-title">R code <em>exercises.</em></h2>
-    <div class="rcode-grid">
-
-      <div class="rcode-box reveal">
-        <div class="rcode-header">
-          <span class="rcode-badge rcode-b1">Box 1</span>
-          <span class="rcode-title">Descriptive Statistics &amp; Visualisation</span>
-          <span class="rcode-sub">mean · sd · quantile · hist · boxplot · cor</span>
-        </div>
-        <pre><code><span class="rc-cm"># Build employee data frame</span>
-db &lt;- data.frame(
-  empid = c(<span class="rc-st">"E01","E02","E03","E04","E05"</span>),
-  dept  = <span class="rc-fn">as.factor</span>(c(<span class="rc-st">"Finance","HR","Finance","HR","Sales"</span>)),
-  ename = c(<span class="rc-st">"Ram","Tom","Ricky","Winston","Trump"</span>),
-  ey    = <span class="rc-fn">as.integer</span>(c(<span class="rc-nm">5,10,20,40,20</span>)),
-  wh    = <span class="rc-fn">as.numeric</span>(c(<span class="rc-nm">10,40,20,70,25</span>)),
-  ms    = <span class="rc-fn">as.numeric</span>(c(<span class="rc-nm">100,200,300,600,900</span>)),
-  gs    = <span class="rc-fn">as.numeric</span>(c(<span class="rc-nm">10000,10000,30000,10000,40000</span>))
-)
-db$txs &lt;- <span class="rc-nm">0.10</span> * db$gs
-db$ns  &lt;- db$gs - db$txs
-
-<span class="rc-cm"># Means</span>
-<span class="rc-fn">mean</span>(db$ey);  <span class="rc-fn">mean</span>(db$wh);  <span class="rc-fn">mean</span>(db$ms)
-<span class="rc-fn">mean</span>(db$gs);  <span class="rc-fn">mean</span>(db$txs); <span class="rc-fn">mean</span>(db$ns)
-
-<span class="rc-cm"># Standard deviations</span>
-<span class="rc-fn">sd</span>(db$ey);  <span class="rc-fn">sd</span>(db$wh);  <span class="rc-fn">sd</span>(db$ms)
-<span class="rc-fn">sd</span>(db$gs);  <span class="rc-fn">sd</span>(db$txs); <span class="rc-fn">sd</span>(db$ns)
-
-<span class="rc-cm"># Quantiles</span>
-<span class="rc-fn">quantile</span>(db$ey);  <span class="rc-fn">quantile</span>(db$wh);  <span class="rc-fn">quantile</span>(db$ms)
-<span class="rc-fn">quantile</span>(db$gs);  <span class="rc-fn">quantile</span>(db$txs); <span class="rc-fn">quantile</span>(db$ns)
-
-<span class="rc-cm"># Plots</span>
-<span class="rc-fn">hist</span>(db$ns,    main=<span class="rc-st">"Histogram of Net Salary"</span>,    xlab=<span class="rc-st">"Net Salary"</span>, col=<span class="rc-st">"skyblue"</span>)
-<span class="rc-fn">boxplot</span>(db$ey, main=<span class="rc-st">"Box Plot of Experience"</span>,     ylab=<span class="rc-st">"Years"</span>,      col=<span class="rc-st">"orange"</span>)
-<span class="rc-fn">plot</span>(db$wh,    main=<span class="rc-st">"Scatter Plot of Weekly Hours"</span>, ylab=<span class="rc-st">"Years"</span>, pch=<span class="rc-nm">19</span>, col=<span class="rc-st">"darkgreen"</span>)
-
-<span class="rc-cm"># Covariance &amp; correlation</span>
-<span class="rc-fn">cov</span>(db$ey, db$ns)
-<span class="rc-fn">cor</span>(db$ey, db$ns)
-<span class="rc-fn">cor</span>(db$ms, db$ns)^<span class="rc-nm">2</span></code></pre>
-      </div>
-
-      <div class="rcode-box reveal">
-        <div class="rcode-header">
-          <span class="rcode-badge rcode-b2">Box 2</span>
-          <span class="rcode-title">Text Mining &amp; Sentiment Analysis</span>
-          <span class="rcode-sub">tm · wordcloud · syuzhet · NRC sentiment</span>
-        </div>
-        <pre><code><span class="rc-fn">install.packages</span>(<span class="rc-st">"tm"</span>)
-<span class="rc-fn">install.packages</span>(<span class="rc-st">"wordcloud"</span>)
-<span class="rc-fn">install.packages</span>(<span class="rc-st">"syuzhet"</span>)
-<span class="rc-kw">library</span>(tm); <span class="rc-kw">library</span>(wordcloud); <span class="rc-kw">library</span>(syuzhet)
-
-text_data &lt;- <span class="rc-st">"Hon'ble Members,
-It gives me immense pleasure to address this session of Parliament.
-Just two months ago, we celebrated the 75th anniversary of adoption of our
-Constitution, and only a few days ago, the Indian Republic completed 75 years
-of its journey. This occasion will elevate India pride as the mother of democracy
-to new heights. On behalf of all the citizens of the country, I pay tribute to
-Babasaheb Ambedkar and all the framers of the Constitution.
-The historic festival of Mahakumbh is also underway in the country. Mahakumbh
-is a festival of India cultural tradition and social consciousness. Millions of
-devotees from across the country and the world have taken the holy dip at
-Prayagraj. I express my sorrow over the unfortunate incident that occurred on
-Mauni Amavasya and wish for the speedy recovery of the injured.
-A few days ago, we lost the former Prime Minister of the country, Dr. Manmohan
-Singhji. He served the nation as Prime Minister for ten years and was a long-time
-member of Parliament. I offer my heartfelt tribute to Manmohan Singhji."</span>
-
-<span class="rc-cm"># Build and clean corpus</span>
-corpus &lt;- <span class="rc-fn">Corpus</span>(<span class="rc-fn">VectorSource</span>(text_data))
-corpus &lt;- <span class="rc-fn">tm_map</span>(corpus, <span class="rc-fn">content_transformer</span>(tolower))
-corpus &lt;- <span class="rc-fn">tm_map</span>(corpus, removePunctuation)
-corpus &lt;- <span class="rc-fn">tm_map</span>(corpus, removeNumbers)
-corpus &lt;- <span class="rc-fn">tm_map</span>(corpus, stripWhitespace)
-corpus &lt;- <span class="rc-fn">tm_map</span>(corpus, removeWords, <span class="rc-fn">stopwords</span>(<span class="rc-st">"en"</span>))
-
-<span class="rc-cm"># Word cloud</span>
-<span class="rc-fn">wordcloud</span>(corpus, min.freq=<span class="rc-nm">3</span>, random.order=<span class="rc-kw">FALSE</span>,
-          colors=<span class="rc-fn">rainbow</span>(<span class="rc-nm">8</span>), scale=c(<span class="rc-nm">3</span>, <span class="rc-nm">0.5</span>))
-
-<span class="rc-cm"># NRC sentiment scores</span>
-sentiment_scores &lt;- <span class="rc-fn">get_nrc_sentiment</span>(text_data)
-sentiment_sum    &lt;- <span class="rc-fn">colSums</span>(sentiment_scores)
-<span class="rc-fn">barplot</span>(sentiment_sum, col=<span class="rc-fn">rainbow</span>(<span class="rc-nm">10</span>),
-        main=<span class="rc-st">"barplot is my god"</span>,
-        xlab=<span class="rc-st">"emotions"</span>, ylab=<span class="rc-st">"frequency"</span>, las=<span class="rc-nm">2</span>)</code></pre>
-      </div>
-
-      <div class="rcode-box reveal">
-        <div class="rcode-header">
-          <span class="rcode-badge rcode-b3">Box 3</span>
-          <span class="rcode-title">Multiple Linear Regression</span>
-          <span class="rcode-sub">lmtest · advertising spend → sales prediction</span>
-        </div>
-        <pre><code><span class="rc-fn">install.packages</span>(<span class="rc-st">"lmtest"</span>)
-<span class="rc-kw">library</span>(lmtest)
-
-db &lt;- data.frame(
-  Facebook  = c(<span class="rc-nm">230.1,44.5,17.2,151.5,180.8,8.7,57.5,120.2,8.6,199.8,
-                66.1,214.7,23.8,97.5,204.1,195.4,67.8,281.4,69.2,147.3,
-                218.4,237.4,13.2,228.3,62.3</span>),
-  Instagram = c(<span class="rc-nm">37.8,39.3,45.9,41.3,10.8,48.9,32.8,19.6,2.1,2.6,
-                5.8,24.0,35.1,7.6,32.9,47.7,36.6,39.6,20.5,23.9,
-                27.7,5.1,15.9,16.9,12.6</span>),
-  Twitter   = c(<span class="rc-nm">69.2,45.1,69.3,58.5,58.4,75.0,23.5,11.6,1.0,21.2,
-                24.2,4.0,65.9,7.2,46.0,52.9,114.0,55.8,18.3,19.1,
-                53.4,23.5,49.6,26.2,18.3</span>),
-  Sales     = c(<span class="rc-nm">22.1,10.4,12.0,16.5,17.9,7.2,11.8,13.2,15.5,15.6,
-                12.6,17.4,9.2,13.7,19.0,22.4,12.5,24.4,11.3,14.6,
-                18.0,17.5,5.6,20.5,9.7</span>)
-)
-
-<span class="rc-cm"># Fit model</span>
-model &lt;- <span class="rc-fn">lm</span>(Sales ~ Facebook + Instagram + Twitter, data=db)
-<span class="rc-fn">summary</span>(model)
-<span class="rc-fn">par</span>(mfrow=c(<span class="rc-nm">2</span>,<span class="rc-nm">2</span>)); <span class="rc-fn">plot</span>(model)
-<span class="rc-fn">coef</span>(model)
-
-<span class="rc-cm"># Predict sales with 10% more Facebook spend</span>
-avg_facebook &lt;- <span class="rc-fn">mean</span>(db$Facebook)
-new_facebook  &lt;- avg_facebook * <span class="rc-nm">1.10</span>
-new_data &lt;- data.frame(
-  Facebook  = new_facebook,
-  Instagram = <span class="rc-fn">mean</span>(db$Instagram),
-  Twitter   = <span class="rc-fn">mean</span>(db$Twitter)
-)
-<span class="rc-fn">predict</span>(model, newdata=new_data)</code></pre>
-      </div>
-
-    </div>
-  </div>
+<div class="relative w-80 h-80 md:w-[450px] md:h-[450px] flex items-center justify-center">
+<div class="absolute inset-0 rounded-full border border-primary/10 animate-rotate-slow"></div>
+<div class="absolute inset-8 rounded-full border-2 border-dashed border-primary/20 animate-rotate-fast"></div>
+<div class="absolute inset-16 rounded-full border border-primary/5"></div>
+<div class="relative z-10 w-48 h-48 md:w-56 md:h-56 bg-primary rounded-full shadow-[0_0_80px_rgba(0,88,190,0.5)] flex flex-col items-center justify-center text-white overflow-hidden group">
+<span class="material-symbols-outlined text-6xl mb-2 animate-pulse">auto_awesome</span>
+<span class="text-sm font-bold uppercase tracking-[0.2em]">SNDR. AI</span>
+<div class="absolute inset-0 bg-white/20 animate-ping rounded-full scale-110"></div>
 </div>
-
-<!-- PRICING -->
-<hr class="divider">
-<div class="section" id="pricing">
-  <div class="section-inner">
-    <div class="eyebrow">Pricing</div>
-    <h2 class="section-title">Simple pricing. <em>No surprises.</em></h2>
-    <div class="pricing-grid">
-      <div class="plan reveal">
-        <div class="plan-name">Starter</div>
-        <div class="plan-price"><span class="cur">&#8377;</span>0</div>
-        <div class="plan-period">per month, forever free</div>
-        <p class="plan-desc">For individuals testing the water. Everything you need to close your first deals.</p>
-        <ul class="plan-features">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>50 emails per month</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>25 email verifications</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>1 active sequence</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Open and reply tracking</li>
-        </ul>
-        <a href="#" class="btn-plan-s">Get started free</a>
-      </div>
-      <div class="plan featured reveal">
-        <div class="plan-tag">Most popular</div>
-        <div class="plan-name">Growth</div>
-        <div class="plan-price"><span class="cur">&#8377;</span>99</div>
-        <div class="plan-period">per month, billed monthly</div>
-        <p class="plan-desc">For sales reps and founders running consistent outbound with real analytics.</p>
-        <ul class="plan-features">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>1,000 emails per month</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>500 email verifications</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Unlimited active sequences</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Advanced analytics dashboard</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Smart pause on reply</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Priority support</li>
-        </ul>
-        <a href="#" class="btn-plan-p">Start 14-day free trial</a>
-      </div>
-      <div class="plan reveal">
-        <div class="plan-name">Team</div>
-        <div class="plan-price"><span class="cur">&#8377;</span>499</div>
-        <div class="plan-period">per month, billed monthly</div>
-        <p class="plan-desc">For growing sales teams with shared lists, team analytics, and admin controls.</p>
-        <ul class="plan-features">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>5,000 emails per month</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Unlimited verifications</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Up to 5 team seats</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Shared prospect lists</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Team performance dashboard</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Dedicated onboarding call</li>
-        </ul>
-        <a href="#" class="btn-plan-s">Talk to sales</a>
-      </div>
-    </div>
-  </div>
+<div class="absolute w-full h-full animate-rotate-slow pointer-events-none">
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-4 bg-secondary rounded-full shadow-lg shadow-secondary/40"></div>
+<div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-4 bg-primary-fixed-dim rounded-full shadow-lg"></div>
 </div>
-
-<!-- CTA -->
-<div class="cta-section">
-  <div class="cta-inner">
-    <h2>Your pipeline won't<br><em>build itself.</em></h2>
-    <p>Join 2,400 sales professionals using SNDR to turn LinkedIn into a predictable revenue channel.</p>
-    <div class="cta-actions">
-      <a href="https://chrome.google.com/webstore" class="btn-accent-lg">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Add to Chrome &mdash; Free
-      </a>
-      <a href="mailto:hello@sndr.co.in" class="btn-ghost-lg">Talk to us</a>
-    </div>
-    <p class="cta-note">No credit card required. 50 free emails. Setup in 4 minutes.</p>
-  </div>
 </div>
-
-<footer>
-  <a href="#top" class="f-brand">
-    <div class="f-brand-mark">Sn</div>
-    <span class="f-brand-name">SNDR</span>
-  </a>
-  <ul class="f-links">
-    <li><a href="#">Privacy Policy</a></li>
-    <li><a href="#">Terms of Service</a></li>
-    <li><a href="mailto:hello@sndr.co.in">hello@sndr.co.in</a></li>
-  </ul>
-  <span class="f-copy">2025 SNDR. All rights reserved.</span>
+<div class="absolute right-0 top-0 bottom-0 w-1/3 flex flex-col justify-around px-8" id="sent-container">
+<div class="sent-node flex items-center gap-4 bg-green-50 p-5 rounded-xl premium-shadow border border-green-200 transform translate-x-[250%] opacity-0">
+<div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-green-600 text-2xl font-bold">bolt</span>
+</div>
+<div><p class="text-sm font-bold text-green-900">Personalized</p><p class="text-xs text-green-700">1-to-1 tailored draft</p></div>
+</div>
+<div class="sent-node flex items-center gap-4 bg-green-50 p-5 rounded-xl premium-shadow border border-green-200 transform translate-x-[250%] opacity-0">
+<div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-green-600 text-2xl font-bold">mail_lock</span>
+</div>
+<div><p class="text-sm font-bold text-green-900">Delivered</p><p class="text-xs text-green-700">Bypassing spam filters</p></div>
+</div>
+<div class="sent-node flex items-center gap-4 bg-green-50 p-5 rounded-xl premium-shadow border border-green-200 transform translate-x-[250%] opacity-0">
+<div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-green-600 text-2xl font-bold">forum</span>
+</div>
+<div><p class="text-sm font-bold text-green-900">Positive Reply</p><p class="text-xs text-green-700">Lead booked a demo</p></div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-section-padding px-margin-safe bg-surface-container-low/40" id="conversion-steps">
+<div class="container mx-auto">
+<div class="text-center mb-24 reveal">
+<h2 class="font-display-lg text-display-lg text-on-background mb-6">From Lead to Conversion</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto leading-relaxed">Everything you need to automate your entire top-of-funnel in three elegant steps.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<div class="bg-white p-12 rounded-2xl premium-shadow border border-outline-variant/30 hover:-translate-y-2 transition-all duration-500 reveal">
+<div class="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-10">
+<span class="material-symbols-outlined text-primary text-4xl">search_insights</span>
+</div>
+<h3 class="font-headline-md text-headline-md mb-6">1. Collect</h3>
+<p class="text-on-surface-variant mb-10 leading-relaxed text-lg">Our scraper automatically identifies and extracts 100% verified emails from LinkedIn and company domains.</p>
+<div class="relative h-48 bg-surface-variant/30 rounded-xl overflow-hidden flex items-center justify-center">
+<div class="flex flex-col gap-3">
+<div class="bg-white px-6 py-3 rounded-lg shadow-sm text-sm font-bold flex items-center gap-3 border border-outline-variant/20 animate-pulse">
+<span class="material-symbols-outlined text-green-500 text-lg">verified</span>
+                            mark.s@velocity.ai
+                        </div>
+<div class="bg-white px-6 py-3 rounded-lg shadow-sm text-sm font-bold flex items-center gap-3 translate-x-6 border border-outline-variant/20">
+<span class="material-symbols-outlined text-green-500 text-lg">verified</span>
+                            jane.doe@saas.com
+                        </div>
+</div>
+</div>
+</div>
+<div class="bg-white p-12 rounded-2xl premium-shadow border border-outline-variant/30 hover:-translate-y-2 transition-all duration-500 reveal">
+<div class="w-20 h-20 bg-secondary/10 rounded-2xl flex items-center justify-center mb-10">
+<span class="material-symbols-outlined text-secondary text-4xl">auto_fix_high</span>
+</div>
+<h3 class="font-headline-md text-headline-md mb-6">2. Personalize</h3>
+<p class="text-on-surface-variant mb-10 leading-relaxed text-lg">SNDR. AI analyzes prospect signals to craft unique messages that feel human, not automated.</p>
+<div class="relative h-48 bg-surface-variant/30 rounded-xl overflow-hidden p-8">
+<div class="space-y-4">
+<div class="h-3 w-5/6 bg-on-surface-variant/20 rounded-full"></div>
+<div class="h-3 w-full bg-on-surface-variant/20 rounded-full"></div>
+<div class="h-3 w-2/3 bg-primary/40 rounded-full"></div>
+</div>
+<div class="absolute bottom-6 right-6 bg-secondary text-white text-xs px-4 py-2 rounded-full font-bold flex items-center gap-2 shadow-lg shadow-secondary/20">
+<span class="material-symbols-outlined text-sm">auto_awesome</span> AI Generated
+                    </div>
+</div>
+</div>
+<div class="bg-white p-12 rounded-2xl premium-shadow border border-outline-variant/30 hover:-translate-y-2 transition-all duration-500 reveal">
+<div class="w-20 h-20 bg-tertiary/10 rounded-2xl flex items-center justify-center mb-10">
+<span class="material-symbols-outlined text-tertiary text-4xl">bolt</span>
+</div>
+<h3 class="font-headline-md text-headline-md mb-6">3. Send</h3>
+<p class="text-on-surface-variant mb-10 leading-relaxed text-lg">Launch bulk outreach with smart throttling and bounce protection to keep your reputation flawless.</p>
+<div class="relative h-48 bg-surface-variant/30 rounded-xl flex flex-col justify-center items-center px-10">
+<div class="w-full bg-white h-4 rounded-full border border-outline-variant/20 overflow-hidden mb-4 shadow-inner">
+<div class="bg-gradient-to-r from-primary to-secondary h-full w-[94%]"></div>
+</div>
+<span class="text-lg font-black text-primary">94% Open Rate</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-section-padding px-margin-safe container mx-auto">
+<div class="text-center mb-28 reveal">
+<h2 class="font-display-lg text-display-lg text-on-background mb-8 tracking-tight">Unstoppable Sales Power</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-3xl mx-auto">The enterprise-grade tools you need to crush your quarterly targets with SNDR<span class="text-secondary">.</span> High-performance features wrapped in an elegant interface.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch">
+<div class="md:col-span-8 bento-item group reveal">
+<div class="p-12 h-full flex flex-col lg:flex-row gap-12 relative z-10">
+<div class="lg:w-1/2 flex flex-col justify-center">
+<div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-primary/10 text-primary text-label-md font-bold mb-8 w-fit">
+<span class="material-symbols-outlined text-sm">rocket_launch</span> SCALABLE
+                    </div>
+<h3 class="font-headline-md text-display-lg leading-none mb-8">Bulk Outreach <br/>Reimagined</h3>
+<p class="text-on-surface-variant text-lg leading-relaxed mb-10">Send thousands of hyper-personalized emails with a single click. Our engine handles throttling and follow-ups automatically.</p>
+<div class="flex flex-wrap gap-4">
+<span class="px-6 py-2 bg-surface-container-low border border-outline-variant/30 rounded-full text-sm font-bold text-primary">Adaptive Sending</span>
+<span class="px-6 py-2 bg-surface-container-low border border-outline-variant/30 rounded-full text-sm font-bold text-primary">Smart Loops</span>
+</div>
+</div>
+<div class="lg:w-1/2 relative min-h-[300px]">
+<div class="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent rounded-[2rem]"></div>
+<div class="absolute top-10 -right-4 left-4 bottom-0 glass-ui rounded-t-2xl p-8 transform rotate-[-2deg] group-hover:rotate-0 group-hover:translate-y-[-10px] transition-all duration-700">
+<div class="flex items-center gap-4 mb-8 pb-4 border-b border-outline-variant/10">
+<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-black">JD</div>
+<div class="flex-1 space-y-2">
+<div class="h-2.5 w-32 bg-on-surface/10 rounded-full"></div>
+<div class="h-2 w-20 bg-on-surface/5 rounded-full"></div>
+</div>
+<div class="px-4 py-1.5 bg-green-500/10 text-green-600 text-xs font-black rounded-full uppercase tracking-tighter">Sent</div>
+</div>
+<div class="space-y-4">
+<div class="h-3 w-full bg-on-surface/5 rounded-full"></div>
+<div class="h-3 w-11/12 bg-on-surface/5 rounded-full"></div>
+<div class="h-3 w-2/3 bg-primary/30 rounded-full"></div>
+</div>
+<div class="mt-12 flex justify-between items-center text-[10px] font-black text-on-surface-variant/40 tracking-[0.2em] uppercase">
+<span>Auto-Followup #2</span>
+<span>Pending</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md:col-span-4 bento-item group reveal">
+<div class="p-10 h-full flex flex-col justify-between relative z-10">
+<div>
+<div class="w-16 h-16 bg-secondary/10 rounded-[1.5rem] flex items-center justify-center mb-8 text-secondary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-4xl font-bold">analytics</span>
+</div>
+<h3 class="text-headline-md font-bold mb-4">Live Insights</h3>
+<p class="text-on-surface-variant leading-relaxed">Real-time engagement tracking that fuels your next move.</p>
+</div>
+<div class="mt-12 glass-ui rounded-2xl p-6 overflow-hidden">
+<div class="flex items-end justify-between gap-3 h-32">
+<div class="w-full bg-secondary/10 rounded-t-lg h-[40%] group-hover:h-[50%] transition-all duration-1000"></div>
+<div class="w-full bg-secondary/30 rounded-t-lg h-[70%] group-hover:h-[85%] transition-all duration-1000 delay-75"></div>
+<div class="w-full bg-secondary/10 rounded-t-lg h-[55%] group-hover:h-[40%] transition-all duration-1000 delay-150"></div>
+<div class="w-full bg-secondary rounded-t-lg h-[100%] shadow-[0_0_30px_rgba(70,72,212,0.4)] group-hover:translate-y-[-5px] transition-all duration-1000"></div>
+</div>
+<div class="flex justify-between mt-6 px-1">
+<span class="text-[10px] font-bold text-on-surface-variant/30 uppercase">Aug</span>
+<span class="text-[10px] font-bold text-secondary uppercase">Today</span>
+</div>
+</div>
+</div>
+</div>
+<div class="md:col-span-4 bento-item group reveal">
+<div class="p-10 h-full flex flex-col justify-between relative z-10">
+<div>
+<div class="w-16 h-16 bg-tertiary/10 rounded-[1.5rem] flex items-center justify-center mb-8 text-tertiary group-hover:rotate-12 transition-transform">
+<span class="material-symbols-outlined text-4xl font-bold">person_search</span>
+</div>
+<h3 class="text-headline-md font-bold mb-4">Smart Scraping</h3>
+<p class="text-on-surface-variant leading-relaxed">One-click extraction of B2B verified leads with 99.9% inbox accuracy.</p>
+</div>
+<div class="mt-10 space-y-4">
+<div class="flex items-center gap-4 p-4 glass-ui rounded-xl group-hover:translate-x-2 transition-transform">
+<div class="w-10 h-10 rounded-lg bg-tertiary text-white flex items-center justify-center text-sm font-black shadow-lg shadow-tertiary/20">L</div>
+<div class="flex-1"><div class="h-2.5 w-24 bg-on-surface/10 rounded-full"></div></div>
+<span class="material-symbols-outlined text-green-500 text-xl font-bold">check_circle</span>
+</div>
+<div class="flex items-center gap-4 p-4 glass-ui rounded-xl opacity-40 group-hover:opacity-100 transition-opacity delay-100">
+<div class="w-10 h-10 rounded-lg bg-primary text-white flex items-center justify-center text-sm font-black">X</div>
+<div class="flex-1"><div class="h-2.5 w-32 bg-on-surface/10 rounded-full"></div></div>
+</div>
+</div>
+</div>
+</div>
+<div class="md:col-span-8 bento-item group reveal">
+<div class="p-12 h-full flex flex-col lg:flex-row-reverse gap-12 relative z-10">
+<div class="lg:w-1/2 flex flex-col justify-center">
+<div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-secondary/10 text-secondary text-label-md font-bold mb-8 w-fit">
+<span class="material-symbols-outlined text-sm">auto_awesome</span> AI MINING
+                    </div>
+<h3 class="font-headline-md text-display-lg leading-none mb-8">LinkedIn <br/>Context Mining</h3>
+<p class="text-on-surface-variant text-lg leading-relaxed mb-10">AI that listens. Our system scans recent activity and profile updates to write the perfect personalized icebreaker.</p>
+<button class="flex items-center gap-2 text-secondary font-black hover:gap-4 transition-all uppercase tracking-widest text-xs">
+                        Explore AI Insights <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+<div class="lg:w-1/2 relative">
+<div class="glass-ui p-8 rounded-[2rem] shadow-2xl relative z-10 group-hover:-translate-y-4 transition-transform duration-700">
+<div class="flex items-center gap-4 mb-8">
+<div class="w-12 h-12 rounded-full bg-gradient-to-br from-secondary to-primary flex items-center justify-center text-white font-black shadow-xl">AI</div>
+<div>
+<p class="text-sm font-black text-on-surface">Suggested Hook</p>
+<p class="text-[10px] text-on-surface-variant/60 uppercase font-bold tracking-widest">Confidence: 98%</p>
+</div>
+</div>
+<p class="text-on-surface-variant text-base italic leading-relaxed mb-8 border-l-4 border-secondary/30 pl-6">
+                            "Hey Mark, noticed your recent post about SDR scaling — it truly resonated with how we built SNDR. Huge congrats on the Series B milestone!"
+                        </p>
+<div class="flex gap-2">
+<div class="h-1.5 flex-1 bg-secondary rounded-full"></div>
+<div class="h-1.5 flex-1 bg-secondary/20 rounded-full"></div>
+<div class="h-1.5 flex-1 bg-secondary/20 rounded-full"></div>
+</div>
+</div>
+<div class="absolute -bottom-4 -left-4 w-24 h-24 bg-primary/10 rounded-full blur-3xl"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-section-padding px-margin-safe bg-white" id="pricing">
+<div class="container mx-auto">
+<div class="text-center mb-24 reveal">
+<h2 class="font-display-lg text-display-lg text-on-background mb-6">Pricing Plans</h2>
+<p class="font-body-lg text-on-surface-variant max-w-2xl mx-auto leading-relaxed">Choose the scale that fits your outreach goals.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="bg-surface-container-low p-10 rounded-[32px] border border-outline-variant/20 pricing-card-shadow flex flex-col reveal">
+<div class="mb-8">
+<span class="text-label-md font-bold text-on-surface-variant/60 uppercase tracking-widest mb-4 block">Essentials</span>
+<h3 class="text-headline-md font-bold mb-2">Basic</h3>
+<div class="flex items-baseline gap-1">
+<span class="text-4xl font-black text-primary">$1.05</span>
+<span class="text-on-surface-variant">/month</span>
+</div>
+</div>
+<ul class="space-y-4 mb-12 flex-1">
+<li class="flex items-center gap-3 text-on-surface">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                        50 mails/day
+                    </li>
+<li class="flex items-center gap-3 text-on-surface-variant/40">
+<span class="material-symbols-outlined text-xl">block</span>
+                        No email scraping
+                    </li>
+<li class="flex items-center gap-3 text-on-surface">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                        Standard analytics
+                    </li>
+</ul>
+<button class="w-full py-4 rounded-xl border-2 border-primary text-primary font-bold hover:bg-primary hover:text-white transition-all">Get Started</button>
+</div>
+<div class="bg-white p-10 rounded-[32px] border-2 border-primary pricing-card-shadow flex flex-col relative reveal">
+<div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white px-6 py-1 rounded-full text-xs font-black uppercase tracking-widest">Most Popular</div>
+<div class="mb-8">
+<span class="text-label-md font-bold text-primary uppercase tracking-widest mb-4 block">Growth</span>
+<h3 class="text-headline-md font-bold mb-2">Pro</h3>
+<div class="flex items-baseline gap-1">
+<span class="text-4xl font-black text-primary">$6</span>
+<span class="text-on-surface-variant">/month</span>
+</div>
+</div>
+<ul class="space-y-4 mb-12 flex-1">
+<li class="flex items-center gap-3 text-on-surface">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                        300 mails/day
+                    </li>
+<li class="flex items-center gap-3 text-on-surface">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                        2 companies scraping/day
+                    </li>
+<li class="flex items-center gap-3 text-on-surface">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                        Advanced AI mining
+                    </li>
+<li class="flex items-center gap-3 text-on-surface">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                        Priority support
+                    </li>
+</ul>
+<button class="w-full py-4 rounded-xl bg-primary text-white font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform">Start Free Trial</button>
+</div>
+<div class="bg-inverse-surface p-10 rounded-[32px] pricing-card-shadow flex flex-col reveal">
+<div class="mb-8">
+<span class="text-label-md font-bold text-primary-fixed uppercase tracking-widest mb-4 block">Unlimited</span>
+<h3 class="text-headline-md font-bold mb-2 text-white">Enterprise</h3>
+<div class="flex items-baseline gap-1 text-white">
+<span class="text-4xl font-black">$10</span>
+<span class="text-white/60">/month</span>
+</div>
+</div>
+<ul class="space-y-4 mb-12 flex-1">
+<li class="flex items-center gap-3 text-white">
+<span class="material-symbols-outlined text-primary-fixed text-xl">check_circle</span>
+                        500 mails/day
+                    </li>
+<li class="flex items-center gap-3 text-white">
+<span class="material-symbols-outlined text-primary-fixed text-xl">check_circle</span>
+                        4 companies scraping/day
+                    </li>
+<li class="flex items-center gap-3 text-white">
+<span class="material-symbols-outlined text-primary-fixed text-xl">check_circle</span>
+                        Custom API access
+                    </li>
+<li class="flex items-center gap-3 text-white">
+<span class="material-symbols-outlined text-primary-fixed text-xl">check_circle</span>
+                        Dedicated Account Manager
+                    </li>
+</ul>
+<button class="w-full py-4 rounded-xl bg-white text-on-background font-bold hover:bg-primary-fixed transition-all">Contact Sales</button>
+</div>
+</div>
+</div>
+</section>
+<section class="py-section-padding px-margin-safe bg-surface-container-low/20">
+<div class="container mx-auto">
+<div class="text-center mb-24 reveal">
+<h2 class="font-display-lg text-display-lg text-on-background mb-6">Works where you do</h2>
+<p class="text-body-lg text-on-surface-variant max-w-2xl mx-auto leading-relaxed">The lightest, fastest Chrome extension for modern sales teams.</p>
+</div>
+<div class="relative max-w-6xl mx-auto reveal">
+<div class="rounded-2xl border border-outline-variant/30 bg-white shadow-[0_40px_100px_-20px_rgba(0,88,190,0.15)] overflow-hidden">
+<div class="bg-surface-container-low px-8 py-4 flex items-center gap-6 border-b border-outline-variant/20">
+<div class="flex gap-2">
+<div class="w-3.5 h-3.5 rounded-full bg-red-400"></div>
+<div class="w-3.5 h-3.5 rounded-full bg-amber-400"></div>
+<div class="w-3.5 h-3.5 rounded-full bg-green-400"></div>
+</div>
+<div class="flex-1 bg-white rounded-lg px-6 py-2 text-label-md text-on-surface-variant/50 flex items-center gap-3">
+<span class="material-symbols-outlined text-lg">lock</span>
+                        linkedin.com/in/prospect-profile/
+                    </div>
+</div>
+<div class="h-[600px] bg-slate-50 flex items-center justify-center p-12">
+<div class="w-full h-full bg-white rounded-2xl border border-dashed border-outline-variant/40 flex items-center justify-center text-on-surface-variant/20">
+<span class="material-symbols-outlined text-9xl">account_circle</span>
+</div>
+<div class="absolute top-1/2 -translate-y-1/2 right-16 w-80 bg-white rounded-2xl shadow-[0_40px_80px_rgba(0,0,0,0.2)] border border-outline-variant/30 p-8">
+<div class="flex items-center gap-3 mb-8">
+<div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white text-lg font-black">S.</div>
+<span class="font-bold text-on-surface text-lg">SNDR. Assistant</span>
+</div>
+<div class="space-y-6">
+<div class="p-5 bg-primary/5 rounded-xl border border-primary/10">
+<p class="text-[10px] text-primary font-black mb-1 uppercase tracking-widest">Email Found</p>
+<p class="text-base font-bold">mark.d@velocity.ai</p>
+</div>
+<button class="w-full bg-primary text-white py-4 rounded-xl font-button text-base shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform">
+                                Personalize &amp; Send
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-section-padding px-margin-safe container mx-auto text-center">
+<div class="max-w-4xl mx-auto reveal">
+<h2 class="font-display-lg text-display-lg mb-10">Ready to break your records?</h2>
+<p class="text-body-lg text-on-surface-variant mb-16 max-w-2xl mx-auto">Join 15,000+ top-tier sales professionals who are already crushing their quotas with SNDR<span class="text-secondary">.</span></p>
+<button class="bg-primary text-white px-16 py-8 rounded-full font-display-lg text-headline-md shadow-[0_20px_50px_-10px_rgba(0,88,190,0.4)] hover:scale-105 transition-all flex items-center gap-6 mx-auto group">Add to Browser - It's Free <span class="material-symbols-outlined text-5xl group-hover:translate-x-3 transition-transform">east</span></button>
+<div class="mt-20 flex flex-wrap justify-center gap-16 grayscale opacity-40">
+<span class="font-black text-headline-md tracking-tighter">SaaSFlow</span>
+<span class="font-black text-headline-md tracking-tighter">LeadGenius</span>
+<span class="font-black text-headline-md tracking-tighter">ScaleUp</span>
+<span class="font-black text-headline-md tracking-tighter">GrowthX</span>
+</div>
+</div>
+</section>
+<section class="py-section-padding px-margin-safe bg-surface-container-low/30 border-t border-outline-variant/10">
+<div class="container mx-auto max-w-5xl">
+<div class="text-center mb-16 reveal">
+<h2 class="font-display-lg text-headline-md md:text-display-lg mb-4">Meet the Founders</h2>
+<p class="text-on-surface-variant text-lg">The minds behind the outreach revolution.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<div class="text-center reveal">
+<div class="w-48 h-48 bg-surface-container-highest rounded-full mx-auto mb-6 flex items-center justify-center overflow-hidden border-4 border-white shadow-xl">
+<img alt="Shubham Sah" class="w-full h-full object-cover" src="https://placeholder.pics/svg/300"/>
+</div>
+<h3 class="font-headline-sm text-on-surface mb-1">Shubham Sah</h3>
+<p class="text-primary font-bold text-sm uppercase tracking-widest">Co-Founder &amp; CEO</p>
+</div>
+<div class="text-center reveal">
+<div class="w-48 h-48 bg-surface-container-highest rounded-full mx-auto mb-6 flex items-center justify-center overflow-hidden border-4 border-white shadow-xl">
+<img alt="Harsh Gadia" class="w-full h-full object-cover" src="https://placeholder.pics/svg/300"/>
+</div>
+<h3 class="font-headline-sm text-on-surface mb-1">Harsh Gadia</h3>
+<p class="text-primary font-bold text-sm uppercase tracking-widest">Co-Founder &amp; CEO</p>
+</div>
+<div class="text-center reveal">
+<div class="w-48 h-48 bg-surface-container-highest rounded-full mx-auto mb-6 flex items-center justify-center overflow-hidden border-4 border-white shadow-xl">
+<img alt="Tanishq Ray" class="w-full h-full object-cover" src="https://placeholder.pics/svg/300"/>
+</div>
+<h3 class="font-headline-sm text-on-surface mb-1">Tanishq Ray</h3>
+<p class="text-primary font-bold text-sm uppercase tracking-widest">Co-Founder &amp; CEO</p>
+</div>
+</div>
+</div>
+</section>
+<footer class="w-full px-margin-safe py-24 bg-white border-t border-outline-variant/20">
+<div class="container mx-auto flex flex-col md:flex-row justify-between items-start gap-16">
+<div class="flex flex-col gap-6">
+<span class="text-headline-sm font-headline-sm font-black text-primary tracking-tighter">SNDR<span class="text-secondary">.</span></span>
+<p class="text-on-surface-variant max-w-xs leading-relaxed">Revolutionizing the way sales teams engage with prospects through intelligent, bespoke automation.</p>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-16">
+<div class="flex flex-col gap-5">
+<p class="font-bold text-on-surface">Product</p>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Features</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Chrome Extension</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Pricing</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">API</a>
+</div>
+<div class="flex flex-col gap-5">
+<p class="font-bold text-on-surface">Company</p>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Our Story</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+</div>
+<div class="flex flex-col gap-5">
+<p class="font-bold text-on-surface">Connect</p>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Twitter</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">LinkedIn</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Support</a>
+</div>
+</div>
+</div>
+<div class="container mx-auto mt-24 pt-10 border-t border-outline-variant/10 text-on-surface-variant text-sm flex flex-col md:flex-row justify-between gap-4">
+<span>© 2024 Velocity Outreach. All rights reserved.</span>
+<div class="flex gap-8">
+<a class="hover:text-primary" href="#">Cookie Policy</a>
+<a class="hover:text-primary" href="#">SLA</a>
+</div>
+</div>
 </footer>
-
 <script>
-// ── VIEWPORT BORDER DRAW ──
-(function() {
-  const rect = document.getElementById('vp-rect');
-  function setRect() {
-    const w = window.innerWidth - 24;
-    const h = window.innerHeight - 24;
-    rect.setAttribute('width', w);
-    rect.setAttribute('height', h);
-    const perim = 2 * (w + h);
-    rect.style.strokeDasharray = perim;
-    rect.style.strokeDashoffset = perim;
-    rect.style.transition = 'none';
-    // Force reflow
-    rect.getBoundingClientRect();
-    rect.style.transition = 'stroke-dashoffset 1.8s cubic-bezier(0.4,0,0.2,1)';
-    rect.style.strokeDashoffset = '0';
-  }
-  setRect();
-  window.addEventListener('resize', () => {
-    const w = window.innerWidth - 24;
-    const h = window.innerHeight - 24;
-    const perim = 2 * (w + h);
-    rect.setAttribute('width', w);
-    rect.setAttribute('height', h);
-    rect.style.strokeDasharray = perim;
-    rect.style.strokeDashoffset = '0';
-  });
-})();
-
-// ── SCROLL REVEAL ──
-const observer = new IntersectionObserver(entries => {
-  entries.forEach((e, i) => {
-    if (e.isIntersecting) setTimeout(() => e.target.classList.add('in'), i * 70);
-  });
-}, { threshold: 0.07 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-// ── NAV SCROLL ──
-const nav = document.getElementById('nav');
-window.addEventListener('scroll', () => {
-  nav.style.background = window.scrollY > 40
-    ? 'rgba(237,228,203,0.96)'
-    : 'rgba(245,237,216,0.88)';
-}, { passive: true });
+    const revealElements = document.querySelectorAll('.reveal');
+    const observerOptions = {
+        threshold: 0.15,
+        rootMargin: '0px 0px -80px 0px'
+    };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+    }, observerOptions);
+    revealElements.forEach(el => observer.observe(el));
+    const hand = document.getElementById('cursor-hand');
+    const btn = document.getElementById('mail-btn-interactive');
+    const plane = document.getElementById('paper-plane');
+    const completion = document.getElementById('completion-ui');
+    
+    let hasClicked = false;
+    const engineSection = document.getElementById('engine-animation-section');
+    const leadNodes = document.querySelectorAll('.lead-node');
+    const sentNodes = document.querySelectorAll('.sent-node');
+    window.addEventListener('scroll', () => {
+        const scrollPercentHero = Math.min(window.scrollY / 500, 1);
+        const currentX = 85 - (85 - 50) * scrollPercentHero;
+        const currentY = 85 - (85 - 50) * scrollPercentHero;
+        hand.style.left = currentX + '%';
+        hand.style.top = currentY + '%';
+        
+        if (scrollPercentHero > 0.85 && !hasClicked) {
+            hasClicked = true;
+            btn.classList.add('clicked');
+            setTimeout(() => {
+                btn.style.opacity = '0';
+                btn.style.transform = 'scale(0.5) translate(-100%, -100%)';
+                hand.style.opacity = '0';
+                plane.classList.add('launched');
+                setTimeout(() => { 
+                    completion.style.opacity = '1'; 
+                    completion.style.transform = 'scale(1.5) translate(0, 0)';
+                }, 400);
+            }, 300);
+        }
+        if (scrollPercentHero < 0.3 && hasClicked) {
+            hasClicked = false;
+            btn.style.opacity = '1';
+            btn.style.transform = 'scale(1.25) translate(-50%, -50%)';
+            btn.classList.remove('clicked');
+            hand.style.opacity = '1';
+            plane.classList.remove('launched');
+            completion.style.opacity = '0';
+            completion.style.transform = 'scale(1.5) translate(0, 0)';
+        }
+        const engineRect = engineSection.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        let engineProgress = (viewportHeight - engineRect.top) / (viewportHeight + engineRect.height);
+        engineProgress = Math.max(0, Math.min(1, engineProgress));
+        const p1Progress = Math.max(0, Math.min(1, (engineProgress - 0.15) * 5));
+        if(leadNodes[0]) { leadNodes[0].style.transform = 'translateX(' + (-150 + p1Progress * 150) + '%)'; leadNodes[0].style.opacity = p1Progress; }
+        if(sentNodes[0]) { sentNodes[0].style.transform = 'translateX(' + (150 - p1Progress * 150) + '%)'; sentNodes[0].style.opacity = p1Progress; }
+        const p2Progress = Math.max(0, Math.min(1, (engineProgress - 0.35) * 5));
+        if(leadNodes[1]) { leadNodes[1].style.transform = 'translateX(' + (-150 + p2Progress * 150) + '%)'; leadNodes[1].style.opacity = p2Progress; }
+        if(sentNodes[1]) { sentNodes[1].style.transform = 'translateX(' + (150 - p2Progress * 150) + '%)'; sentNodes[1].style.opacity = p2Progress; }
+        const p3Progress = Math.max(0, Math.min(1, (engineProgress - 0.55) * 5));
+        if(leadNodes[2]) { leadNodes[2].style.transform = 'translateX(' + (-150 + p3Progress * 150) + '%)'; leadNodes[2].style.opacity = p3Progress; }
+        if(sentNodes[2]) { sentNodes[2].style.transform = 'translateX(' + (150 - p3Progress * 150) + '%)'; sentNodes[2].style.opacity = p3Progress; }
+    });
 </script>
-</body>
-</html>
+</body></html>

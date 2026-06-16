@@ -701,7 +701,14 @@ function initModals() {
    9. Founders Canvas initials and Scroll Reveal
    ========================================== */
 function initScrollReveal() {
-  // Register GSAP ScrollTrigger plugin
+  // Register GSAP ScrollTrigger plugin if available
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+    // Failsafe: make all content visible if GSAP script fails to load
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
+    document.documentElement.classList.remove('js-active');
+    return;
+  }
+
   gsap.registerPlugin(ScrollTrigger);
 
   // Initialize Canvas Avatars for Founders (keep existing logic)
@@ -728,12 +735,19 @@ function initScrollReveal() {
     ctx.fillText(initials, 90, 90);
   });
 
+  // Setup animations on window load to ensure Y coordinates are fully settled
+  window.addEventListener('load', () => {
+    setupGSAPTimelines();
+  });
+}
+
+function setupGSAPTimelines() {
   // 1. FULL SCREEN SCROLL-MORPH TIMELINE
   const introTl = gsap.timeline({
     scrollTrigger: {
       trigger: '.intro-scroll-wrapper',
       start: 'top top',
-      end: '+=1800', // Scroll 1800px to complete morph & fade-in
+      end: '+=1000', // Shorter, more responsive morph sequence
       scrub: 0.5,
       pin: true,
       pinSpacing: true
@@ -742,41 +756,37 @@ function initScrollReveal() {
 
   // Scale down the large SNDR. logo
   introTl.to('.large-logo', {
-    scale: 0.4,
-    y: -30,
-    duration: 1.5,
+    scale: 0.35,
+    y: -40,
+    opacity: 0,
+    filter: 'blur(4px)',
+    duration: 1.0,
     ease: 'power1.inOut'
   }, 0);
 
-  // Fade out scroll indicator and tagline
+  // Fade out scroll indicator and tagline quickly
   introTl.to('.scroll-down-hint', {
     opacity: 0,
-    y: 20,
-    duration: 0.5
+    y: 15,
+    duration: 0.4
   }, 0);
 
   introTl.to('.intro-tagline', {
     opacity: 0,
-    y: 20,
-    duration: 0.5
+    y: 15,
+    duration: 0.4
   }, 0);
 
-  // Fade out large logo pixels and fade in mail icon symbol
-  introTl.to('.large-logo', {
-    opacity: 0,
-    filter: 'blur(8px)',
-    duration: 1.0
-  }, 1.2);
-
+  // Fade in the envelope icon at the same place
   introTl.to('.intro-mail-wrap', {
     opacity: 1,
     scale: 1,
     rotation: 360,
     xPercent: -50,
     yPercent: -50,
-    duration: 1.2,
-    ease: 'back.out(1.5)'
-  }, 1.2);
+    duration: 0.8,
+    ease: 'back.out(1.2)'
+  }, 0.2);
 
   // Fade in and slide up "Delivered" badge
   introTl.to('.intro-delivered-badge', {
@@ -784,61 +794,159 @@ function initScrollReveal() {
     scale: 1.0,
     y: 0,
     xPercent: -50,
-    duration: 1.0,
+    duration: 0.6,
     ease: 'back.out(1.2)'
-  }, 1.8);
+  }, 0.6);
 
-  // Fade out transform container overlay
+  // Fade out the entire morph box as we transition to hero
   introTl.to('.logo-transform-container', {
     opacity: 0,
     pointerEvents: 'none',
-    duration: 1.5,
+    duration: 0.8,
     ease: 'power2.inOut'
-  }, 2.5);
+  }, 1.0);
 
-  // Enable pointer-events on the hero sibling container
-  introTl.to('.hero', {
-    pointerEvents: 'auto',
-    duration: 0.1
-  }, 2.5);
-
-  // Fade in and slide down navigation bar
+  // Fade in nav and hero elements early to overlap with the logo morph
   introTl.to('.glass-nav', {
     opacity: 1,
     y: 0,
-    duration: 1.0,
+    duration: 0.6,
     ease: 'power2.out'
-  }, 2.5);
+  }, 0.8);
 
-  // Stagger fade-in of hero text content & hero simulator window
   introTl.to('.hero-text-content', {
     opacity: 1,
     y: 0,
-    duration: 1.2,
-    ease: 'power3.out'
-  }, 2.8);
+    duration: 0.8,
+    ease: 'power2.out'
+  }, 1.0);
 
   introTl.to('.hero-simulator', {
     opacity: 1,
     y: 0,
-    duration: 1.2,
-    ease: 'power3.out'
-  }, 3.0);
+    duration: 0.8,
+    ease: 'power2.out'
+  }, 1.2);
 
   // Hide sticky container completely at end of scrub
   introTl.to('.logo-transform-container', {
     display: 'none',
     duration: 0.1
-  });
+  }, 1.8);
 
-  // 2. INTERACTIVE 3D SCROLL-SCRUBBED UNFOLDING FOR ALL SECTIONS
+  // Enable pointer-events on the hero sibling container
+  introTl.to('.hero', {
+    pointerEvents: 'auto',
+    duration: 0.1
+  }, 1.8);
+
+  // 2. FLYING ROCKET SCROLL TRIGGER
+  const taglineWord = document.querySelector('.outreach-rocket-launch');
+  const coreElem = document.getElementById('engine-core');
+  const rocket = document.getElementById('intro-rocket');
+
+  if (taglineWord && coreElem && rocket) {
+    const rectTagline = taglineWord.getBoundingClientRect();
+    const rectCore = coreElem.getBoundingClientRect();
+
+    // Calculate absolute body-relative coordinates
+    const startX = rectTagline.left + rectTagline.width / 2;
+    const startY = rectTagline.top + rectTagline.height / 2 + window.scrollY;
+
+    const endX = rectCore.left + rectCore.width / 2;
+    const endY = rectCore.top + rectCore.height / 2 + window.scrollY;
+
+    // Calculate flight angle (pointing from tagline to compiler core)
+    const angle = Math.atan2(endY - startY, endX - startX) * 180 / Math.PI;
+    // Adjust rotation (rocket icon points top-right 45deg by default)
+    const rocketRotation = angle - 45;
+
+    // Set initial positions
+    gsap.set(rocket, {
+      left: startX,
+      top: startY,
+      opacity: 0,
+      scale: 0.5,
+      rotation: rocketRotation,
+      xPercent: -50,
+      yPercent: -50
+    });
+
+    const flightTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '.intro-scroll-wrapper',
+        start: 'top top',
+        end: '+=1600', // Pinned duration (1000px) + distance to playground
+        scrub: 0.5
+      }
+    });
+
+    // Launch phase (spark fire)
+    flightTl.to(rocket, {
+      opacity: 1,
+      scale: 1.1,
+      duration: 0.3
+    })
+    .to(rocket.querySelector('.rocket-trail'), {
+      height: '60px',
+      duration: 0.3
+    }, 0);
+
+    // Flight down the document
+    flightTl.to(rocket, {
+      left: endX,
+      top: endY,
+      ease: 'power1.inOut',
+      duration: 1.5
+    }, 0.2);
+
+    // Landing sequence: impact triggers high-tech compiler core glow
+    flightTl.to(rocket, {
+      opacity: 0,
+      scale: 0.3,
+      duration: 0.2
+    }, 1.5)
+    .to(rocket.querySelector('.rocket-trail'), {
+      height: '0px',
+      duration: 0.2
+    }, 1.5)
+    // Engine compiler core landing reaction
+    .to('#engine-core .core-glow-pulse', {
+      scale: 1.8,
+      opacity: 1,
+      duration: 0.4,
+      repeat: 1,
+      yoyo: true
+    }, 1.5)
+    .to('#engine-core .engine-core-center', {
+      scale: 1.25,
+      boxShadow: '0 0 50px rgba(0, 90, 194, 0.8)',
+      duration: 0.2,
+      yoyo: true,
+      repeat: 1
+    }, 1.5)
+    .to('#engine-core .scanner-line', {
+      opacity: 0.8,
+      top: '100%',
+      duration: 0.8
+    }, 1.5)
+    .to('#engine-core .engine-core-ring', {
+      opacity: 0.6,
+      scale: 1.1,
+      duration: 0.4,
+      yoyo: true,
+      repeat: 1
+    }, 1.5);
+  }
+
+  // 3. INTERACTIVE 3D SCROLL-SCRUBBED UNFOLDING FOR ALL SECTIONS
   
   // Section A: Outreach Sandbox
   const playgroundTl = gsap.timeline({
     scrollTrigger: {
       trigger: '#playground',
-      start: 'top 90%',
-      end: 'top 40%',
+      start: 'top 95%',
+      end: 'top 45%',
       scrub: 0.8
     }
   });
@@ -846,16 +954,18 @@ function initScrollReveal() {
     { rotationX: -30, opacity: 0, z: -100, transformOrigin: 'top center' },
     { rotationX: 0, opacity: 1, z: 0, duration: 1.0, ease: 'power1.out' }
   )
-  .fromTo('#playground .leads-shelf', { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.6 }, '-=0.6')
-  .fromTo('#playground .sandbox-dropzone', { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.6 }, '-=0.6')
-  .fromTo('#playground .sandbox-output', { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.6 }, '-=0.6');
+  .fromTo('#playground .section-intro', { opacity: 0, y: 35 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.8')
+  .fromTo('#playground .sandbox-container', { opacity: 0, y: 35 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.6')
+  .fromTo('#playground .leads-shelf', { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.6 }, '-=0.4')
+  .fromTo('#playground .sandbox-dropzone', { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.6 }, '-=0.4')
+  .fromTo('#playground .sandbox-output', { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.6 }, '-=0.4');
 
   // Section B: Bento Grid Features
   const featuresTl = gsap.timeline({
     scrollTrigger: {
       trigger: '#features',
-      start: 'top 90%',
-      end: 'top 40%',
+      start: 'top 95%',
+      end: 'top 45%',
       scrub: 0.8
     }
   });
@@ -863,14 +973,15 @@ function initScrollReveal() {
     { rotationX: -30, opacity: 0, z: -100, transformOrigin: 'top center' },
     { rotationX: 0, opacity: 1, z: 0, duration: 1.0, ease: 'power1.out' }
   )
+  .fromTo('#features .section-intro', { opacity: 0, y: 35 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.8')
   .fromTo('#features .bento-item', { opacity: 0, y: 50, rotationX: 15 }, { opacity: 1, y: 0, rotationX: 0, stagger: 0.15, duration: 0.8 }, '-=0.6');
 
   // Section C: CV Matcher Chatbot
   const cvMatcherTl = gsap.timeline({
     scrollTrigger: {
       trigger: '#cv-matcher',
-      start: 'top 90%',
-      end: 'top 40%',
+      start: 'top 95%',
+      end: 'top 45%',
       scrub: 0.8
     }
   });
@@ -878,14 +989,15 @@ function initScrollReveal() {
     { rotationX: -30, opacity: 0, z: -100, transformOrigin: 'top center' },
     { rotationX: 0, opacity: 1, z: 0, duration: 1.0, ease: 'power1.out' }
   )
+  .fromTo('#cv-matcher .section-intro', { opacity: 0, y: 35 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.8')
   .fromTo('#cv-matcher .cv-matcher-container', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.8 }, '-=0.6');
 
   // Section D: Pricing
   const pricingTl = gsap.timeline({
     scrollTrigger: {
       trigger: '#pricing',
-      start: 'top 90%',
-      end: 'top 40%',
+      start: 'top 95%',
+      end: 'top 45%',
       scrub: 0.8
     }
   });
@@ -893,14 +1005,15 @@ function initScrollReveal() {
     { rotationX: -30, opacity: 0, z: -100, transformOrigin: 'top center' },
     { rotationX: 0, opacity: 1, z: 0, duration: 1.0, ease: 'power1.out' }
   )
+  .fromTo('#pricing .section-intro', { opacity: 0, y: 35 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.8')
   .fromTo('#pricing .pricing-card', { opacity: 0, y: 50, rotationX: 10 }, { opacity: 1, y: 0, rotationX: 0, stagger: 0.15, duration: 0.8 }, '-=0.6');
 
   // Section E: Founders
   const foundersTl = gsap.timeline({
     scrollTrigger: {
       trigger: '#founders',
-      start: 'top 90%',
-      end: 'top 45%',
+      start: 'top 95%',
+      end: 'top 50%',
       scrub: 0.8
     }
   });
@@ -908,6 +1021,34 @@ function initScrollReveal() {
     { rotationX: -30, opacity: 0, z: -100, transformOrigin: 'top center' },
     { rotationX: 0, opacity: 1, z: 0, duration: 1.0, ease: 'power1.out' }
   )
+  .fromTo('#founders .section-intro', { opacity: 0, y: 35 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.8')
   .fromTo('#founders .founder-card', { opacity: 0, y: 40 }, { opacity: 1, y: 0, stagger: 0.15, duration: 0.8 }, '-=0.6');
 }
+
+/* ==========================================
+   10. Interactive 3D Hover Tilt Effects
+   ========================================== */
+function initTilt() {
+  const elements = document.querySelectorAll('.hover-tilt, .founder-card, .pricing-card');
+  elements.forEach(el => {
+    el.addEventListener('mousemove', (e) => {
+      const rect = el.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const xc = rect.width / 2;
+      const yc = rect.height / 2;
+      
+      const angleX = (yc - y) / 15;
+      const angleY = (x - xc) / 15;
+      
+      el.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg) translateY(-4px)`;
+      el.style.boxShadow = `0 16px 36px rgba(0, 90, 194, 0.12)`;
+    });
+    
+    el.addEventListener('mouseleave', () => {
+      el.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+      el.style.boxShadow = '';
+    });
+  });
 }

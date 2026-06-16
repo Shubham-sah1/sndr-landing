@@ -2192,6 +2192,7 @@ html[data-theme="dark"] .sandbox-dropzone {
   width: 240px;
   max-width: 80%;
   height: auto;
+  aspect-ratio: 28 / 8;
   filter: drop-shadow(0 0 20px var(--primary-glow));
   transform: scale(1.6);
   transform-origin: center;
@@ -2360,4 +2361,46 @@ html[data-theme="dark"] .sandbox-dropzone {
     grid-template-columns: 1fr;
     gap: 40px;
   }
+}
+
+/* Outreach Tagline Accent */
+.outreach-rocket-launch {
+  position: relative;
+  display: inline-block;
+  color: var(--primary);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 800;
+}
+
+/* Flying Rocket Styles */
+.flying-rocket {
+  position: absolute;
+  z-index: 2000;
+  pointer-events: none;
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: center bottom;
+}
+
+.rocket-icon-elem {
+  font-size: 32px !important;
+  color: #f97316;
+  filter: drop-shadow(0 0 12px rgba(249, 115, 22, 0.8));
+  display: inline-block;
+}
+
+.rocket-trail {
+  width: 3px;
+  height: 0px;
+  background: linear-gradient(to top, transparent, #f97316, #ef4444);
+  opacity: 0.85;
+  margin-top: -2px;
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.4);
+  transform-origin: top center;
 }

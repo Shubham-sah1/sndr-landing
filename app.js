@@ -735,13 +735,19 @@ function initScrollReveal() {
     ctx.fillText(initials, 90, 90);
   });
 
-  // Setup animations on window load to ensure Y coordinates are fully settled
-  window.addEventListener('load', () => {
+  // Setup animations once page is fully loaded to ensure Y coordinates are fully settled
+  if (document.readyState === 'complete') {
     setupGSAPTimelines();
-  });
+  } else {
+    window.addEventListener('load', () => {
+      setupGSAPTimelines();
+    });
+  }
 }
 
 function setupGSAPTimelines() {
+  console.log('[SNDR] Setting up GSAP Timelines...');
+  try {
   // 1. FULL SCREEN SCROLL-MORPH TIMELINE
   const introTl = gsap.timeline({
     scrollTrigger: {
@@ -1023,6 +1029,10 @@ function setupGSAPTimelines() {
   )
   .fromTo('#founders .section-intro', { opacity: 0, y: 35 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.8')
   .fromTo('#founders .founder-card', { opacity: 0, y: 40 }, { opacity: 1, y: 0, stagger: 0.15, duration: 0.8 }, '-=0.6');
+    console.log('[SNDR] GSAP Timelines setup completed successfully.');
+  } catch (error) {
+    console.error('[SNDR] Error in GSAP timeline setup:', error);
+  }
 }
 
 /* ==========================================

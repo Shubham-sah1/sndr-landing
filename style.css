@@ -2404,3 +2404,21 @@ html[data-theme="dark"] .sandbox-dropzone {
   box-shadow: 0 0 8px var(--primary-glow);
   transform-origin: top center;
 }
+
+/* Sparkle Effect highlight word */
+.cold-mailing-sparkle {
+  position: relative;
+  display: inline-block;
+  transition: text-shadow 0.3s ease;
+}
+
+/* Dynamic Sparkle Particles */
+.sparkle-star {
+  position: absolute;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 0 4px currentColor);
+}

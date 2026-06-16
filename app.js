@@ -885,17 +885,23 @@ function setupGSAPTimelines() {
         duration: 0.2
       }, 1.1);
 
-      // Glow effect on hero title
-      introTl.to('.hero-title', {
+      // Trigger sparkle particles on impact
+      introTl.call(() => {
+        const coldMailing = document.querySelector('.cold-mailing-sparkle');
+        if (coldMailing) {
+          triggerSparkles(coldMailing);
+        }
+      }, null, 1.2);
+
+      // Glow effect only on the "Cold Emailing" highlight
+      introTl.to('.cold-mailing-sparkle', {
         textShadow: '0 0 25px var(--primary-glow), 0 0 10px var(--primary)',
-        scale: 1.04,
         duration: 0.3,
         ease: 'power2.out'
       }, 1.2);
 
-      introTl.to('.hero-title', {
+      introTl.to('.cold-mailing-sparkle', {
         textShadow: 'none',
-        scale: 1.0,
         duration: 0.3,
         ease: 'power2.in'
       }, 1.5);
@@ -1028,4 +1034,72 @@ function initTilt() {
       el.style.boxShadow = '';
     });
   });
+}
+
+/* ==========================================
+   11. Particle Sparkles Burst Effect
+   ========================================== */
+function triggerSparkles(element) {
+  if (!element) return;
+  const rect = element.getBoundingClientRect();
+  const parent = element.offsetParent || document.body;
+  const parentRect = parent.getBoundingClientRect();
+  
+  // Calculate center of element relative to offsetParent
+  const centerX = rect.left + rect.width / 2 - parentRect.left;
+  const centerY = rect.top + rect.height / 2 - parentRect.top;
+
+  const colors = ['#3b82f6', '#818cf8', '#60a5fa', '#a5b4fc', '#ffffff'];
+
+  for (let i = 0; i < 12; i++) {
+    const sparkle = document.createElement('div');
+    sparkle.className = 'sparkle-star';
+    sparkle.innerHTML = `
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z" fill="currentColor"/>
+      </svg>
+    `;
+    
+    // Style sparkle
+    sparkle.style.width = `${Math.random() * 10 + 6}px`;
+    sparkle.style.height = sparkle.style.width;
+    sparkle.style.color = colors[Math.floor(Math.random() * colors.length)];
+    
+    // Position at text center
+    sparkle.style.left = `${centerX}px`;
+    sparkle.style.top = `${centerY}px`;
+    
+    parent.appendChild(sparkle);
+
+    // Burst directions
+    const angle = Math.random() * Math.PI * 2;
+    const distance = Math.random() * 50 + 25;
+    const targetX = centerX + Math.cos(angle) * distance;
+    const targetY = centerY + Math.sin(angle) * distance;
+    const duration = Math.random() * 0.4 + 0.3;
+
+    gsap.set(sparkle, {
+      scale: 0,
+      rotation: 0,
+      opacity: 1
+    });
+
+    gsap.to(sparkle, {
+      left: targetX,
+      top: targetY,
+      scale: Math.random() * 1.0 + 0.5,
+      rotation: Math.random() * 360 + 90,
+      duration: duration * 0.5,
+      ease: 'power1.out',
+      onComplete: () => {
+        gsap.to(sparkle, {
+          opacity: 0,
+          scale: 0,
+          duration: duration * 0.5,
+          ease: 'power1.in',
+          onComplete: () => sparkle.remove()
+        });
+      }
+    });
+  }
 }

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>R Code — Data Analysis</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0f1117;color:#e8eaf0;min-height:100vh;padding:40px 20px}
+h1{text-align:center;font-size:22px;font-weight:500;color:#fff;margin-bottom:8px;letter-spacing:0.02em}
+.subtitle{text-align:center;font-size:13px;color:#6b7280;margin-bottom:36px;font-family:monospace}
+.boxes{max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
+.box{background:#1a1d2e;border:1px solid #2a2d3e;border-radius:10px;overflow:hidden}
+.box-header{display:flex;align-items:center;gap:10px;padding:12px 18px;background:#141626;border-bottom:1px solid #2a2d3e}
+.badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:4px}
+.b1{background:#1e3a5f;color:#60a5fa}
+.b2{background:#14432a;color:#4ade80}
+.b3{background:#3d2a00;color:#fbbf24}
+.box-title{font-size:13px;font-weight:500;color:#e8eaf0}
+.box-sub{font-size:11px;color:#6b7280;margin-left:auto;font-family:monospace}
+pre{margin:0;padding:18px;overflow-x:auto;font-family:'Courier New',Courier,monospace;font-size:12.5px;line-height:1.7;color:#c9d1d9;background:#0d1117}
+.kw{color:#ff7b72}.fn{color:#79c0ff}.cm{color:#8b949e;font-style:italic}.st{color:#a5d6ff}.nm{color:#f8c555}
+</style>
+</head>
+<body>
+<h1>R Code — Data Analysis</h1>
+<p class="subtitle">// three exercises</p>
+<div class="boxes">
+
+<div class="box">
+<div class="box-header">
+  <span class="badge b1">Box 1</span>
+  <span class="box-title">Descriptive Statistics &amp; Visualisation</span>
+  <span class="box-sub">mean · sd · quantile · hist · boxplot · cor</span>
+</div>
+<pre><code><span class="cm"># Build employee data frame</span>
+db &lt;- data.frame(
+  empid = c(<span class="st">"E01","E02","E03","E04","E05"</span>),
+  dept  = <span class="fn">as.factor</span>(c(<span class="st">"Finance","HR","Finance","HR","Sales"</span>)),
+  ename = c(<span class="st">"Ram","Tom","Ricky","Winston","Trump"</span>),
+  ey    = <span class="fn">as.integer</span>(c(<span class="nm">5,10,20,40,20</span>)),
+  wh    = <span class="fn">as.numeric</span>(c(<span class="nm">10,40,20,70,25</span>)),
+  ms    = <span class="fn">as.numeric</span>(c(<span class="nm">100,200,300,600,900</span>)),
+  gs    = <span class="fn">as.numeric</span>(c(<span class="nm">10000,10000,30000,10000,40000</span>))
+)
+db$txs &lt;- <span class="nm">0.10</span> * db$gs
+db$ns  &lt;- db$gs - db$txs
+
+<span class="cm"># Means</span>
+<span class="fn">mean</span>(db$ey);  <span class="fn">mean</span>(db$wh);  <span class="fn">mean</span>(db$ms)
+<span class="fn">mean</span>(db$gs);  <span class="fn">mean</span>(db$txs); <span class="fn">mean</span>(db$ns)
+
+<span class="cm"># Standard deviations</span>
+<span class="fn">sd</span>(db$ey);  <span class="fn">sd</span>(db$wh);  <span class="fn">sd</span>(db$ms)
+<span class="fn">sd</span>(db$gs);  <span class="fn">sd</span>(db$txs); <span class="fn">sd</span>(db$ns)
+
+<span class="cm"># Quantiles</span>
+<span class="fn">quantile</span>(db$ey);  <span class="fn">quantile</span>(db$wh);  <span class="fn">quantile</span>(db$ms)
+<span class="fn">quantile</span>(db$gs);  <span class="fn">quantile</span>(db$txs); <span class="fn">quantile</span>(db$ns)
+
+<span class="cm"># Plots</span>
+<span class="fn">hist</span>(db$ns,    main=<span class="st">"Histogram of Net Salary"</span>,    xlab=<span class="st">"Net Salary"</span>, col=<span class="st">"skyblue"</span>)
+<span class="fn">boxplot</span>(db$ey, main=<span class="st">"Box Plot of Experience"</span>,     ylab=<span class="st">"Years"</span>,      col=<span class="st">"orange"</span>)
+<span class="fn">plot</span>(db$wh,    main=<span class="st">"Scatter Plot of Weekly Hours"</span>, ylab=<span class="st">"Years"</span>, pch=<span class="nm">19</span>, col=<span class="st">"darkgreen"</span>)
+
+<span class="cm"># Covariance &amp; correlation</span>
+<span class="fn">cov</span>(db$ey, db$ns)
+<span class="fn">cor</span>(db$ey, db$ns)
+<span class="fn">cor</span>(db$ms, db$ns)^<span class="nm">2</span></code></pre>
+</div>
+
+<div class="box">
+<div class="box-header">
+  <span class="badge b2">Box 2</span>
+  <span class="box-title">Text Mining &amp; Sentiment Analysis</span>
+  <span class="box-sub">tm · wordcloud · syuzhet · NRC sentiment</span>
+</div>
+<pre><code><span class="fn">install.packages</span>(<span class="st">"tm"</span>)
+<span class="fn">install.packages</span>(<span class="st">"wordcloud"</span>)
+<span class="fn">install.packages</span>(<span class="st">"syuzhet"</span>)
+<span class="kw">library</span>(tm); <span class="kw">library</span>(wordcloud); <span class="kw">library</span>(syuzhet)
+
+text_data &lt;- <span class="st">"Hon'ble Members,
+It gives me immense pleasure to address this session of Parliament.
+Just two months ago, we celebrated the 75th anniversary of adoption of our
+Constitution, and only a few days ago, the Indian Republic completed 75 years
+of its journey. This occasion will elevate India pride as the mother of democracy
+to new heights. On behalf of all the citizens of the country, I pay tribute to
+Babasaheb Ambedkar and all the framers of the Constitution.
+The historic festival of Mahakumbh is also underway in the country. Mahakumbh
+is a festival of India cultural tradition and social consciousness. Millions of
+devotees from across the country and the world have taken the holy dip at
+Prayagraj. I express my sorrow over the unfortunate incident that occurred on
+Mauni Amavasya and wish for the speedy recovery of the injured.
+A few days ago, we lost the former Prime Minister of the country, Dr. Manmohan
+Singhji. He served the nation as Prime Minister for ten years and was a long-time
+member of Parliament. I offer my heartfelt tribute to Manmohan Singhji."</span>
+
+<span class="cm"># Build and clean corpus</span>
+corpus &lt;- <span class="fn">Corpus</span>(<span class="fn">VectorSource</span>(text_data))
+corpus &lt;- <span class="fn">tm_map</span>(corpus, <span class="fn">content_transformer</span>(tolower))
+corpus &lt;- <span class="fn">tm_map</span>(corpus, removePunctuation)
+corpus &lt;- <span class="fn">tm_map</span>(corpus, removeNumbers)
+corpus &lt;- <span class="fn">tm_map</span>(corpus, stripWhitespace)
+corpus &lt;- <span class="fn">tm_map</span>(corpus, removeWords, <span class="fn">stopwords</span>(<span class="st">"en"</span>))
+
+<span class="cm"># Word cloud</span>
+<span class="fn">wordcloud</span>(corpus, min.freq=<span class="nm">3</span>, random.order=<span class="kw">FALSE</span>,
+          colors=<span class="fn">rainbow</span>(<span class="nm">8</span>), scale=c(<span class="nm">3</span>, <span class="nm">0.5</span>))
+
+<span class="cm"># NRC sentiment scores</span>
+sentiment_scores &lt;- <span class="fn">get_nrc_sentiment</span>(text_data)
+sentiment_sum    &lt;- <span class="fn">colSums</span>(sentiment_scores)
+<span class="fn">barplot</span>(sentiment_sum, col=<span class="fn">rainbow</span>(<span class="nm">10</span>),
+        main=<span class="st">"barplot is my god"</span>,
+        xlab=<span class="st">"emotions"</span>, ylab=<span class="st">"frequency"</span>, las=<span class="nm">2</span>)</code></pre>
+</div>
+
+<div class="box">
+<div class="box-header">
+  <span class="badge b3">Box 3</span>
+  <span class="box-title">Multiple Linear Regression</span>
+  <span class="box-sub">lmtest · advertising spend → sales prediction</span>
+</div>
+<pre><code><span class="fn">install.packages</span>(<span class="st">"lmtest"</span>)
+<span class="kw">library</span>(lmtest)
+
+db &lt;- data.frame(
+  Facebook  = c(<span class="nm">230.1,44.5,17.2,151.5,180.8,8.7,57.5,120.2,8.6,199.8,
+                66.1,214.7,23.8,97.5,204.1,195.4,67.8,281.4,69.2,147.3,
+                218.4,237.4,13.2,228.3,62.3</span>),
+  Instagram = c(<span class="nm">37.8,39.3,45.9,41.3,10.8,48.9,32.8,19.6,2.1,2.6,
+                5.8,24.0,35.1,7.6,32.9,47.7,36.6,39.6,20.5,23.9,
+                27.7,5.1,15.9,16.9,12.6</span>),
+  Twitter   = c(<span class="nm">69.2,45.1,69.3,58.5,58.4,75.0,23.5,11.6,1.0,21.2,
+                24.2,4.0,65.9,7.2,46.0,52.9,114.0,55.8,18.3,19.1,
+                53.4,23.5,49.6,26.2,18.3</span>),
+  Sales     = c(<span class="nm">22.1,10.4,12.0,16.5,17.9,7.2,11.8,13.2,15.5,15.6,
+                12.6,17.4,9.2,13.7,19.0,22.4,12.5,24.4,11.3,14.6,
+                18.0,17.5,5.6,20.5,9.7</span>)
+)
+
+<span class="cm"># Fit model</span>
+model &lt;- <span class="fn">lm</span>(Sales ~ Facebook + Instagram + Twitter, data=db)
+<span class="fn">summary</span>(model)
+<span class="fn">par</span>(mfrow=c(<span class="nm">2</span>,<span class="nm">2</span>)); <span class="fn">plot</span>(model)
+<span class="fn">coef</span>(model)
+
+<span class="cm"># Predict sales with 10% more Facebook spend</span>
+avg_facebook &lt;- <span class="fn">mean</span>(db$Facebook)
+new_facebook  &lt;- avg_facebook * <span class="nm">1.10</span>
+new_data &lt;- data.frame(
+  Facebook  = new_facebook,
+  Instagram = <span class="fn">mean</span>(db$Instagram),
+  Twitter   = <span class="fn">mean</span>(db$Twitter)
+)
+<span class="fn">predict</span>(model, newdata=new_data)</code></pre>
+</div>
+
+</div>
+</body>
+</html>

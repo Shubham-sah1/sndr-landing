@@ -817,32 +817,32 @@ function setupGSAPTimelines() {
         duration: 0.3
       }, 0);
 
-      // Rocket emerges from the center of the logo as it gets small
+      // Rocket emerges immediately from the center of the logo as you start scrolling
       introTl.to(rocket, {
         opacity: 1,
         scale: 1.0,
         duration: 0.2,
         ease: 'power1.out'
-      }, 0.3);
+      }, 0);
 
       introTl.to('.large-logo', {
         opacity: 0,
         duration: 0.2
-      }, 0.5);
+      }, 0.25);
 
       // Rocket trail expands and launches
       introTl.to(rocket.querySelector('.rocket-trail'), {
         height: '50px',
         duration: 0.3
-      }, 0.4);
+      }, 0.1);
 
       // Rocket flies towards the hero title "Cold Emailing"
       introTl.to(rocket, {
         left: endX,
         top: endY,
-        duration: 0.8,
+        duration: 0.9,
         ease: 'power1.inOut'
-      }, 0.5);
+      }, 0.1);
 
       // Fade out loader background and reveal hero components
       introTl.to('.logo-transform-container', {
@@ -850,40 +850,41 @@ function setupGSAPTimelines() {
         pointerEvents: 'none',
         duration: 0.6,
         ease: 'power2.inOut'
-      }, 0.6);
+      }, 0.3);
 
       introTl.to('.glass-nav', {
         opacity: 1,
         y: 0,
+        pointerEvents: 'auto',
         duration: 0.5,
         ease: 'power2.out'
-      }, 0.5);
+      }, 0.4);
 
       introTl.to('.hero-text-content', {
         opacity: 1,
         y: 0,
         duration: 0.6,
         ease: 'power2.out'
-      }, 0.6);
+      }, 0.4);
 
       introTl.to('.hero-simulator', {
         opacity: 1,
         y: 0,
         duration: 0.6,
         ease: 'power2.out'
-      }, 0.7);
+      }, 0.5);
 
       // Rocket landing & impact glow
       introTl.to(rocket, {
         opacity: 0,
         scale: 0.3,
-        duration: 0.2
-      }, 1.1);
+        duration: 0.15
+      }, 0.85);
 
       introTl.to(rocket.querySelector('.rocket-trail'), {
         height: '0px',
-        duration: 0.2
-      }, 1.1);
+        duration: 0.15
+      }, 0.85);
 
       // Trigger sparkle particles on impact
       introTl.call(() => {
@@ -891,31 +892,31 @@ function setupGSAPTimelines() {
         if (coldMailing) {
           triggerSparkles(coldMailing);
         }
-      }, null, 1.2);
+      }, null, 1.0);
 
       // Glow effect only on the "Cold Emailing" highlight
       introTl.to('.cold-mailing-sparkle', {
         textShadow: '0 0 25px var(--primary-glow), 0 0 10px var(--primary)',
         duration: 0.3,
         ease: 'power2.out'
-      }, 1.2);
+      }, 1.0);
 
       introTl.to('.cold-mailing-sparkle', {
         textShadow: 'none',
         duration: 0.3,
         ease: 'power2.in'
-      }, 1.5);
+      }, 1.3);
 
       // Clean up visibility at the end of scrub
       introTl.to('.logo-transform-container', {
         display: 'none',
         duration: 0.1
-      }, 1.3);
+      }, 1.0);
 
       introTl.to('.hero', {
         pointerEvents: 'auto',
         duration: 0.1
-      }, 1.3);
+      }, 1.0);
     }
 
   // 3. INTERACTIVE 3D SCROLL-SCRUBBED UNFOLDING FOR ALL SECTIONS

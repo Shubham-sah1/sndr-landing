@@ -150,7 +150,7 @@ body.cursor-active .custom-cursor-follower {
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 1000;
+  z-index: 2005;
   background-color: var(--nav-bg);
   border-bottom: 1px solid var(--nav-border);
   backdrop-filter: blur(20px);
@@ -2317,6 +2317,7 @@ html[data-theme="dark"] .sandbox-dropzone {
 .js-active .glass-nav {
   opacity: 0;
   transform: translateY(-30px);
+  pointer-events: none;
 }
 
 .js-active .hero-text-content {

@@ -2388,19 +2388,19 @@ html[data-theme="dark"] .sandbox-dropzone {
 }
 
 .rocket-icon-elem {
-  font-size: 40px !important;
-  color: #ff5a00;
-  filter: drop-shadow(0 0 15px rgba(255, 90, 0, 0.8));
+  font-size: 38px !important;
+  color: var(--tx);
+  filter: drop-shadow(0 0 10px var(--primary-glow));
   display: inline-block;
 }
 
 .rocket-trail {
-  width: 4px;
+  width: 3px;
   height: 0px;
-  background: linear-gradient(to top, transparent, #ff5a00, #ff0055);
-  opacity: 0.9;
+  background: linear-gradient(to top, transparent, var(--primary), var(--tx));
+  opacity: 0.75;
   margin-top: -2px;
-  border-radius: 3px;
-  box-shadow: 0 0 12px rgba(255, 90, 0, 0.5);
+  border-radius: 2px;
+  box-shadow: 0 0 8px var(--primary-glow);
   transform-origin: top center;
 }

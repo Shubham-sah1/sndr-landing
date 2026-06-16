@@ -748,205 +748,169 @@ function initScrollReveal() {
 function setupGSAPTimelines() {
   console.log('[SNDR] Setting up GSAP Timelines...');
   try {
-  // 1. FULL SCREEN SCROLL-MORPH TIMELINE
-  const introTl = gsap.timeline({
-    scrollTrigger: {
-      trigger: '.intro-scroll-wrapper',
-      start: 'top top',
-      end: '+=1000', // Shorter, more responsive morph sequence
-      scrub: 0.5,
-      pin: true,
-      pinSpacing: true
+    // 1. FULL SCREEN SCROLL-MORPH TIMELINE
+    const wrapper = document.querySelector('.intro-scroll-wrapper');
+    const logo = document.querySelector('.large-logo');
+    const heroTitle = document.querySelector('.hero-title');
+    const hero = document.querySelector('.hero');
+    const rocket = document.getElementById('intro-rocket');
+
+    if (wrapper && logo && heroTitle && hero && rocket) {
+      // Force ScrollTrigger to refresh first so positions are resolved accurately
+      ScrollTrigger.refresh();
+
+      const rectLogo = logo.getBoundingClientRect();
+      const rectWrap = wrapper.getBoundingClientRect();
+      const startX = rectLogo.left + rectLogo.width / 2 - rectWrap.left;
+      const startY = rectLogo.top + rectLogo.height / 2 - rectWrap.top;
+
+      const rectTitle = heroTitle.getBoundingClientRect();
+      const rectHero = hero.getBoundingClientRect();
+      const endX = rectTitle.left + rectTitle.width / 2 - rectHero.left;
+      const endY = rectTitle.top + rectTitle.height / 2 - rectHero.top;
+
+      const angle = Math.atan2(endY - startY, endX - startX) * 180 / Math.PI;
+      const rocketRotation = angle - 45; // adjustment for Google Material Symbol rocket launch icon base orientation
+
+      // Set initial rocket position to be exactly at the center of the logo
+      gsap.set(rocket, {
+        left: startX,
+        top: startY,
+        opacity: 0,
+        scale: 0.5,
+        rotation: rocketRotation,
+        xPercent: -50,
+        yPercent: -50
+      });
+
+      const introTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: '.intro-scroll-wrapper',
+          start: 'top top',
+          end: '+=1000', // Pinned duration sequence
+          scrub: 0.5,
+          pin: true,
+          pinSpacing: true
+        }
+      });
+
+      // Scale down the large SNDR. logo and fade it out
+      introTl.to('.large-logo', {
+        scale: 0.35,
+        y: -20,
+        opacity: 0.2,
+        filter: 'blur(3px)',
+        duration: 0.5,
+        ease: 'power1.inOut'
+      }, 0);
+
+      // Fade out scroll indicator and tagline quickly
+      introTl.to('.scroll-down-hint', {
+        opacity: 0,
+        y: 15,
+        duration: 0.3
+      }, 0);
+
+      introTl.to('.intro-tagline', {
+        opacity: 0,
+        y: 15,
+        duration: 0.3
+      }, 0);
+
+      // Rocket emerges from the center of the logo as it gets small
+      introTl.to(rocket, {
+        opacity: 1,
+        scale: 1.0,
+        duration: 0.2,
+        ease: 'power1.out'
+      }, 0.3);
+
+      introTl.to('.large-logo', {
+        opacity: 0,
+        duration: 0.2
+      }, 0.5);
+
+      // Rocket trail expands and launches
+      introTl.to(rocket.querySelector('.rocket-trail'), {
+        height: '50px',
+        duration: 0.3
+      }, 0.4);
+
+      // Rocket flies towards the hero title "Cold Emailing"
+      introTl.to(rocket, {
+        left: endX,
+        top: endY,
+        duration: 0.8,
+        ease: 'power1.inOut'
+      }, 0.5);
+
+      // Fade out loader background and reveal hero components
+      introTl.to('.logo-transform-container', {
+        opacity: 0,
+        pointerEvents: 'none',
+        duration: 0.6,
+        ease: 'power2.inOut'
+      }, 0.6);
+
+      introTl.to('.glass-nav', {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        ease: 'power2.out'
+      }, 0.5);
+
+      introTl.to('.hero-text-content', {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: 'power2.out'
+      }, 0.6);
+
+      introTl.to('.hero-simulator', {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: 'power2.out'
+      }, 0.7);
+
+      // Rocket landing & impact glow
+      introTl.to(rocket, {
+        opacity: 0,
+        scale: 0.3,
+        duration: 0.2
+      }, 1.1);
+
+      introTl.to(rocket.querySelector('.rocket-trail'), {
+        height: '0px',
+        duration: 0.2
+      }, 1.1);
+
+      // Glow effect on hero title
+      introTl.to('.hero-title', {
+        textShadow: '0 0 25px var(--primary-glow), 0 0 10px var(--primary)',
+        scale: 1.04,
+        duration: 0.3,
+        ease: 'power2.out'
+      }, 1.2);
+
+      introTl.to('.hero-title', {
+        textShadow: 'none',
+        scale: 1.0,
+        duration: 0.3,
+        ease: 'power2.in'
+      }, 1.5);
+
+      // Clean up visibility at the end of scrub
+      introTl.to('.logo-transform-container', {
+        display: 'none',
+        duration: 0.1
+      }, 1.3);
+
+      introTl.to('.hero', {
+        pointerEvents: 'auto',
+        duration: 0.1
+      }, 1.3);
     }
-  });
-
-  // Scale down the large SNDR. logo
-  introTl.to('.large-logo', {
-    scale: 0.35,
-    y: -40,
-    opacity: 0,
-    filter: 'blur(4px)',
-    duration: 1.0,
-    ease: 'power1.inOut'
-  }, 0);
-
-  // Fade out scroll indicator and tagline quickly
-  introTl.to('.scroll-down-hint', {
-    opacity: 0,
-    y: 15,
-    duration: 0.4
-  }, 0);
-
-  introTl.to('.intro-tagline', {
-    opacity: 0,
-    y: 15,
-    duration: 0.4
-  }, 0);
-
-  // Fade in the envelope icon at the same place
-  introTl.to('.intro-mail-wrap', {
-    opacity: 1,
-    scale: 1,
-    rotation: 360,
-    xPercent: -50,
-    yPercent: -50,
-    duration: 0.8,
-    ease: 'back.out(1.2)'
-  }, 0.2);
-
-  // Fade in and slide up "Delivered" badge
-  introTl.to('.intro-delivered-badge', {
-    opacity: 1,
-    scale: 1.0,
-    y: 0,
-    xPercent: -50,
-    duration: 0.6,
-    ease: 'back.out(1.2)'
-  }, 0.6);
-
-  // Fade out the entire morph box as we transition to hero
-  introTl.to('.logo-transform-container', {
-    opacity: 0,
-    pointerEvents: 'none',
-    duration: 0.8,
-    ease: 'power2.inOut'
-  }, 1.0);
-
-  // Fade in nav and hero elements early to overlap with the logo morph
-  introTl.to('.glass-nav', {
-    opacity: 1,
-    y: 0,
-    duration: 0.6,
-    ease: 'power2.out'
-  }, 0.8);
-
-  introTl.to('.hero-text-content', {
-    opacity: 1,
-    y: 0,
-    duration: 0.8,
-    ease: 'power2.out'
-  }, 1.0);
-
-  introTl.to('.hero-simulator', {
-    opacity: 1,
-    y: 0,
-    duration: 0.8,
-    ease: 'power2.out'
-  }, 1.2);
-
-  // Hide sticky container completely at end of scrub
-  introTl.to('.logo-transform-container', {
-    display: 'none',
-    duration: 0.1
-  }, 1.8);
-
-  // Enable pointer-events on the hero sibling container
-  introTl.to('.hero', {
-    pointerEvents: 'auto',
-    duration: 0.1
-  }, 1.8);
-
-  // 2. FLYING ROCKET SCROLL TRIGGER
-  const taglineWord = document.querySelector('.outreach-rocket-launch');
-  const coreElem = document.getElementById('engine-core');
-  const rocket = document.getElementById('intro-rocket');
-
-  if (taglineWord && coreElem && rocket) {
-    // Force ScrollTrigger to refresh first so the pin spacer offset is fully accounted for
-    ScrollTrigger.refresh();
-
-    const rectTagline = taglineWord.getBoundingClientRect();
-    const rectCore = coreElem.getBoundingClientRect();
-
-    // Calculate absolute body-relative coordinates
-    const startX = rectTagline.left + rectTagline.width / 2;
-    const startY = rectTagline.top + rectTagline.height / 2 + window.scrollY;
-
-    const endX = rectCore.left + rectCore.width / 2;
-    const endY = rectCore.top + rectCore.height / 2 + window.scrollY;
-
-    // Calculate flight angle (pointing from tagline to compiler core)
-    const angle = Math.atan2(endY - startY, endX - startX) * 180 / Math.PI;
-    // Adjust rotation (rocket icon points top-right 45deg by default)
-    const rocketRotation = angle - 45;
-
-    // Set initial positions
-    gsap.set(rocket, {
-      left: startX,
-      top: startY,
-      opacity: 0,
-      scale: 0.5,
-      rotation: rocketRotation,
-      xPercent: -50,
-      yPercent: -50
-    });
-
-    const flightTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: '.intro-scroll-wrapper',
-        start: 'top top',
-        end: '+=1600', // Pinned duration (1000px) + distance to playground
-        scrub: 0.5
-      }
-    });
-
-    // Launch phase (spark fire)
-    flightTl.to(rocket, {
-      opacity: 1,
-      scale: 1.1,
-      duration: 0.3
-    })
-    .to(rocket.querySelector('.rocket-trail'), {
-      height: '60px',
-      duration: 0.3
-    }, 0);
-
-    // Flight down the document
-    flightTl.to(rocket, {
-      left: endX,
-      top: endY,
-      ease: 'power1.inOut',
-      duration: 1.5
-    }, 0.2);
-
-    // Landing sequence: impact triggers high-tech compiler core glow
-    flightTl.to(rocket, {
-      opacity: 0,
-      scale: 0.3,
-      duration: 0.2
-    }, 1.5)
-    .to(rocket.querySelector('.rocket-trail'), {
-      height: '0px',
-      duration: 0.2
-    }, 1.5)
-    // Engine compiler core landing reaction
-    .to('#engine-core .core-glow-pulse', {
-      scale: 1.8,
-      opacity: 1,
-      duration: 0.4,
-      repeat: 1,
-      yoyo: true
-    }, 1.5)
-    .to('#engine-core .engine-core-center', {
-      scale: 1.25,
-      boxShadow: '0 0 50px rgba(0, 90, 194, 0.8)',
-      duration: 0.2,
-      yoyo: true,
-      repeat: 1
-    }, 1.5)
-    .to('#engine-core .scanner-line', {
-      opacity: 0.8,
-      top: '100%',
-      duration: 0.8
-    }, 1.5)
-    .to('#engine-core .engine-core-ring', {
-      opacity: 0.6,
-      scale: 1.1,
-      duration: 0.4,
-      yoyo: true,
-      repeat: 1
-    }, 1.5);
-  }
 
   // 3. INTERACTIVE 3D SCROLL-SCRUBBED UNFOLDING FOR ALL SECTIONS
   

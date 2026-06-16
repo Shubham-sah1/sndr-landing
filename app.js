@@ -701,19 +701,10 @@ function initModals() {
    9. Founders Canvas initials and Scroll Reveal
    ========================================== */
 function initScrollReveal() {
-  const reveals = document.querySelectorAll('.reveal');
+  // Register GSAP ScrollTrigger plugin
+  gsap.registerPlugin(ScrollTrigger);
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('active');
-      }
-    });
-  }, { threshold: 0.15 });
-
-  reveals.forEach(el => observer.observe(el));
-
-  // Initialize Canvas Avatars for Founders
+  // Initialize Canvas Avatars for Founders (keep existing logic)
   const canvases = document.querySelectorAll('.founder-avatar-canvas');
   canvases.forEach(canvas => {
     const initials = canvas.getAttribute('data-initials');
@@ -736,4 +727,215 @@ function initScrollReveal() {
     ctx.textBaseline = 'middle';
     ctx.fillText(initials, 90, 90);
   });
+
+  // 1. FULL SCREEN SCROLL-MORPH TIMELINE
+  const introTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '.intro-scroll-wrapper',
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 0.5,
+      pin: '.logo-transform-container',
+      pinSpacing: false
+    }
+  });
+
+  // Scale down the large SNDR. logo
+  introTl.to('.large-logo', {
+    scale: 0.4,
+    y: -30,
+    duration: 1.5,
+    ease: 'power1.inOut'
+  }, 0);
+
+  // Fade out scroll indicator
+  introTl.to('.scroll-down-hint', {
+    opacity: 0,
+    y: 20,
+    duration: 0.5
+  }, 0);
+
+  // Fade out large logo pixels and fade in mail icon symbol
+  introTl.to('.large-logo', {
+    opacity: 0,
+    filter: 'blur(8px)',
+    duration: 1.0
+  }, 1.2);
+
+  introTl.to('.intro-mail-wrap', {
+    opacity: 1,
+    scale: 1,
+    rotation: 360,
+    duration: 1.2,
+    ease: 'back.out(1.5)'
+  }, 1.2);
+
+  // Fade in and slide up "Delivered" badge
+  introTl.to('.intro-delivered-badge', {
+    opacity: 1,
+    scale: 1.0,
+    y: -15,
+    duration: 1.0,
+    ease: 'back.out(1.2)'
+  }, 1.8);
+
+  // Fade out transform container overlay
+  introTl.to('.logo-transform-container', {
+    opacity: 0,
+    pointerEvents: 'none',
+    duration: 1.5,
+    ease: 'power2.inOut'
+  }, 2.5);
+
+  // Fade in and slide down navigation bar
+  introTl.to('.glass-nav', {
+    opacity: 1,
+    y: 0,
+    duration: 1.0,
+    ease: 'power2.out'
+  }, 2.5);
+
+  // Stagger fade-in of hero text content & hero simulator window
+  introTl.to('.hero-text-content', {
+    opacity: 1,
+    y: 0,
+    duration: 1.2,
+    ease: 'power3.out'
+  }, 2.8);
+
+  introTl.to('.hero-simulator', {
+    opacity: 1,
+    y: 0,
+    duration: 1.2,
+    ease: 'power3.out'
+  }, 3.0);
+
+  // Hide sticky container completely at end of scrub
+  introTl.to('.logo-transform-container', {
+    display: 'none',
+    duration: 0.1
+  });
+
+  // 2. LAYERED SCROLL REVEALS FOR SECTIONS
+  
+  // Section A: Outreach Sandbox
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: '#playground',
+      start: 'top 75%',
+      toggleActions: 'play none none none'
+    }
+  })
+  .from('#playground .section-intro', {
+    opacity: 0,
+    y: 40,
+    duration: 0.8,
+    ease: 'power2.out'
+  })
+  .from('#playground .leads-shelf', {
+    opacity: 0,
+    x: -50,
+    duration: 0.8,
+    ease: 'power2.out'
+  }, '-=0.4')
+  .from('#playground .sandbox-dropzone', {
+    opacity: 0,
+    scale: 0.8,
+    duration: 0.8,
+    ease: 'power2.out'
+  }, '-=0.6')
+  .from('#playground .sandbox-output', {
+    opacity: 0,
+    x: 50,
+    duration: 0.8,
+    ease: 'power2.out'
+  }, '-=0.6');
+
+  // Section B: Bento Grid Features
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: '#features',
+      start: 'top 75%',
+      toggleActions: 'play none none none'
+    }
+  })
+  .from('#features .section-intro', {
+    opacity: 0,
+    y: 40,
+    duration: 0.8,
+    ease: 'power2.out'
+  })
+  .from('#features .bento-item', {
+    opacity: 0,
+    y: 60,
+    rotationX: 10,
+    stagger: 0.15,
+    duration: 1.0,
+    ease: 'power2.out'
+  }, '-=0.4');
+
+  // Section C: CV Matcher Chatbot
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: '#cv-matcher',
+      start: 'top 75%',
+      toggleActions: 'play none none none'
+    }
+  })
+  .from('#cv-matcher .section-intro', {
+    opacity: 0,
+    y: 40,
+    duration: 0.8,
+    ease: 'power2.out'
+  })
+  .from('#cv-matcher .cv-matcher-container', {
+    opacity: 0,
+    y: 60,
+    duration: 1.0,
+    ease: 'power3.out'
+  }, '-=0.4');
+
+  // Section D: Pricing
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: '#pricing',
+      start: 'top 75%',
+      toggleActions: 'play none none none'
+    }
+  })
+  .from('#pricing .section-intro', {
+    opacity: 0,
+    y: 40,
+    duration: 0.8,
+    ease: 'power2.out'
+  })
+  .from('#pricing .pricing-card', {
+    opacity: 0,
+    y: 50,
+    stagger: 0.15,
+    duration: 1.0,
+    ease: 'power2.out'
+  }, '-=0.4');
+
+  // Section E: Founders
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: '#founders',
+      start: 'top 80%',
+      toggleActions: 'play none none none'
+    }
+  })
+  .from('#founders .section-intro', {
+    opacity: 0,
+    y: 40,
+    duration: 0.8,
+    ease: 'power2.out'
+  })
+  .from('#founders .founder-card', {
+    opacity: 0,
+    y: 40,
+    stagger: 0.15,
+    duration: 1.0,
+    ease: 'power2.out'
+  }, '-=0.4');
 }

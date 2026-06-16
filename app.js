@@ -748,8 +748,14 @@ function initScrollReveal() {
     ease: 'power1.inOut'
   }, 0);
 
-  // Fade out scroll indicator
+  // Fade out scroll indicator and tagline
   introTl.to('.scroll-down-hint', {
+    opacity: 0,
+    y: 20,
+    duration: 0.5
+  }, 0);
+
+  introTl.to('.intro-tagline', {
     opacity: 0,
     y: 20,
     duration: 0.5
@@ -822,63 +828,83 @@ function initScrollReveal() {
     duration: 0.1
   });
 
-  // 2. LAYERED SCROLL REVEALS FOR SECTIONS
+  // 2. INTERACTIVE 3D SCROLL-SCRUBBED UNFOLDING FOR ALL SECTIONS
   
   // Section A: Outreach Sandbox
-  gsap.timeline({
+  const playgroundTl = gsap.timeline({
     scrollTrigger: {
       trigger: '#playground',
-      start: 'top 75%',
-      toggleActions: 'play none none none'
+      start: 'top 90%',
+      end: 'top 40%',
+      scrub: 0.8
     }
-  })
-  .fromTo('#playground .section-intro', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' })
-  .fromTo('#playground .sandbox-container', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '-=0.4')
-  .fromTo('#playground .leads-shelf', { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out' }, '-=0.2')
-  .fromTo('#playground .sandbox-dropzone', { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.6, ease: 'power2.out' }, '-=0.4')
-  .fromTo('#playground .sandbox-output', { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out' }, '-=0.4');
+  });
+  playgroundTl.fromTo('#playground > .container', 
+    { rotationX: -30, opacity: 0, z: -100, transformOrigin: 'top center' },
+    { rotationX: 0, opacity: 1, z: 0, duration: 1.0, ease: 'power1.out' }
+  )
+  .fromTo('#playground .leads-shelf', { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.6 }, '-=0.6')
+  .fromTo('#playground .sandbox-dropzone', { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.6 }, '-=0.6')
+  .fromTo('#playground .sandbox-output', { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.6 }, '-=0.6');
 
   // Section B: Bento Grid Features
-  gsap.timeline({
+  const featuresTl = gsap.timeline({
     scrollTrigger: {
       trigger: '#features',
-      start: 'top 75%',
-      toggleActions: 'play none none none'
+      start: 'top 90%',
+      end: 'top 40%',
+      scrub: 0.8
     }
-  })
-  .fromTo('#features .section-intro', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' })
-  .fromTo('#features .bento-item', { opacity: 0, y: 50, rotationX: 10 }, { opacity: 1, y: 0, rotationX: 0, stagger: 0.15, duration: 0.8, ease: 'power2.out' }, '-=0.4');
+  });
+  featuresTl.fromTo('#features > .container', 
+    { rotationX: -30, opacity: 0, z: -100, transformOrigin: 'top center' },
+    { rotationX: 0, opacity: 1, z: 0, duration: 1.0, ease: 'power1.out' }
+  )
+  .fromTo('#features .bento-item', { opacity: 0, y: 50, rotationX: 15 }, { opacity: 1, y: 0, rotationX: 0, stagger: 0.15, duration: 0.8 }, '-=0.6');
 
   // Section C: CV Matcher Chatbot
-  gsap.timeline({
+  const cvMatcherTl = gsap.timeline({
     scrollTrigger: {
       trigger: '#cv-matcher',
-      start: 'top 75%',
-      toggleActions: 'play none none none'
+      start: 'top 90%',
+      end: 'top 40%',
+      scrub: 0.8
     }
-  })
-  .fromTo('#cv-matcher .section-intro', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' })
-  .fromTo('#cv-matcher .cv-matcher-container', { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '-=0.4');
+  });
+  cvMatcherTl.fromTo('#cv-matcher > .container', 
+    { rotationX: -30, opacity: 0, z: -100, transformOrigin: 'top center' },
+    { rotationX: 0, opacity: 1, z: 0, duration: 1.0, ease: 'power1.out' }
+  )
+  .fromTo('#cv-matcher .cv-matcher-container', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.8 }, '-=0.6');
 
   // Section D: Pricing
-  gsap.timeline({
+  const pricingTl = gsap.timeline({
     scrollTrigger: {
       trigger: '#pricing',
-      start: 'top 75%',
-      toggleActions: 'play none none none'
+      start: 'top 90%',
+      end: 'top 40%',
+      scrub: 0.8
     }
-  })
-  .fromTo('#pricing .section-intro', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' })
-  .fromTo('#pricing .pricing-card', { opacity: 0, y: 50 }, { opacity: 1, y: 0, stagger: 0.15, duration: 0.8, ease: 'power2.out' }, '-=0.4');
+  });
+  pricingTl.fromTo('#pricing > .container', 
+    { rotationX: -30, opacity: 0, z: -100, transformOrigin: 'top center' },
+    { rotationX: 0, opacity: 1, z: 0, duration: 1.0, ease: 'power1.out' }
+  )
+  .fromTo('#pricing .pricing-card', { opacity: 0, y: 50, rotationX: 10 }, { opacity: 1, y: 0, rotationX: 0, stagger: 0.15, duration: 0.8 }, '-=0.6');
 
   // Section E: Founders
-  gsap.timeline({
+  const foundersTl = gsap.timeline({
     scrollTrigger: {
       trigger: '#founders',
-      start: 'top 80%',
-      toggleActions: 'play none none none'
+      start: 'top 90%',
+      end: 'top 45%',
+      scrub: 0.8
     }
-  })
-  .fromTo('#founders .section-intro', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' })
-  .fromTo('#founders .founder-card', { opacity: 0, y: 40 }, { opacity: 1, y: 0, stagger: 0.15, duration: 0.8, ease: 'power2.out' }, '-=0.4');
+  });
+  foundersTl.fromTo('#founders > .container', 
+    { rotationX: -30, opacity: 0, z: -100, transformOrigin: 'top center' },
+    { rotationX: 0, opacity: 1, z: 0, duration: 1.0, ease: 'power1.out' }
+  )
+  .fromTo('#founders .founder-card', { opacity: 0, y: 40 }, { opacity: 1, y: 0, stagger: 0.15, duration: 0.8 }, '-=0.6');
+}
 }

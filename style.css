@@ -2189,11 +2189,11 @@ html[data-theme="dark"] .sandbox-dropzone {
 }
 
 .large-logo {
-  width: 420px;
-  max-width: 85%;
+  width: 240px;
+  max-width: 80%;
   height: auto;
-  filter: drop-shadow(0 0 25px var(--primary-glow));
-  transform: scale(3.5);
+  filter: drop-shadow(0 0 20px var(--primary-glow));
+  transform: scale(1.6);
   transform-origin: center;
 }
 
@@ -2203,6 +2203,20 @@ html[data-theme="dark"] .sandbox-dropzone {
 
 .large-logo .dot {
   fill: var(--primary);
+}
+
+.intro-tagline {
+  margin-top: 40px;
+  font-family: var(--font-h);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--tx-muted);
+  letter-spacing: 0.05em;
+  text-transform: lowercase;
+  opacity: 1;
+  text-align: center;
+  transition: opacity 0.3s ease;
+  z-index: 1003;
 }
 
 .intro-mail-wrap {

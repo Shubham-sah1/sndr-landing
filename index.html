@@ -119,6 +119,104 @@
         <span class="material-symbols-outlined scroll-icon">keyboard_double_arrow_down</span>
       </div>
     </div>
+
+    <!-- Hero Section -->
+    <header class="hero">
+      <div class="container hero-grid">
+        <div class="hero-text-content">
+          <h1 class="hero-title fade-in">
+            Cold Emailing, <br>
+            <span class="text-gradient">at the Speed of Thought.</span>
+          </h1>
+          <p class="hero-subtitle fade-in">
+            Built by students, for students. Automate cold outreach to founders, recruiters, and professors. Scrape emails instantly and land your next internship or research project without the portals.
+          </p>
+          <div class="hero-buttons fade-in">
+            <button class="primary-btn size-lg hover-glare" id="hero-chrome-btn">
+              <span class="material-symbols-outlined btn-icon">add</span>
+              Add to Chrome (Free)
+            </button>
+          </div>
+        </div>
+
+        <!-- Hero Interactive Campaign Simulator -->
+        <div class="hero-simulator fade-in">
+          <div class="simulator-window glass-card">
+            <div class="window-header">
+              <div class="window-dots">
+                <span class="w-dot red"></span>
+                <span class="w-dot yellow"></span>
+                <span class="w-dot green"></span>
+              </div>
+              <div class="window-title">SNDR. Outbound Manager</div>
+              <div class="window-status" id="sim-status">Idle</div>
+            </div>
+            
+            <div class="window-body">
+              <div class="sim-sidebar">
+                <div class="sim-nav-item active"><span class="material-symbols-outlined">send</span>Outreach</div>
+                <div class="sim-nav-item"><span class="material-symbols-outlined">group</span>Recruiters</div>
+                <div class="sim-nav-item"><span class="material-symbols-outlined">analytics</span>Replies</div>
+              </div>
+              
+              <div class="sim-main">
+                <!-- Step 1: Input -->
+                <div class="sim-composer" id="sim-composer">
+                  <div class="input-group">
+                    <label>Recruiter Directory Search</label>
+                    <input type="text" id="sim-query" value="Founders & HR Leads in Bangalore" readonly>
+                  </div>
+                  <div class="input-group">
+                    <label>Introductory Template</label>
+                    <textarea id="sim-template" rows="2" readonly>Frontend react internship role inquiry; mention Raft consensus side project.</textarea>
+                  </div>
+                  <button class="run-sim-btn" id="start-sim-btn">
+                    <span>Send Cold Pitch</span>
+                    <span class="material-symbols-outlined">send</span>
+                  </button>
+                </div>
+
+                <!-- Step 2: Live Processing Stream -->
+                <div class="sim-stream hidden" id="sim-stream">
+                  <div class="stream-header">
+                    <span class="subtitle">Scraping & Personalizing...</span>
+                    <span class="counter" id="stream-counter">0/3</span>
+                  </div>
+                  <div class="stream-cards" id="stream-cards-container">
+                    <!-- Dynamic Leads appear here -->
+                  </div>
+                  <!-- Flying mail channel -->
+                  <div class="mail-tube" id="mail-tube">
+                    <div class="tube-line"></div>
+                  </div>
+                </div>
+
+                <!-- Step 3: Success Analytics -->
+                <div class="sim-analytics hidden" id="sim-analytics">
+                  <div class="analytics-card">
+                    <div class="circle-progress-wrapper">
+                      <svg class="circle-progress" viewBox="0 0 36 36">
+                        <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <path class="circle-fill" id="analytics-progress" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                      </svg>
+                      <div class="circle-percentage" id="analytics-percentage">0%</div>
+                    </div>
+                    <div class="analytics-text">
+                      <h3>Pitches Sent</h3>
+                      <p>Emails customized and delivered directly to recruiter inboxes.</p>
+                    </div>
+                  </div>
+                  <button class="run-sim-btn secondary" id="reset-sim-btn">
+                    <span>Reset Simulation</span>
+                    <span class="material-symbols-outlined">restart_alt</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
   </div>
 
   <!-- Navigation Bar -->
@@ -214,104 +312,6 @@
       </div>
     </div>
   </nav>
-
-  <!-- Hero Section -->
-  <header class="hero">
-    <div class="container hero-grid">
-      <div class="hero-text-content">
-        <h1 class="hero-title fade-in">
-          Cold Emailing, <br>
-          <span class="text-gradient">at the Speed of Thought.</span>
-        </h1>
-        <p class="hero-subtitle fade-in">
-          Built by students, for students. Automate cold outreach to founders, recruiters, and professors. Scrape emails instantly and land your next internship or research project without the portals.
-        </p>
-        <div class="hero-buttons fade-in">
-          <button class="primary-btn size-lg hover-glare" id="hero-chrome-btn">
-            <span class="material-symbols-outlined btn-icon">add</span>
-            Add to Chrome (Free)
-          </button>
-        </div>
-      </div>
-
-      <!-- Hero Interactive Campaign Simulator -->
-      <div class="hero-simulator fade-in">
-        <div class="simulator-window glass-card">
-          <div class="window-header">
-            <div class="window-dots">
-              <span class="w-dot red"></span>
-              <span class="w-dot yellow"></span>
-              <span class="w-dot green"></span>
-            </div>
-            <div class="window-title">SNDR. Outbound Manager</div>
-            <div class="window-status" id="sim-status">Idle</div>
-          </div>
-          
-          <div class="window-body">
-            <div class="sim-sidebar">
-              <div class="sim-nav-item active"><span class="material-symbols-outlined">send</span>Outreach</div>
-              <div class="sim-nav-item"><span class="material-symbols-outlined">group</span>Recruiters</div>
-              <div class="sim-nav-item"><span class="material-symbols-outlined">analytics</span>Replies</div>
-            </div>
-            
-            <div class="sim-main">
-              <!-- Step 1: Input -->
-              <div class="sim-composer" id="sim-composer">
-                <div class="input-group">
-                  <label>Recruiter Directory Search</label>
-                  <input type="text" id="sim-query" value="Founders & HR Leads in Bangalore" readonly>
-                </div>
-                <div class="input-group">
-                  <label>Introductory Template</label>
-                  <textarea id="sim-template" rows="2" readonly>Frontend react internship role inquiry; mention Raft consensus side project.</textarea>
-                </div>
-                <button class="run-sim-btn" id="start-sim-btn">
-                  <span>Send Cold Pitch</span>
-                  <span class="material-symbols-outlined">send</span>
-                </button>
-              </div>
-
-              <!-- Step 2: Live Processing Stream -->
-              <div class="sim-stream hidden" id="sim-stream">
-                <div class="stream-header">
-                  <span class="subtitle">Scraping & Personalizing...</span>
-                  <span class="counter" id="stream-counter">0/3</span>
-                </div>
-                <div class="stream-cards" id="stream-cards-container">
-                  <!-- Dynamic Leads appear here -->
-                </div>
-                <!-- Flying mail channel -->
-                <div class="mail-tube" id="mail-tube">
-                  <div class="tube-line"></div>
-                </div>
-              </div>
-
-              <!-- Step 3: Success Analytics -->
-              <div class="sim-analytics hidden" id="sim-analytics">
-                <div class="analytics-card">
-                  <div class="circle-progress-wrapper">
-                    <svg class="circle-progress" viewBox="0 0 36 36">
-                      <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                      <path class="circle-fill" id="analytics-progress" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                    </svg>
-                    <div class="circle-percentage" id="analytics-percentage">0%</div>
-                  </div>
-                  <div class="analytics-text">
-                    <h3>Pitches Sent</h3>
-                    <p>Emails customized and delivered directly to recruiter inboxes.</p>
-                  </div>
-                </div>
-                <button class="run-sim-btn secondary" id="reset-sim-btn">
-                  <span>Reset Simulation</span>
-                  <span class="material-symbols-outlined">restart_alt</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
 
   <!-- Interactive Sandbox: The Outreach Sandbox -->
   <section id="playground" class="playground-section">

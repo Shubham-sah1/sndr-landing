@@ -733,10 +733,10 @@ function initScrollReveal() {
     scrollTrigger: {
       trigger: '.intro-scroll-wrapper',
       start: 'top top',
-      end: 'bottom bottom',
+      end: '+=1800', // Scroll 1800px to complete morph & fade-in
       scrub: 0.5,
-      pin: '.logo-transform-container',
-      pinSpacing: false
+      pin: true,
+      pinSpacing: true
     }
   });
 
@@ -787,6 +787,12 @@ function initScrollReveal() {
     ease: 'power2.inOut'
   }, 2.5);
 
+  // Enable pointer-events on the hero sibling container
+  introTl.to('.hero', {
+    pointerEvents: 'auto',
+    duration: 0.1
+  }, 2.5);
+
   // Fade in and slide down navigation bar
   introTl.to('.glass-nav', {
     opacity: 1,
@@ -826,30 +832,11 @@ function initScrollReveal() {
       toggleActions: 'play none none none'
     }
   })
-  .from('#playground .section-intro', {
-    opacity: 0,
-    y: 40,
-    duration: 0.8,
-    ease: 'power2.out'
-  })
-  .from('#playground .leads-shelf', {
-    opacity: 0,
-    x: -50,
-    duration: 0.8,
-    ease: 'power2.out'
-  }, '-=0.4')
-  .from('#playground .sandbox-dropzone', {
-    opacity: 0,
-    scale: 0.8,
-    duration: 0.8,
-    ease: 'power2.out'
-  }, '-=0.6')
-  .from('#playground .sandbox-output', {
-    opacity: 0,
-    x: 50,
-    duration: 0.8,
-    ease: 'power2.out'
-  }, '-=0.6');
+  .fromTo('#playground .section-intro', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' })
+  .fromTo('#playground .sandbox-container', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '-=0.4')
+  .fromTo('#playground .leads-shelf', { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out' }, '-=0.2')
+  .fromTo('#playground .sandbox-dropzone', { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.6, ease: 'power2.out' }, '-=0.4')
+  .fromTo('#playground .sandbox-output', { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out' }, '-=0.4');
 
   // Section B: Bento Grid Features
   gsap.timeline({
@@ -859,20 +846,8 @@ function initScrollReveal() {
       toggleActions: 'play none none none'
     }
   })
-  .from('#features .section-intro', {
-    opacity: 0,
-    y: 40,
-    duration: 0.8,
-    ease: 'power2.out'
-  })
-  .from('#features .bento-item', {
-    opacity: 0,
-    y: 60,
-    rotationX: 10,
-    stagger: 0.15,
-    duration: 1.0,
-    ease: 'power2.out'
-  }, '-=0.4');
+  .fromTo('#features .section-intro', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' })
+  .fromTo('#features .bento-item', { opacity: 0, y: 50, rotationX: 10 }, { opacity: 1, y: 0, rotationX: 0, stagger: 0.15, duration: 0.8, ease: 'power2.out' }, '-=0.4');
 
   // Section C: CV Matcher Chatbot
   gsap.timeline({
@@ -882,18 +857,8 @@ function initScrollReveal() {
       toggleActions: 'play none none none'
     }
   })
-  .from('#cv-matcher .section-intro', {
-    opacity: 0,
-    y: 40,
-    duration: 0.8,
-    ease: 'power2.out'
-  })
-  .from('#cv-matcher .cv-matcher-container', {
-    opacity: 0,
-    y: 60,
-    duration: 1.0,
-    ease: 'power3.out'
-  }, '-=0.4');
+  .fromTo('#cv-matcher .section-intro', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' })
+  .fromTo('#cv-matcher .cv-matcher-container', { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '-=0.4');
 
   // Section D: Pricing
   gsap.timeline({
@@ -903,19 +868,8 @@ function initScrollReveal() {
       toggleActions: 'play none none none'
     }
   })
-  .from('#pricing .section-intro', {
-    opacity: 0,
-    y: 40,
-    duration: 0.8,
-    ease: 'power2.out'
-  })
-  .from('#pricing .pricing-card', {
-    opacity: 0,
-    y: 50,
-    stagger: 0.15,
-    duration: 1.0,
-    ease: 'power2.out'
-  }, '-=0.4');
+  .fromTo('#pricing .section-intro', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' })
+  .fromTo('#pricing .pricing-card', { opacity: 0, y: 50 }, { opacity: 1, y: 0, stagger: 0.15, duration: 0.8, ease: 'power2.out' }, '-=0.4');
 
   // Section E: Founders
   gsap.timeline({
@@ -925,17 +879,6 @@ function initScrollReveal() {
       toggleActions: 'play none none none'
     }
   })
-  .from('#founders .section-intro', {
-    opacity: 0,
-    y: 40,
-    duration: 0.8,
-    ease: 'power2.out'
-  })
-  .from('#founders .founder-card', {
-    opacity: 0,
-    y: 40,
-    stagger: 0.15,
-    duration: 1.0,
-    ease: 'power2.out'
-  }, '-=0.4');
+  .fromTo('#founders .section-intro', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' })
+  .fromTo('#founders .founder-card', { opacity: 0, y: 40 }, { opacity: 1, y: 0, stagger: 0.15, duration: 0.8, ease: 'power2.out' }, '-=0.4');
 }

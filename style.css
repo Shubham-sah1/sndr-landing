@@ -2181,7 +2181,7 @@ html[data-theme="dark"] .sandbox-dropzone {
 }
 
 .intro-logo-wrap {
-  position: absolute;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2206,26 +2206,32 @@ html[data-theme="dark"] .sandbox-dropzone {
 }
 
 .intro-tagline {
-  margin-top: 40px;
+  margin-top: 20px;
   font-family: var(--font-h);
-  font-size: 20px;
-  font-weight: 500;
-  color: var(--tx-muted);
-  letter-spacing: 0.05em;
-  text-transform: lowercase;
-  opacity: 1;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   text-align: center;
+  background: linear-gradient(135deg, var(--tx) 30%, var(--primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  opacity: 0.85;
   transition: opacity 0.3s ease;
   z-index: 1003;
+  pointer-events: none;
 }
 
 .intro-mail-wrap {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.5);
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transform: scale(0.5);
   filter: drop-shadow(0 0 30px var(--primary-glow));
 }
 
@@ -2241,6 +2247,8 @@ html[data-theme="dark"] .sandbox-dropzone {
 .intro-delivered-badge {
   position: absolute;
   top: 72%;
+  left: 50%;
+  transform: translate(-50%, 20px) scale(0.8);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -2255,7 +2263,6 @@ html[data-theme="dark"] .sandbox-dropzone {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   opacity: 0;
-  transform: translateY(20px) scale(0.8);
   box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
 }
 

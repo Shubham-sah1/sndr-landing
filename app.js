@@ -772,6 +772,8 @@ function initScrollReveal() {
     opacity: 1,
     scale: 1,
     rotation: 360,
+    xPercent: -50,
+    yPercent: -50,
     duration: 1.2,
     ease: 'back.out(1.5)'
   }, 1.2);
@@ -780,7 +782,8 @@ function initScrollReveal() {
   introTl.to('.intro-delivered-badge', {
     opacity: 1,
     scale: 1.0,
-    y: -15,
+    y: 0,
+    xPercent: -50,
     duration: 1.0,
     ease: 'back.out(1.2)'
   }, 1.8);

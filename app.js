@@ -852,6 +852,9 @@ function setupGSAPTimelines() {
   const rocket = document.getElementById('intro-rocket');
 
   if (taglineWord && coreElem && rocket) {
+    // Force ScrollTrigger to refresh first so the pin spacer offset is fully accounted for
+    ScrollTrigger.refresh();
+
     const rectTagline = taglineWord.getBoundingClientRect();
     const rectCore = coreElem.getBoundingClientRect();
 

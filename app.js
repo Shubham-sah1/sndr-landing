@@ -861,8 +861,8 @@ function setupGSAPTimelines() {
         }
       });
 
-      // Fade out scroll down hint immediately
-      introTl.to('.scroll-down-hint', {
+      // Fade out scroll down hint and tagline immediately
+      introTl.to(['.scroll-down-hint', '.intro-tagline'], {
         opacity: 0,
         y: 15,
         duration: 0.2
@@ -891,8 +891,8 @@ function setupGSAPTimelines() {
         const distance = Math.sqrt(dx * dx + dy * dy);
         const angle = Math.atan2(dy, dx);
         
-        // Radial blast targets - large offset past screen bounds
-        const blastDistance = 400 + Math.random() * 600; 
+        // Radial blast targets - extremely large offset to cover the whole screen
+        const blastDistance = 1500 + Math.random() * 2500; 
         const targetX = Math.cos(angle) * blastDistance;
         const targetY = Math.sin(angle) * blastDistance;
         

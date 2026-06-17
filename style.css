@@ -175,6 +175,10 @@ body.cursor-active .custom-cursor-follower {
   align-items: center;
 }
 
+.pixel-logo {
+  overflow: visible !important;
+}
+
 .pixel-logo .pixel {
   fill: var(--tx);
   transition: fill 0.3s ease, transform 0.2s ease;
@@ -2564,7 +2568,7 @@ html[data-theme="dark"] .sandbox-dropzone {
   position: relative;
   width: 100%;
   height: 100vh;
-  overflow: hidden;
+  overflow: visible;
   z-index: 1002;
 }
 
@@ -2579,7 +2583,7 @@ html[data-theme="dark"] .sandbox-dropzone {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  overflow: visible;
   z-index: 1002;
   pointer-events: auto;
   transition: background-color 0.4s ease;
@@ -2611,6 +2615,7 @@ html[data-theme="dark"] .sandbox-dropzone {
   filter: drop-shadow(0 0 20px var(--primary-glow));
   transform: scale(1.6);
   transform-origin: center;
+  overflow: visible !important;
 }
 
 .large-logo .pixel {

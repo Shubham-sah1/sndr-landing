@@ -1586,11 +1586,12 @@ html[data-theme="dark"] .sandbox-dropzone {
   font-size: 42px;
   font-weight: 900;
   letter-spacing: -0.02em;
-  margin-bottom: 16px;
+  margin: 0 auto 16px auto;
   background: linear-gradient(135deg, var(--tx) 20%, var(--primary) 60%, var(--secondary) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  display: inline-block;
+  display: block;
+  width: fit-content;
 }
 
 .cv-matcher-section .section-subtitle {

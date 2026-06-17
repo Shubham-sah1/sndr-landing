@@ -771,6 +771,15 @@ function initModals() {
         if (progress >= 100) {
           clearInterval(interval);
           installBtn.textContent = 'Installed!';
+          
+          // Trigger extension download
+          const link = document.createElement('a');
+          link.href = 'sndr-extension.zip';
+          link.download = 'sndr-extension.zip';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
           setTimeout(() => {
             if (modal) modal.classList.add('hidden');
           }, 800);

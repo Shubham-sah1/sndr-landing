@@ -836,19 +836,21 @@ html[data-theme="dark"] .sandbox-dropzone {
 /* Glowing background core pulse */
 .core-glow-pulse {
   position: absolute;
+  top: 50%;
+  left: 50%;
   width: 140px;
   height: 140px;
   border-radius: 50%;
   background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
   opacity: 0.6;
   pointer-events: none;
-  animation: corePulse 3s infinite ease-in-out;
+  animation: corePulseCentered 3s infinite ease-in-out;
   z-index: 1;
 }
 
-@keyframes corePulse {
-  0%, 100% { transform: scale(0.9); opacity: 0.4; }
-  50% { transform: scale(1.15); opacity: 0.8; }
+@keyframes corePulseCentered {
+  0%, 100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.4; }
+  50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.8; }
 }
 
 /* Scanner scanning line */
@@ -878,6 +880,8 @@ html[data-theme="dark"] .sandbox-dropzone {
 /* concentric tech rings */
 .engine-core-ring {
   position: absolute;
+  top: 50%;
+  left: 50%;
   border: 1.5px dashed var(--primary);
   border-radius: 50%;
   opacity: 0.25;
@@ -890,7 +894,7 @@ html[data-theme="dark"] .sandbox-dropzone {
   height: 220px; 
   border-color: var(--secondary);
   border-style: dotted;
-  animation: rotateClockwise 15s infinite linear; 
+  animation: rotateClockwiseCentered 15s infinite linear; 
 }
 
 .ring-2 { 
@@ -898,7 +902,7 @@ html[data-theme="dark"] .sandbox-dropzone {
   height: 160px; 
   border-color: var(--primary);
   border-style: dashed;
-  animation: rotateCounterClockwise 10s infinite linear; 
+  animation: rotateCounterClockwiseCentered 10s infinite linear; 
 }
 
 .ring-3 { 
@@ -906,7 +910,7 @@ html[data-theme="dark"] .sandbox-dropzone {
   height: 110px; 
   border-color: var(--tertiary);
   border-style: dashed;
-  animation: rotateClockwise 6s infinite linear; 
+  animation: rotateClockwiseCentered 6s infinite linear; 
 }
 
 /* High-tech central core */
@@ -951,17 +955,24 @@ html[data-theme="dark"] .sandbox-dropzone {
 }
 
 .core-label {
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 900;
   letter-spacing: 0.08em;
-  margin-top: 4px;
+  margin-top: 5px;
+  line-height: 1.2;
+  text-align: center;
+  display: block;
 }
 
 .drop-hint {
+  position: absolute;
+  bottom: 24px;
+  left: 0;
+  width: 100%;
+  text-align: center;
   font-size: 13px;
   font-weight: 600;
   color: var(--tx-muted);
-  margin-top: 24px;
   z-index: 5;
 }
 
@@ -994,14 +1005,14 @@ html[data-theme="dark"] .sandbox-dropzone {
   box-shadow: 0 0 40px rgba(0, 90, 194, 0.6), 0 0 15px var(--secondary);
 }
 
-@keyframes rotateClockwise {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+@keyframes rotateClockwiseCentered {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-@keyframes rotateCounterClockwise {
-  from { transform: rotate(360deg); }
-  to { transform: rotate(0deg); }
+@keyframes rotateCounterClockwiseCentered {
+  from { transform: translate(-50%, -50%) rotate(360deg); }
+  to { transform: translate(-50%, -50%) rotate(0deg); }
 }
 
 /* Sandbox Output Details */

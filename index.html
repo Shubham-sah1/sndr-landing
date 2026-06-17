@@ -555,8 +555,20 @@
         <p class="section-subtitle">Select a sample student resume to see how the built-in advisor chatbot maps skills, generates target companies, and drafts personalized pitches.</p>
         
         <div class="cv-selector-wrapper">
-          <button class="cv-select-tab active" data-sample="tanishq">Tanishq Ray (Finance @ SRCC)</button>
-          <button class="cv-select-tab" data-sample="saksham">Saksham (Tech @ IIT Bombay)</button>
+          <button class="cv-select-tab active" data-sample="tanishq">
+            <span class="material-symbols-outlined tab-icon">payments</span>
+            <div class="tab-meta">
+              <span class="tab-name">Tanishq Ray</span>
+              <span class="tab-sub">Finance Track • SRCC Delhi</span>
+            </div>
+          </button>
+          <button class="cv-select-tab" data-sample="saksham">
+            <span class="material-symbols-outlined tab-icon">terminal</span>
+            <div class="tab-meta">
+              <span class="tab-name">Saksham</span>
+              <span class="tab-sub">Tech Track • IIT Bombay</span>
+            </div>
+          </button>
         </div>
       </div>
       
@@ -565,8 +577,9 @@
           <!-- Left: CV Mock Document -->
           <div class="cv-document-preview">
             <div class="document-header">
-              <span class="material-symbols-outlined">description</span>
+              <span class="material-symbols-outlined header-icon">description</span>
               <span>RESUME_PREVIEW.PDF</span>
+              <span class="doc-badge">SIGNED</span>
             </div>
             <div class="document-sheet" id="cv-sheet-content">
               <!-- Rendered dynamically via JS -->
@@ -576,11 +589,26 @@
           <!-- Middle: Chatbot Stream -->
           <div class="cv-chatbot-workspace">
             <div class="chatbot-header">
-              <span class="dot-ping green-dot"></span>
-              <span>SNDR AI Advisor Chatbot</span>
+              <div class="chatbot-status">
+                <span class="dot-ping green-dot"></span>
+                <span>SNDR AI Advisor Chatbot</span>
+              </div>
+              <div class="chatbot-actions">
+                <span class="material-symbols-outlined">sync</span>
+                <span class="material-symbols-outlined">more_vert</span>
+              </div>
             </div>
             <div class="chatbot-feed" id="chatbot-feed-container">
               <!-- Dynamically populated chatbot bubble items -->
+            </div>
+            <!-- Mock input field at the bottom -->
+            <div class="chatbot-input-mock">
+              <span class="material-symbols-outlined input-icon">bolt</span>
+              <div class="input-placeholder">Ask SNDR Advisor to refine pitch...</div>
+              <div class="input-actions">
+                <span class="material-symbols-outlined">mic</span>
+                <span class="material-symbols-outlined">send</span>
+              </div>
             </div>
           </div>
           
@@ -595,16 +623,43 @@
             
             <div class="email-section">
               <h5>Generated Cold Pitch</h5>
-              <div class="outbound-draft-box">
-                <div class="outbound-header">
-                  <span class="material-symbols-outlined">auto_awesome</span>
-                  <span id="draft-target-name">Pitch Draft</span>
+              <div class="outbound-draft-box email-composer">
+                <!-- macOS Style Window Control Dots -->
+                <div class="composer-header">
+                  <div class="window-dots">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                  </div>
+                  <div class="composer-title" id="draft-target-name">New Message</div>
                 </div>
-                <p class="draft-text" id="cv-draft-text">Select a CV above to trigger analysis...</p>
-                <button class="primary-btn btn-sm hover-glare copy-draft-btn" id="cv-copy-btn">
-                  <span class="material-symbols-outlined">content_copy</span>
-                  <span>Copy Pitch Draft</span>
-                </button>
+                
+                <div class="composer-meta">
+                  <div class="meta-row">
+                    <span class="meta-label">To:</span>
+                    <span class="meta-val" id="composer-to-val">Saksham (Razorpay HR)</span>
+                  </div>
+                  <div class="meta-row">
+                    <span class="meta-label">Subject:</span>
+                    <span class="meta-val font-semibold" id="composer-subject-val">Treasury Analyst Intern Application</span>
+                  </div>
+                </div>
+                
+                <div class="composer-body">
+                  <div class="draft-text" id="cv-draft-text">Select a CV above to trigger analysis...</div>
+                </div>
+
+                <div class="composer-footer">
+                  <button class="primary-btn btn-sm hover-glare copy-draft-btn" id="cv-copy-btn">
+                    <span class="material-symbols-outlined">send</span>
+                    <span>Copy Pitch Draft</span>
+                  </button>
+                  <div class="composer-footer-actions">
+                    <span class="material-symbols-outlined">format_size</span>
+                    <span class="material-symbols-outlined">attach_file</span>
+                    <span class="material-symbols-outlined">link</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

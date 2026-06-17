@@ -479,20 +479,34 @@ function initCVMatcher() {
     tanishq: {
       name: "Tanishq Ray",
       email: "tanishq.ray@srcc.du.ac.in",
+      toVal: "Saksham (Razorpay Treasury)",
+      subjectVal: "SRCC Finance Intern Application",
       cvHtml: `
-        <h4>Tanishq Ray</h4>
-        <p style="color:var(--tx-muted); margin-bottom:10px;">B.Com (Hons) | SRCC Delhi</p>
-        <section>
-          <h5>Skills</h5>
-          <p>Valuation Models, Financial Analysis, Excel forecasting, outbound outreach</p>
-        </section>
-        <section>
-          <h5>Projects</h5>
-          <ul>
-            <li>Outbound portfolio modeling</li>
-            <li>R-code database analytics</li>
-          </ul>
-        </section>
+        <div class="cv-hero">
+          <div class="cv-initials finance">TR</div>
+          <div class="cv-title-block">
+            <h4>Tanishq Ray</h4>
+            <p class="cv-subtitle">B.Com (Hons) | SRCC Delhi</p>
+          </div>
+        </div>
+        <div class="cv-body-grid">
+          <div class="cv-col">
+            <h5 class="cv-section-title">Core Skills</h5>
+            <div class="cv-skills-pills">
+              <span class="cv-skill-pill">Valuation Models</span>
+              <span class="cv-skill-pill">Financial Analysis</span>
+              <span class="cv-skill-pill">Excel Forecasting</span>
+              <span class="cv-skill-pill">Outbound Outreach</span>
+            </div>
+          </div>
+          <div class="cv-col">
+            <h5 class="cv-section-title">Projects</h5>
+            <ul class="cv-projects-list">
+              <li><strong>Outbound portfolio modeling</strong> - Automated growth analytics.</li>
+              <li><strong>R-code database analytics</strong> - Treasury query builder.</li>
+            </ul>
+          </div>
+        </div>
       `,
       chat: [
         { type: 'bot', text: 'Analyzing Tanishq Ray\'s profile...' },
@@ -503,25 +517,40 @@ function initCVMatcher() {
         { company: 'SaaSFlow', role: 'Finance Analyst Intern', score: '94% Match' },
         { company: 'Razorpay', role: 'Treasury Analyst Intern', score: '89% Match' }
       ],
-      draft: "Subject: SRCC Finance Intern Application\n\nDear Saksham,\n\nI noticed Razorpay's scaling transaction treasury operations. As a Finance honors student at SRCC, I've built portfolio models that automate forecasting limits. I'd love to pitch my analytical support as a treasury analyst intern."
+      draft: "Dear Saksham,\n\nI noticed Razorpay's scaling transaction treasury operations. As a Finance honors student at SRCC, I've built portfolio models that automate forecasting limits. I'd love to pitch my analytical support as a treasury analyst intern."
     },
     saksham: {
       name: "Saksham",
       email: "saksham.cse@iitb.ac.in",
+      toVal: "Arnav (SaaSFlow Engineering)",
+      subjectVal: "IIT Bombay CSE Intern Outbound",
       cvHtml: `
-        <h4>Saksham</h4>
-        <p style="color:var(--tx-muted); margin-bottom:10px;">B.Tech CSE | IIT Bombay</p>
-        <section>
-          <h5>Skills</h5>
-          <p>React, Node.js, WebAssembly compilers, distributed locks, database indexing</p>
-        </section>
-        <section>
-          <h5>Projects</h5>
-          <ul>
-            <li>Raft distributed consensus engine</li>
-            <li>Vite build automation plugin</li>
-          </ul>
-        </section>
+        <div class="cv-hero">
+          <div class="cv-initials tech">S</div>
+          <div class="cv-title-block">
+            <h4>Saksham</h4>
+            <p class="cv-subtitle">B.Tech CSE | IIT Bombay</p>
+          </div>
+        </div>
+        <div class="cv-body-grid">
+          <div class="cv-col">
+            <h5 class="cv-section-title">Core Skills</h5>
+            <div class="cv-skills-pills">
+              <span class="cv-skill-pill">React</span>
+              <span class="cv-skill-pill">Node.js</span>
+              <span class="cv-skill-pill">WebAssembly</span>
+              <span class="cv-skill-pill">Distributed Locks</span>
+              <span class="cv-skill-pill">DB Indexing</span>
+            </div>
+          </div>
+          <div class="cv-col">
+            <h5 class="cv-section-title">Projects</h5>
+            <ul class="cv-projects-list">
+              <li><strong>Raft consensus engine</strong> - Distributed state sync.</li>
+              <li><strong>Vite build automation</strong> - Bundler optimization.</li>
+            </ul>
+          </div>
+        </div>
       `,
       chat: [
         { type: 'bot', text: 'Analyzing Saksham\'s profile...' },
@@ -532,9 +561,30 @@ function initCVMatcher() {
         { company: 'SaaSFlow', role: 'Frontend Architect Intern', score: '96% Match' },
         { company: 'Razorpay', role: 'Backend API Engineering Intern', score: '92% Match' }
       ],
-      draft: "Subject: IIT Bombay CSE Intern Outbound\n\nHi Arnav,\n\nSaw SaaSFlow's development updates. I built a Raft consensus engine dashboard using React and custom Outfit grids. I'd love to explore joining your engineering team as a React frontend intern."
+      draft: "Hi Arnav,\n\nSaw SaaSFlow's development updates. I built a Raft consensus engine dashboard using React and custom Outfit grids. I'd love to explore joining your engineering team as a React frontend intern."
     }
   };
+
+  // Typing indicator helper
+  function appendTypingIndicator() {
+    const indicator = document.createElement('div');
+    indicator.className = 'chat-bubble bot typing-indicator';
+    indicator.id = 'chatbot-typing-indicator';
+    indicator.innerHTML = `
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    `;
+    chatbotFeed.appendChild(indicator);
+    chatbotFeed.scrollTop = chatbotFeed.scrollHeight;
+  }
+
+  function removeTypingIndicator() {
+    const indicator = document.getElementById('chatbot-typing-indicator');
+    if (indicator) {
+      indicator.remove();
+    }
+  }
 
   function renderCV(key) {
     const info = dataTemplates[key];
@@ -552,24 +602,38 @@ function initCVMatcher() {
     queryBubble.textContent = `Map matching roles for ${info.name}.`;
     chatbotFeed.appendChild(queryBubble);
 
+    // Initial typing indicator
+    setTimeout(() => {
+      appendTypingIndicator();
+    }, 300);
+
     // Stream bot answers with delay
     info.chat.forEach((msg, idx) => {
       setTimeout(() => {
+        removeTypingIndicator();
+        
         const bubble = document.createElement('div');
         bubble.className = 'chat-bubble bot';
         bubble.textContent = msg.text;
         chatbotFeed.appendChild(bubble);
         chatbotFeed.scrollTop = chatbotFeed.scrollHeight;
-      }, (idx + 1) * 900);
+        
+        if (idx < info.chat.length - 1) {
+          setTimeout(() => {
+            appendTypingIndicator();
+          }, 200);
+        }
+      }, (idx + 1) * 1000);
     });
 
-    // Render matches
+    // Render matches and composer
     setTimeout(() => {
       matchBox.innerHTML = '';
-      info.matches.forEach(m => {
+      info.matches.forEach((m, mIdx) => {
         const mNode = document.createElement('div');
-        mNode.className = 'company-match-card';
+        mNode.className = `company-match-card${mIdx === 0 ? ' active' : ''}`;
         mNode.innerHTML = `
+          <div class="company-logo-avatar">${m.company.charAt(0)}</div>
           <div class="company-match-info">
             <h6>${m.company}</h6>
             <p>${m.role}</p>
@@ -577,12 +641,31 @@ function initCVMatcher() {
           <span class="match-score">${m.score}</span>
         `;
         matchBox.appendChild(mNode);
+
+        // GSAP animate each card in
+        gsap.from(mNode, {
+          opacity: 0,
+          x: 15,
+          duration: 0.4,
+          delay: mIdx * 0.1,
+          ease: 'power2.out'
+        });
       });
       
-      // Update Pitch draft Output card
-      targetHeader.textContent = `Pitch for ${info.matches[0].company}`;
+      // Update Pitch draft composer fields
+      targetHeader.textContent = `New Message (Pitch for ${info.matches[0].company})`;
+      document.getElementById('composer-to-val').textContent = info.toVal;
+      document.getElementById('composer-subject-val').textContent = info.subjectVal;
       draftBox.textContent = info.draft;
-    }, 2800);
+
+      // Animate composer entry
+      gsap.from('.email-composer', {
+        opacity: 0.8,
+        scale: 0.98,
+        duration: 0.4,
+        ease: 'power1.out'
+      });
+    }, 3200);
   }
 
   tabs.forEach(tab => {

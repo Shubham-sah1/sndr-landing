@@ -2612,7 +2612,6 @@ html[data-theme="dark"] .sandbox-dropzone {
   max-width: 80%;
   height: auto;
   aspect-ratio: 28 / 8;
-  filter: drop-shadow(0 0 20px var(--primary-glow));
   transform: scale(1.6);
   transform-origin: center;
   overflow: visible !important;

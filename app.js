@@ -905,7 +905,6 @@ function setupGSAPTimelines() {
           rotation: gsap.utils.random(-360, 360),
           scale: gsap.utils.random(3, 6),
           opacity: 0,
-          filter: `blur(${gsap.utils.random(4, 8)}px)`,
           duration: 0.6,
           ease: 'power2.out'
         }, delay);

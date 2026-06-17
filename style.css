@@ -1605,14 +1605,22 @@ html[data-theme="dark"] .sandbox-dropzone {
   box-shadow: 0 4px 12px rgba(0, 90, 194, 0.2);
 }
 
-.cv-select-tab .tab-icon {
-  font-size: 24px;
-  color: var(--tx-muted);
-  transition: color 0.3s;
+.cv-select-tab .tab-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--input-border);
+  transition: border-color 0.3s, transform 0.3s;
 }
 
-.cv-select-tab.active .tab-icon {
-  color: #fff;
+.cv-select-tab.active .tab-avatar {
+  border-color: #fff;
+  transform: scale(1.05);
+}
+
+.cv-select-tab:hover:not(.active) .tab-avatar {
+  border-color: var(--primary);
 }
 
 .cv-select-tab .tab-meta {

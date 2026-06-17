@@ -397,12 +397,13 @@ html[data-theme="dark"] .light-icon { display: block; }
   display: flex;
   align-items: center;
   padding: 0 16px;
-  justify-content: space-between;
+  position: relative;
 }
 
 .window-dots {
   display: flex;
   gap: 8px;
+  align-items: center;
 }
 
 .w-dot {
@@ -417,10 +418,14 @@ html[data-theme="dark"] .light-icon { display: block; }
 .w-dot.green { background-color: #10b981; }
 
 .window-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 12px;
   font-weight: 600;
   color: var(--tx-muted);
   font-family: var(--font-h);
+  white-space: nowrap;
 }
 
 .window-status {
@@ -430,6 +435,7 @@ html[data-theme="dark"] .light-icon { display: block; }
   background-color: var(--pfp-bg);
   padding: 3px 10px;
   border-radius: 20px;
+  margin-left: auto;
 }
 
 .window-body {
@@ -1544,18 +1550,18 @@ html[data-theme="dark"] .sandbox-dropzone {
 .cv-selector-wrapper {
   display: flex;
   justify-content: center;
-  gap: 16px;
+  gap: 24px;
   margin-bottom: 35px;
 }
 
 .cv-select-tab {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   font-family: var(--font-h);
   border: 1.5px solid var(--input-border);
-  padding: 12px 24px;
-  border-radius: 20px;
+  padding: 14px 28px;
+  border-radius: 24px;
   background: rgba(255, 255, 255, 0.02);
   backdrop-filter: blur(10px);
   cursor: pointer;
@@ -1563,6 +1569,7 @@ html[data-theme="dark"] .sandbox-dropzone {
   transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   text-align: left;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  min-width: 250px;
 }
 
 html[data-theme="dark"] .cv-select-tab {
@@ -1781,9 +1788,31 @@ html[data-theme="dark"] .cv-select-tab {
   padding: 20px;
   display: flex;
   flex-direction: column;
-  height: 400px;
+  height: 480px; /* Sized to match other columns and avoid congestion */
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
   transition: all 0.3s ease;
+}
+
+/* Scrollbar styling for chatbot feed and composer draft text */
+.chatbot-feed::-webkit-scrollbar,
+.email-composer .draft-text::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chatbot-feed::-webkit-scrollbar-track,
+.email-composer .draft-text::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chatbot-feed::-webkit-scrollbar-thumb,
+.email-composer .draft-text::-webkit-scrollbar-thumb {
+  background: var(--input-border);
+  border-radius: 10px;
+}
+
+.chatbot-feed::-webkit-scrollbar-thumb:hover,
+.email-composer .draft-text::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
 }
 
 .cv-chatbot-workspace:hover {
@@ -1921,6 +1950,13 @@ html[data-theme="dark"] .cv-select-tab {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  height: 100%;
+}
+
+.email-section {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .companies-section h5, .email-section h5 {
@@ -2013,6 +2049,7 @@ html[data-theme="dark"] .cv-select-tab {
   flex-direction: column;
   overflow: hidden;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.04);
+  flex: 1;
 }
 
 .composer-header {
@@ -2024,7 +2061,7 @@ html[data-theme="dark"] .cv-select-tab {
   position: relative;
 }
 
-.window-dots {
+.composer-header .window-dots {
   display: flex;
   gap: 6px;
   position: absolute;
@@ -2079,14 +2116,16 @@ html[data-theme="dark"] .cv-select-tab {
 .composer-body {
   padding: 16px;
   background: var(--bg);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .email-composer .draft-text {
   font-size: 11.5px;
   line-height: 1.6;
   text-align: left;
-  min-height: 110px;
-  max-height: 140px;
+  flex: 1;
   overflow-y: auto;
   white-space: pre-wrap;
   color: var(--tx);

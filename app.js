@@ -941,19 +941,6 @@ function setupGSAPTimelines() {
         ease: 'power2.out'
       }, 0.6);
 
-      // Glow effect on the "Cold Emailing" highlight word
-      introTl.to('.cold-mailing-sparkle', {
-        textShadow: '0 0 25px var(--primary-glow), 0 0 10px var(--primary)',
-        duration: 0.3,
-        ease: 'power2.out'
-      }, 0.8);
-
-      introTl.to('.cold-mailing-sparkle', {
-        textShadow: 'none',
-        duration: 0.3,
-        ease: 'power2.in'
-      }, 1.1);
-
       // Clean up visibility at the end of scrub
       introTl.to('.logo-transform-container', {
         display: 'none',

@@ -843,37 +843,12 @@ function setupGSAPTimelines() {
     // 1. FULL SCREEN SCROLL-MORPH TIMELINE
     const wrapper = document.querySelector('.intro-scroll-wrapper');
     const logo = document.querySelector('.large-logo');
-    const heroTitle = document.querySelector('.hero-title');
     const hero = document.querySelector('.hero');
-    const rocket = document.getElementById('intro-rocket');
+    const pixels = document.querySelectorAll('.large-logo .pixel');
 
-    if (wrapper && logo && heroTitle && hero && rocket) {
+    if (wrapper && logo && hero && pixels.length > 0) {
       // Force ScrollTrigger to refresh first so positions are resolved accurately
       ScrollTrigger.refresh();
-
-      const rectLogo = logo.getBoundingClientRect();
-      const rectWrap = wrapper.getBoundingClientRect();
-      const startX = rectLogo.left + rectLogo.width / 2 - rectWrap.left;
-      const startY = rectLogo.top + rectLogo.height / 2 - rectWrap.top;
-
-      const rectTitle = heroTitle.getBoundingClientRect();
-      const rectHero = hero.getBoundingClientRect();
-      const endX = rectTitle.left + rectTitle.width / 2 - rectHero.left;
-      const endY = rectTitle.top + rectTitle.height / 2 - rectHero.top;
-
-      const angle = Math.atan2(endY - startY, endX - startX) * 180 / Math.PI;
-      const rocketRotation = angle - 45; // adjustment for Google Material Symbol rocket launch icon base orientation
-
-      // Set initial rocket position to be exactly at the center of the logo
-      gsap.set(rocket, {
-        left: startX,
-        top: startY,
-        opacity: 0,
-        scale: 0.5,
-        rotation: rocketRotation,
-        xPercent: -50,
-        yPercent: -50
-      });
 
       const introTl = gsap.timeline({
         scrollTrigger: {
@@ -886,118 +861,99 @@ function setupGSAPTimelines() {
         }
       });
 
-      // Scale down the large SNDR. logo and fade it out
-      introTl.to('.large-logo', {
-        scale: 0.35,
-        y: -20,
-        opacity: 0.2,
-        filter: 'blur(3px)',
-        duration: 0.5,
-        ease: 'power1.inOut'
-      }, 0);
-
-      // Fade out scroll indicator and tagline quickly
+      // Fade out scroll down hint immediately
       introTl.to('.scroll-down-hint', {
         opacity: 0,
         y: 15,
-        duration: 0.3
-      }, 0);
-
-      introTl.to('.intro-tagline', {
-        opacity: 0,
-        y: 15,
-        duration: 0.3
-      }, 0);
-
-      // Rocket emerges immediately from the center of the logo as you start scrolling
-      introTl.to(rocket, {
-        opacity: 1,
-        scale: 1.0,
-        duration: 0.2,
-        ease: 'power1.out'
-      }, 0);
-
-      introTl.to('.large-logo', {
-        opacity: 0,
         duration: 0.2
-      }, 0.25);
+      }, 0);
 
-      // Rocket trail expands and launches
-      introTl.to(rocket.querySelector('.rocket-trail'), {
-        height: '50px',
-        duration: 0.3
-      }, 0.1);
+      // Animate each pixel dispersing radially
+      pixels.forEach(pixel => {
+        const gx = parseFloat(pixel.getAttribute('data-origin-x'));
+        const gy = parseFloat(pixel.getAttribute('data-origin-y'));
+        
+        // Center of the logo grid is (12, 2)
+        const cx = 12;
+        const cy = 2;
+        
+        let dx = gx - cx;
+        let dy = gy - cy;
+        
+        // Failsafe for exactly center pixels
+        if (dx === 0 && dy === 0) {
+          const angle = Math.random() * Math.PI * 2;
+          dx = Math.cos(angle);
+          dy = Math.sin(angle);
+        }
+        
+        // Calculate distance from center to determine stagger delay
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const angle = Math.atan2(dy, dx);
+        
+        // Radial blast targets - large offset past screen bounds
+        const blastDistance = 400 + Math.random() * 600; 
+        const targetX = Math.cos(angle) * blastDistance;
+        const targetY = Math.sin(angle) * blastDistance;
+        
+        // Stagger delay based on distance (ripple outward effect)
+        const delay = distance * 0.03; 
+        
+        introTl.to(pixel, {
+          x: targetX,
+          y: targetY,
+          rotation: gsap.utils.random(-360, 360),
+          scale: gsap.utils.random(3, 6),
+          opacity: 0,
+          filter: `blur(${gsap.utils.random(4, 8)}px)`,
+          duration: 0.6,
+          ease: 'power2.out'
+        }, delay);
+      });
 
-      // Rocket flies towards the hero title "Cold Emailing"
-      introTl.to(rocket, {
-        left: endX,
-        top: endY,
-        duration: 0.9,
-        ease: 'power1.inOut'
-      }, 0.1);
-
-      // Fade out loader background and reveal hero components
+      // Fade out the logo container overlay as pixels scatter
       introTl.to('.logo-transform-container', {
         opacity: 0,
         pointerEvents: 'none',
-        duration: 0.6,
+        duration: 0.8,
         ease: 'power2.inOut'
-      }, 0.3);
+      }, 0.2);
 
+      // Reveal glass-nav and hero components
       introTl.to('.glass-nav', {
         opacity: 1,
         y: 0,
         pointerEvents: 'auto',
         duration: 0.5,
         ease: 'power2.out'
-      }, 0.4);
+      }, 0.5);
 
       introTl.to('.hero-text-content', {
         opacity: 1,
         y: 0,
         duration: 0.6,
         ease: 'power2.out'
-      }, 0.4);
+      }, 0.5);
 
       introTl.to('.hero-simulator', {
         opacity: 1,
         y: 0,
         duration: 0.6,
         ease: 'power2.out'
-      }, 0.5);
+      }, 0.6);
 
-      // Rocket landing & impact glow
-      introTl.to(rocket, {
-        opacity: 0,
-        scale: 0.3,
-        duration: 0.15
-      }, 0.85);
-
-      introTl.to(rocket.querySelector('.rocket-trail'), {
-        height: '0px',
-        duration: 0.15
-      }, 0.85);
-
-      // Trigger sparkle particles on impact
-      introTl.call(() => {
-        const coldMailing = document.querySelector('.cold-mailing-sparkle');
-        if (coldMailing) {
-          triggerSparkles(coldMailing);
-        }
-      }, null, 1.0);
-
-      // Glow effect only on the "Cold Emailing" highlight
+      // Glow effect on the "Cold Emailing" highlight word
       introTl.to('.cold-mailing-sparkle', {
         textShadow: '0 0 25px var(--primary-glow), 0 0 10px var(--primary)',
         duration: 0.3,
         ease: 'power2.out'
-      }, 1.0);
+      }, 0.8);
 
       introTl.to('.cold-mailing-sparkle', {
         textShadow: 'none',
         duration: 0.3,
         ease: 'power2.in'
-      }, 1.3);
+      }, 1.1);
 
       // Clean up visibility at the end of scrub
       introTl.to('.logo-transform-container', {

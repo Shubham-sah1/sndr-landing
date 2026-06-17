@@ -2615,6 +2615,8 @@ html[data-theme="dark"] .sandbox-dropzone {
 
 .large-logo .pixel {
   fill: var(--tx);
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 .large-logo .dot {
@@ -2639,53 +2641,7 @@ html[data-theme="dark"] .sandbox-dropzone {
   pointer-events: none;
 }
 
-.intro-mail-wrap {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  filter: drop-shadow(0 0 30px var(--primary-glow));
-}
 
-.mail-icon-symbol {
-  font-size: 110px !important;
-  color: var(--primary);
-  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.intro-delivered-badge {
-  position: absolute;
-  top: 72%;
-  left: 50%;
-  transform: translate(-50%, 20px) scale(0.8);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(16, 185, 129, 0.1);
-  border: 1.5px solid #10b981;
-  color: #10b981;
-  padding: 8px 20px;
-  border-radius: 50px;
-  font-family: var(--font-h);
-  font-weight: 800;
-  font-size: 16px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  opacity: 0;
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
-}
-
-.intro-delivered-badge .check-icon {
-  font-size: 20px !important;
-  color: #10b981;
-}
 
 /* Scroll down hint at the bottom of full-screen loader */
 .scroll-down-hint {
@@ -2779,47 +2735,7 @@ html[data-theme="dark"] .sandbox-dropzone {
   }
 }
 
-/* Outreach Tagline Accent */
-.outreach-rocket-launch {
-  position: relative;
-  display: inline-block;
-  color: var(--primary);
-  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-weight: 800;
-}
 
-/* Flying Rocket Styles */
-.flying-rocket {
-  position: absolute;
-  z-index: 2000;
-  pointer-events: none;
-  opacity: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transform-origin: center bottom;
-}
-
-.rocket-icon-elem {
-  font-size: 38px !important;
-  color: var(--tx);
-  filter: drop-shadow(0 0 10px var(--primary-glow));
-  display: inline-block;
-}
-
-.rocket-trail {
-  width: 3px;
-  height: 0px;
-  background: linear-gradient(to top, transparent, var(--primary), var(--tx));
-  opacity: 0.75;
-  margin-top: -2px;
-  border-radius: 2px;
-  box-shadow: 0 0 8px var(--primary-glow);
-  transform-origin: top center;
-}
 
 /* Sparkle Effect highlight word */
 .cold-mailing-sparkle {

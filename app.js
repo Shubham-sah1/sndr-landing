@@ -712,15 +712,27 @@ function initModals() {
     btn.addEventListener('click', function(e) {
       e.preventDefault();
       
-      // Determine plan name
-      let plan = 'Pro';
-      const pricingCard = this.closest('.pricing-card');
-      if (pricingCard) {
-        const header = pricingCard.querySelector('.card-plan-header h3');
-        if (header) plan = header.textContent;
+      const modalTitle = document.getElementById('modal-title');
+      const modalBodyText = document.getElementById('modal-body-text');
+      
+      // Determine if they clicked "Add to Chrome" directly
+      const isChromeBtn = this.id === 'hero-chrome-btn' || (this.classList.contains('hover-glare') && !this.closest('.pricing-card'));
+      
+      if (isChromeBtn) {
+        if (modalTitle) modalTitle.textContent = 'Install SNDR. Extension';
+        if (modalBodyText) modalBodyText.innerHTML = 'Setting up your browser extension workspace...';
+      } else {
+        // Determine plan name
+        let plan = 'Pro';
+        const pricingCard = this.closest('.pricing-card');
+        if (pricingCard) {
+          const header = pricingCard.querySelector('.card-plan-header h3');
+          if (header) plan = header.textContent;
+        }
+        if (modalTitle) modalTitle.textContent = `Launch SNDR. ${plan}`;
+        if (modalBodyText) modalBodyText.innerHTML = `You have selected the <strong id="modal-plan-name">${plan}</strong> plan. Setting up your browser extension workspace...`;
       }
       
-      if (planName) planName.textContent = plan;
       if (modal) modal.classList.remove('hidden');
       
       // Reset progress
@@ -748,6 +760,14 @@ function initModals() {
 
   if (installBtn) {
     installBtn.addEventListener('click', function() {
+      // Trigger extension download immediately (synchronous to user click to prevent browser blocking)
+      const link = document.createElement('a');
+      link.href = 'sndr-extension.zip';
+      link.download = 'sndr-extension.zip';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
       this.disabled = true;
       let progress = 0;
       
@@ -771,14 +791,6 @@ function initModals() {
         if (progress >= 100) {
           clearInterval(interval);
           installBtn.textContent = 'Installed!';
-          
-          // Trigger extension download
-          const link = document.createElement('a');
-          link.href = 'sndr-extension.zip';
-          link.download = 'sndr-extension.zip';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
 
           setTimeout(() => {
             if (modal) modal.classList.add('hidden');

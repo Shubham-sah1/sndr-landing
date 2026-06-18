@@ -135,6 +135,20 @@
 
         <!-- Hero Interactive Campaign Simulator -->
         <div class="hero-simulator fade-in">
+          <!-- 3D Parallax layers that float outside frame -->
+          <div class="floating-stats-card glass-card layer-parallax" data-depth="50">
+            <div class="card-mini-chart">
+              <span class="stat-icon material-symbols-outlined">insights</span>
+              <div class="stat-meta">
+                <span class="stat-number">98%</span>
+                <span class="stat-label">Open Rate</span>
+              </div>
+            </div>
+          </div>
+          <div class="floating-ai-card glass-card layer-parallax" data-depth="85">
+            <span class="ai-sparkle-icon material-symbols-outlined">bolt</span>
+            <span>SNDR AI Outbounds Active</span>
+          </div>
           <div class="simulator-window glass-card">
             <div class="window-header">
               <div class="window-dots">
@@ -297,6 +311,11 @@
       </div>
 
       <div class="nav-actions">
+        <!-- SFX Toggle -->
+        <button id="sfx-toggle" class="icon-btn" aria-label="Toggle SFX">
+          <span class="material-symbols-outlined sfx-on-icon">volume_up</span>
+          <span class="material-symbols-outlined sfx-off-icon" style="display:none">volume_off</span>
+        </button>
         <!-- Theme Toggle -->
         <button id="theme-toggle" class="icon-btn" aria-label="Toggle Theme">
           <span class="material-symbols-outlined dark-icon">dark_mode</span>
@@ -480,7 +499,16 @@
             <p class="bento-desc">Grab direct business emails directly from recruiter profiles with a single click overlay.</p>
             
             <!-- Mock profile scraper -->
-            <div class="linkedin-mock glass-card">
+            <div class="linkedin-mock glass-card" style="position: relative; overflow: hidden;">
+              <!-- Sonar Radar overlay container -->
+              <div class="sonar-radar-overlay" id="sonar-radar" style="display:none">
+                <div class="radar-scan-circle">
+                  <div class="radar-sweep"></div>
+                  <div class="radar-blip blip-1">M</div>
+                  <div class="radar-blip blip-2">R</div>
+                </div>
+                <div class="radar-status-text">Scanning Recruiter Channels...</div>
+              </div>
               <div class="profile-header-mock">
                 <div class="mock-pfp">M</div>
                 <div class="mock-meta">
@@ -602,7 +630,21 @@
           <!-- Right: Matches & Email Output -->
           <div class="cv-outbound-panel">
             <div class="companies-section">
-              <h5>Matched Targets</h5>
+              <div class="companies-header-gauge">
+                <h5>Matched Targets</h5>
+                
+                <!-- Profile Fit Arc Score Gauge -->
+                <div class="score-gauge-widget">
+                  <div class="gauge-svg-wrap">
+                    <svg viewBox="0 0 36 36" class="gauge-arc">
+                      <path class="gauge-bg-arc" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke-dasharray="75, 100" stroke-dashoffset="37.5" />
+                      <path class="gauge-fill-arc" id="cv-match-gauge-fill" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke-dasharray="0, 100" stroke-dashoffset="37.5" />
+                    </svg>
+                    <div class="gauge-val" id="cv-match-gauge-val">0%</div>
+                  </div>
+                  <div class="gauge-title">Profile Fit</div>
+                </div>
+              </div>
               <div id="company-cards-box">
                 <!-- Matches generated here -->
               </div>

@@ -2758,3 +2758,260 @@ html[data-theme="dark"] .sandbox-dropzone {
   justify-content: center;
   filter: drop-shadow(0 0 4px currentColor);
 }
+
+/* ==========================================
+   Premium Upgrades: SFX Toggle, 3D Mockup, Sonar Radar & CV Match Gauge
+   ========================================== */
+
+/* SFX Toggle Button */
+#sfx-toggle span {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+#sfx-toggle:hover span {
+  transform: scale(1.1);
+}
+
+/* 3D Parallax Dashboard Mockup */
+.hero-simulator {
+  perspective: 1200px;
+  transform-style: preserve-3d;
+  position: relative;
+  transition: transform 0.15s ease-out;
+}
+.simulator-window {
+  transform-style: preserve-3d;
+  transform: translateZ(0);
+}
+.layer-parallax {
+  position: absolute;
+  pointer-events: none;
+  z-index: 10;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 12px 36px rgba(0, 90, 194, 0.25);
+  transition: transform 0.15s ease-out;
+}
+.floating-stats-card {
+  bottom: -25px;
+  left: -35px;
+  padding: 10px 14px;
+  background: rgba(10, 15, 30, 0.75);
+  border: 1.5px solid rgba(0, 90, 194, 0.35);
+  border-radius: 12px;
+}
+.card-mini-chart {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.card-mini-chart .stat-icon {
+  font-size: 20px;
+  color: var(--primary);
+}
+.card-mini-chart .stat-meta {
+  display: flex;
+  flex-direction: column;
+}
+.card-mini-chart .stat-number {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--primary);
+  line-height: 1;
+}
+.card-mini-chart .stat-label {
+  font-size: 9px;
+  color: var(--tx-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.floating-ai-card {
+  top: 30px;
+  right: -45px;
+  padding: 10px 14px;
+  background: rgba(10, 15, 30, 0.85);
+  border: 1.5px solid rgba(59, 130, 246, 0.4);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+}
+.floating-ai-card .ai-sparkle-icon {
+  font-size: 16px;
+  color: #eab308;
+  filter: drop-shadow(0 0 4px #eab308);
+}
+
+/* Scraper Sonar Radar Overlay */
+.sonar-radar-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 15, 30, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sonar-radar-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.radar-scan-circle {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0, 90, 194, 0.35);
+  background: radial-gradient(circle, rgba(0, 90, 194, 0.05) 0%, rgba(10, 15, 30, 0.8) 100%);
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.radar-scan-circle::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70px;
+  height: 70px;
+  margin-top: -35px;
+  margin-left: -35px;
+  border-radius: 50%;
+  border: 1px dashed rgba(0, 90, 194, 0.25);
+}
+.radar-sweep {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: conic-gradient(from 0deg, rgba(0, 90, 194, 0.38) 0deg, transparent 180deg);
+  border-radius: 50%;
+  animation: radar-sweep-rotate 2.5s linear infinite;
+  transform-origin: center;
+}
+@keyframes radar-sweep-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.radar-blip {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 8px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px var(--primary);
+  opacity: 0;
+}
+.radar-blip.blip-1 {
+  top: 30%;
+  left: 25%;
+}
+.radar-blip.blip-2 {
+  bottom: 25%;
+  right: 30%;
+}
+.radar-blip.active {
+  animation: blip-pulse-flash 1.2s ease-out infinite;
+}
+@keyframes blip-pulse-flash {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+.radar-status-text {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  animation: text-pulse-flash 1.5s ease-in-out infinite;
+}
+@keyframes text-pulse-flash {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* CV Matcher Score Gauge */
+.companies-header-gauge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+.companies-header-gauge h5 {
+  margin-bottom: 0;
+}
+.score-gauge-widget {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--primary-glow);
+  border: 1px solid rgba(0, 90, 194, 0.2);
+  padding: 4px 10px;
+  border-radius: 10px;
+}
+.gauge-svg-wrap {
+  position: relative;
+  width: 32px;
+  height: 32px;
+}
+.gauge-arc {
+  width: 100%;
+  height: 100%;
+  transform: rotate(135deg);
+}
+.gauge-bg-arc {
+  fill: none;
+  stroke: rgba(0, 90, 194, 0.08);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+.gauge-fill-arc {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 0, 100;
+  stroke-dashoffset: 37.5;
+  transition: stroke-dasharray 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.gauge-val {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-display);
+  font-size: 8px;
+  font-weight: 800;
+  color: var(--tx);
+}
+.gauge-title {
+  font-family: var(--font-display);
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--tx-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}

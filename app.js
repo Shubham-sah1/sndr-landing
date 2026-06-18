@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initCVMatcher();
   initModals();
   initScrollReveal();
+  initSFX();
+  init3DParallax();
+  initHapticClicks();
 });
 
 /* ==========================================
@@ -410,6 +413,7 @@ function initBentoWidgets() {
   // Widget C: Directory Scraper Mockup
   const scrapeBtn = document.getElementById('scrape-elon-btn');
   const detailsBox = document.getElementById('scraped-elon-details');
+  const radarOverlay = document.getElementById('sonar-radar');
 
   if (scrapeBtn && detailsBox) {
     scrapeBtn.addEventListener('click', function() {
@@ -417,10 +421,31 @@ function initBentoWidgets() {
       btn.disabled = true;
       btn.innerHTML = `<span class="material-symbols-outlined placeholder-pulse">sync</span><span>Scraping...</span>`;
 
+      // Play looping scrape sound
+      playSFX('scrape');
+
+      // Show radar overlay scanning effect
+      if (radarOverlay) {
+        radarOverlay.style.display = 'flex';
+        setTimeout(() => {
+          radarOverlay.classList.add('active');
+          radarOverlay.querySelectorAll('.radar-blip').forEach(blip => blip.classList.add('active'));
+        }, 50);
+      }
+
       setTimeout(() => {
         btn.innerHTML = `<span class="material-symbols-outlined">verified</span><span>Scraped</span>`;
         btn.style.background = 'linear-gradient(135deg, var(--tertiary) 0%, #10b981 100%)';
         
+        // Hide radar
+        if (radarOverlay) {
+          radarOverlay.classList.remove('active');
+          setTimeout(() => { radarOverlay.style.display = 'none'; }, 300);
+        }
+
+        // Play success chime
+        playSFX('success');
+
         detailsBox.innerHTML = `
           <div class="mock-detail-row">
             <span class="label">Direct:</span>
@@ -431,7 +456,7 @@ function initBentoWidgets() {
             <span class="value">Talent Operations</span>
           </div>
         `;
-      }, 1500);
+      }, 2200);
     });
   }
 
@@ -657,6 +682,28 @@ function initCVMatcher() {
       document.getElementById('composer-to-val').textContent = info.toVal;
       document.getElementById('composer-subject-val').textContent = info.subjectVal;
       draftBox.textContent = info.draft;
+
+      // Animate profile fit circular gauge and score val
+      const matchScoreVal = parseInt(info.matches[0].score) || 0;
+      const gaugeFill = document.getElementById('cv-match-gauge-fill');
+      const gaugeVal = document.getElementById('cv-match-gauge-val');
+      if (gaugeFill && gaugeVal) {
+        let currentVal = 0;
+        gaugeFill.style.strokeDasharray = '0, 100';
+        playSFX('match');
+        
+        const interval = setInterval(() => {
+          currentVal += 2;
+          if (currentVal >= matchScoreVal) {
+            currentVal = matchScoreVal;
+            clearInterval(interval);
+          }
+          gaugeVal.textContent = `${currentVal}%`;
+          
+          const fillPct = currentVal * 0.75;
+          gaugeFill.style.strokeDasharray = `${fillPct}, 100`;
+        }, 15);
+      }
 
       // Animate composer entry
       gsap.from('.email-composer', {
@@ -1149,4 +1196,144 @@ function triggerSparkles(element) {
       }
     });
   }
+}
+
+/* ==========================================
+   Dynamic Web Audio API Synthesizer & SFX Toggle
+   ========================================== */
+let sfxEnabled = true;
+
+function initSFX() {
+  const sfxBtn = document.getElementById('sfx-toggle');
+  if (sfxBtn) {
+    const sfxOnIcon = sfxBtn.querySelector('.sfx-on-icon');
+    const sfxOffIcon = sfxBtn.querySelector('.sfx-off-icon');
+    sfxBtn.addEventListener('click', () => {
+      sfxEnabled = !sfxEnabled;
+      if (sfxEnabled) {
+        sfxOnIcon.style.display = 'inline-block';
+        sfxOffIcon.style.display = 'none';
+        playSFX('click');
+      } else {
+        sfxOnIcon.style.display = 'none';
+        sfxOffIcon.style.display = 'inline-block';
+      }
+    });
+  }
+}
+
+function playSFX(type) {
+  if (!sfxEnabled) return;
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    
+    const now = ctx.currentTime;
+    
+    if (type === 'click') {
+      osc.frequency.setValueAtTime(850, now);
+      osc.frequency.exponentialRampToValueAtTime(180, now + 0.06);
+      gain.gain.setValueAtTime(0.06, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+      osc.start(now);
+      osc.stop(now + 0.06);
+    } else if (type === 'scrape') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(320, now);
+      osc.frequency.exponentialRampToValueAtTime(1100, now + 0.45);
+      gain.gain.setValueAtTime(0.03, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+      osc.start(now);
+      osc.stop(now + 0.45);
+    } else if (type === 'match') {
+      // Dual note chord chime
+      osc.frequency.setValueAtTime(523.25, now); // C5
+      osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+      gain.gain.setValueAtTime(0.04, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+      osc.start(now);
+      osc.stop(now + 0.22);
+    } else if (type === 'success') {
+      // Satisfying pleasant rising major chord
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      notes.forEach((freq, idx) => {
+        const oNode = ctx.createOscillator();
+        const gNode = ctx.createGain();
+        oNode.connect(gNode);
+        gNode.connect(ctx.destination);
+        oNode.frequency.setValueAtTime(freq, now + idx * 0.06);
+        gNode.gain.setValueAtTime(0.035, now + idx * 0.06);
+        gNode.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.28);
+        oNode.start(now + idx * 0.06);
+        oNode.stop(now + idx * 0.06 + 0.28);
+      });
+    }
+  } catch (err) {
+    console.warn('Web Audio synthesis failed:', err.message);
+  }
+}
+
+/* ==========================================
+   3D Parallax Tilt Hover Effect
+   ========================================== */
+function init3DParallax() {
+  const sim = document.querySelector('.hero-simulator');
+  if (sim) {
+    const parallaxLayers = sim.querySelectorAll('.layer-parallax');
+    
+    sim.addEventListener('mousemove', (e) => {
+      const rect = sim.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const xc = rect.width / 2;
+      const yc = rect.height / 2;
+      
+      const angleX = (yc - y) / 10;
+      const angleY = (x - xc) / 10;
+      
+      sim.style.transform = `perspective(1200px) rotateX(${angleX}deg) rotateY(${angleY}deg)`;
+      
+      parallaxLayers.forEach(layer => {
+        const depth = parseFloat(layer.getAttribute('data-depth')) || 30;
+        const px = (x - xc) * (depth / 450);
+        const py = (y - yc) * (depth / 450);
+        layer.style.transform = `translate3d(${px}px, ${py}px, ${depth}px)`;
+      });
+    });
+    
+    sim.addEventListener('mouseleave', () => {
+      sim.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg)';
+      parallaxLayers.forEach(layer => {
+        const depth = parseFloat(layer.getAttribute('data-depth')) || 30;
+        layer.style.transform = `translate3d(0px, 0px, ${depth}px)`;
+      });
+    });
+    
+    // Also style default state of parallax layers to be positioned in Z depth
+    parallaxLayers.forEach(layer => {
+      const depth = parseFloat(layer.getAttribute('data-depth')) || 30;
+      layer.style.transform = `translate3d(0px, 0px, ${depth}px)`;
+    });
+  }
+}
+
+/* ==========================================
+   Generic Sound UI feedback trigger
+   ========================================== */
+function initHapticClicks() {
+  // Trigger soft clicks on all primary UI elements
+  const interactiveNodes = document.querySelectorAll(
+    'a, button, .cv-select-tab, .sim-nav-item, .drag-lead, .chart-toggle-btn'
+  );
+  interactiveNodes.forEach(node => {
+    node.addEventListener('click', () => {
+      playSFX('click');
+    });
+  });
 }

@@ -497,6 +497,7 @@ function initCVMatcher() {
   const draftBox = document.getElementById('cv-draft-text');
   const copyBtn = document.getElementById('cv-copy-btn');
   const targetHeader = document.getElementById('draft-target-name');
+  let gaugeInterval = null;
 
   if (!sheet || !chatbotFeed) return;
 
@@ -504,8 +505,6 @@ function initCVMatcher() {
     tanishq: {
       name: "Tanishq Ray",
       email: "tanishq.ray@srcc.du.ac.in",
-      toVal: "Saksham (Razorpay Treasury)",
-      subjectVal: "SRCC Finance Intern Application",
       cvHtml: `
         <div class="cv-hero">
           <div class="cv-initials finance">TR</div>
@@ -539,16 +538,27 @@ function initCVMatcher() {
         { type: 'bot', text: 'Target matches identified: SaaSFlow (financial forecasting hand needed) and Razorpay (treasury intern role).' }
       ],
       matches: [
-        { company: 'SaaSFlow', role: 'Finance Analyst Intern', score: '94% Match' },
-        { company: 'Razorpay', role: 'Treasury Analyst Intern', score: '89% Match' }
-      ],
-      draft: "Dear Saksham,\n\nI noticed Razorpay's scaling transaction treasury operations. As a Finance honors student at SRCC, I've built portfolio models that automate forecasting limits. I'd love to pitch my analytical support as a treasury analyst intern."
+        {
+          company: 'SaaSFlow',
+          role: 'Finance Analyst Intern',
+          score: '94% Match',
+          toVal: 'Arnav (SaaSFlow Finance)',
+          subjectVal: 'SaaSFlow Finance Intern Application',
+          draft: "Dear Arnav,\n\nI noticed SaaSFlow's expanding financial planning and forecasting needs. As a Finance honors student at SRCC, I've built portfolio models that automate forecasting limits. I'd love to pitch my analytical support as a finance analyst intern."
+        },
+        {
+          company: 'Razorpay',
+          role: 'Treasury Analyst Intern',
+          score: '89% Match',
+          toVal: 'Saksham (Razorpay Treasury)',
+          subjectVal: 'SRCC Finance Intern Application',
+          draft: "Dear Saksham,\n\nI noticed Razorpay's scaling transaction treasury operations. As a Finance honors student at SRCC, I've built portfolio models that automate forecasting limits. I'd love to pitch my analytical support as a treasury analyst intern."
+        }
+      ]
     },
     saksham: {
       name: "Saksham",
       email: "saksham.cse@iitb.ac.in",
-      toVal: "Arnav (SaaSFlow Engineering)",
-      subjectVal: "IIT Bombay CSE Intern Outbound",
       cvHtml: `
         <div class="cv-hero">
           <div class="cv-initials tech">S</div>
@@ -583,10 +593,23 @@ function initCVMatcher() {
         { type: 'bot', text: 'Target matches identified: SaaSFlow (Engineering division) and Razorpay (API integration group).' }
       ],
       matches: [
-        { company: 'SaaSFlow', role: 'Frontend Architect Intern', score: '96% Match' },
-        { company: 'Razorpay', role: 'Backend API Engineering Intern', score: '92% Match' }
-      ],
-      draft: "Hi Arnav,\n\nSaw SaaSFlow's development updates. I built a Raft consensus engine dashboard using React and custom Outfit grids. I'd love to explore joining your engineering team as a React frontend intern."
+        {
+          company: 'SaaSFlow',
+          role: 'Frontend Architect Intern',
+          score: '96% Match',
+          toVal: 'Arnav (SaaSFlow Engineering)',
+          subjectVal: 'IIT Bombay CSE Intern Outbound',
+          draft: "Hi Arnav,\n\nSaw SaaSFlow's development updates. I built a Raft consensus engine dashboard using React and custom Outfit grids. I'd love to explore joining your engineering team as a React frontend intern."
+        },
+        {
+          company: 'Razorpay',
+          role: 'Backend API Engineering Intern',
+          score: '92% Match',
+          toVal: 'Saksham (Razorpay API Integration)',
+          subjectVal: 'IIT Bombay CSE Backend Application',
+          draft: "Dear Saksham,\n\nI noticed Razorpay's expanding backend API engineering group. As a Computer Science student at IIT Bombay with experience in distributed locks and database indexing, I'd love to explore joining your team as a backend API intern."
+        }
+      ]
     }
   };
 
@@ -611,9 +634,54 @@ function initCVMatcher() {
     }
   }
 
+  function updateActiveMatch(match) {
+    if (!match) return;
+    
+    // Update Pitch draft composer fields
+    targetHeader.textContent = `New Message (Pitch for ${match.company})`;
+    document.getElementById('composer-to-val').textContent = match.toVal;
+    document.getElementById('composer-subject-val').textContent = match.subjectVal;
+    draftBox.textContent = match.draft;
+
+    // Animate profile fit circular gauge and score val
+    const matchScoreVal = parseInt(match.score) || 0;
+    const gaugeFill = document.getElementById('cv-match-gauge-fill');
+    const gaugeVal = document.getElementById('cv-match-gauge-val');
+    
+    if (gaugeFill && gaugeVal) {
+      if (gaugeInterval) clearInterval(gaugeInterval);
+      let currentVal = 0;
+      gaugeFill.style.strokeDasharray = '0, 100';
+      
+      gaugeInterval = setInterval(() => {
+        currentVal += 2;
+        if (currentVal >= matchScoreVal) {
+          currentVal = matchScoreVal;
+          clearInterval(gaugeInterval);
+        }
+        gaugeVal.textContent = `${currentVal}%`;
+        
+        const fillPct = currentVal * 0.75;
+        gaugeFill.style.strokeDasharray = `${fillPct}, 100`;
+      }, 15);
+    }
+
+    // Animate composer entry
+    gsap.fromTo('.email-composer',
+      { opacity: 0.95, y: 5 },
+      { opacity: 1, y: 0, duration: 0.3, ease: 'power1.out' }
+    );
+  }
+
   function renderCV(key) {
     const info = dataTemplates[key];
     if (!info) return;
+
+    // Clear any active gauge animation
+    if (gaugeInterval) {
+      clearInterval(gaugeInterval);
+      gaugeInterval = null;
+    }
 
     // Render left sheet
     sheet.innerHTML = info.cvHtml;
@@ -663,9 +731,17 @@ function initCVMatcher() {
             <h6>${m.company}</h6>
             <p>${m.role}</p>
           </div>
-          <span class="match-score">${m.score}</span>
         `;
         matchBox.appendChild(mNode);
+
+        // Click handler to select target match
+        mNode.addEventListener('click', () => {
+          const siblings = matchBox.querySelectorAll('.company-match-card');
+          siblings.forEach(sibling => sibling.classList.remove('active'));
+          mNode.classList.add('active');
+          playSFX('match');
+          updateActiveMatch(m);
+        });
 
         // GSAP animate each card in
         gsap.from(mNode, {
@@ -677,41 +753,9 @@ function initCVMatcher() {
         });
       });
       
-      // Update Pitch draft composer fields
-      targetHeader.textContent = `New Message (Pitch for ${info.matches[0].company})`;
-      document.getElementById('composer-to-val').textContent = info.toVal;
-      document.getElementById('composer-subject-val').textContent = info.subjectVal;
-      draftBox.textContent = info.draft;
-
-      // Animate profile fit circular gauge and score val
-      const matchScoreVal = parseInt(info.matches[0].score) || 0;
-      const gaugeFill = document.getElementById('cv-match-gauge-fill');
-      const gaugeVal = document.getElementById('cv-match-gauge-val');
-      if (gaugeFill && gaugeVal) {
-        let currentVal = 0;
-        gaugeFill.style.strokeDasharray = '0, 100';
-        playSFX('match');
-        
-        const interval = setInterval(() => {
-          currentVal += 2;
-          if (currentVal >= matchScoreVal) {
-            currentVal = matchScoreVal;
-            clearInterval(interval);
-          }
-          gaugeVal.textContent = `${currentVal}%`;
-          
-          const fillPct = currentVal * 0.75;
-          gaugeFill.style.strokeDasharray = `${fillPct}, 100`;
-        }, 15);
-      }
-
-      // Animate composer entry
-      gsap.from('.email-composer', {
-        opacity: 0.8,
-        scale: 0.98,
-        duration: 0.4,
-        ease: 'power1.out'
-      });
+      // Update with the first match and play sound
+      playSFX('match');
+      updateActiveMatch(info.matches[0]);
     }, 3200);
   }
 
@@ -1294,15 +1338,15 @@ function init3DParallax() {
       const xc = rect.width / 2;
       const yc = rect.height / 2;
       
-      const angleX = (yc - y) / 10;
-      const angleY = (x - xc) / 10;
+      const angleX = (yc - y) / 40;
+      const angleY = (x - xc) / 40;
       
       sim.style.transform = `perspective(1200px) rotateX(${angleX}deg) rotateY(${angleY}deg)`;
       
       parallaxLayers.forEach(layer => {
         const depth = parseFloat(layer.getAttribute('data-depth')) || 30;
-        const px = (x - xc) * (depth / 450);
-        const py = (y - yc) * (depth / 450);
+        const px = (x - xc) * (depth / 1500);
+        const py = (y - yc) * (depth / 1500);
         layer.style.transform = `translate3d(${px}px, ${py}px, ${depth}px)`;
       });
     });

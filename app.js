@@ -853,7 +853,7 @@ function initModals() {
     installBtn.addEventListener('click', function() {
       // Trigger extension download immediately (synchronous to user click to prevent browser blocking)
       const link = document.createElement('a');
-      link.href = 'sndr-extension.zip';
+      link.href = 'https://sndr-f4rg.onrender.com/sndr-extension.zip';
       link.download = 'sndr-extension.zip';
       document.body.appendChild(link);
       link.click();

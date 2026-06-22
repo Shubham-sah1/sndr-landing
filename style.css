@@ -184,17 +184,17 @@ body.cursor-active .custom-cursor-follower {
   transition: fill 0.3s ease, transform 0.2s ease;
 }
 
-.pixel-logo .dot {
-  fill: var(--primary);
+.pixel-logo .pixel.dot {
+  fill: var(--primary) !important;
 }
 
-.logo-wrapper:hover .pixel {
+.pixel-logo:hover .pixel {
   fill: var(--primary);
   transform: scale(1.08) translate(0.5px, 0.5px);
 }
 
-.logo-wrapper:hover .dot {
-  fill: var(--secondary);
+.pixel-logo:hover .pixel.dot {
+  fill: var(--secondary) !important;
 }
 
 .nav-links {
@@ -2624,8 +2624,8 @@ html[data-theme="dark"] .sandbox-dropzone {
   transform-origin: center;
 }
 
-.large-logo .dot {
-  fill: var(--primary);
+.large-logo .pixel.dot {
+  fill: var(--primary) !important;
 }
 
 .intro-tagline {

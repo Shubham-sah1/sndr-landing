@@ -851,13 +851,8 @@ function initModals() {
 
   if (installBtn) {
     installBtn.addEventListener('click', function() {
-      // Trigger extension download immediately (synchronous to user click to prevent browser blocking)
-      const link = document.createElement('a');
-      link.href = 'https://sndr-f4rg.onrender.com/sndr-extension.zip';
-      link.download = 'sndr-extension.zip';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      // Open the Chrome Web Store extension page directly in a new tab
+      window.open('https://chromewebstore.google.com/detail/ddmcnkmgabdjfnmcnheiaenmflnciaei', '_blank');
 
       this.disabled = true;
       let progress = 0;

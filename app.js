@@ -851,9 +851,6 @@ function initModals() {
 
   if (installBtn) {
     installBtn.addEventListener('click', function() {
-      // Open the Chrome Web Store extension page directly in a new tab
-      window.open('https://chromewebstore.google.com/detail/ddmcnkmgabdjfnmcnheiaenmflnciaei', '_blank');
-
       this.disabled = true;
       let progress = 0;
       
@@ -877,6 +874,14 @@ function initModals() {
         if (progress >= 100) {
           clearInterval(interval);
           installBtn.textContent = 'Installed!';
+
+          // Trigger download of the zip file
+          const a = document.createElement('a');
+          a.href = 'sndr-extension.zip';
+          a.download = 'sndr-extension.zip';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
 
           setTimeout(() => {
             if (modal) modal.classList.add('hidden');

@@ -875,9 +875,11 @@ function initModals() {
           clearInterval(interval);
           installBtn.textContent = 'Installed!';
 
-          // Trigger download of the zip file
+          // Trigger download of the zip file. Append a unique cache-busting token
+          // so the browser never serves a stale copy of a previously downloaded zip
+          // (the filename is fixed, so without this some browsers reuse the old file).
           const a = document.createElement('a');
-          a.href = 'sndr-extension.zip';
+          a.href = 'sndr-extension.zip?v=2.0.3&t=' + Date.now();
           a.download = 'sndr-extension.zip';
           document.body.appendChild(a);
           a.click();

@@ -879,7 +879,7 @@ function initModals() {
           // so the browser never serves a stale copy of a previously downloaded zip
           // (the filename is fixed, so without this some browsers reuse the old file).
           const a = document.createElement('a');
-          a.href = 'sndr-extension.zip?v=2.2.1&t=' + Date.now();
+          a.href = 'sndr-extension.zip?v=2.2.2&t=' + Date.now();
           a.download = 'sndr-extension.zip';
           document.body.appendChild(a);
           a.click();

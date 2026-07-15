@@ -3035,3 +3035,19 @@ html[data-theme="dark"] .sandbox-dropzone {
 .about-card p:last-child { margin-bottom: 0; }
 .about-card a { color: var(--primary); font-weight: 600; text-decoration: none; }
 .about-card a:hover { text-decoration: underline; }
+
+/* Trailer section */
+.trailer-section {
+  padding: 100px 0;
+}
+.trailer-card {
+  padding: 14px;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+.trailer-card video {
+  width: 100%;
+  display: block;
+  border-radius: 10px;
+  background: #0a0f1d;
+}

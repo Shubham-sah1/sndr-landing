@@ -1111,6 +1111,22 @@ function setupGSAPTimelines() {
   .fromTo('#cv-matcher .section-intro', { opacity: 0, y: 35 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.8')
   .fromTo('#cv-matcher .cv-matcher-container', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.8 }, '-=0.6');
 
+  // Section: Trailer video
+  const trailerTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '#trailer',
+      start: 'top 95%',
+      end: 'top 50%',
+      scrub: 0.8
+    }
+  });
+  trailerTl.fromTo('#trailer > .container',
+    { rotationX: -30, opacity: 0, z: -100, transformOrigin: 'top center' },
+    { rotationX: 0, opacity: 1, z: 0, duration: 1.0, ease: 'power1.out' }
+  )
+  .fromTo('#trailer .section-intro', { opacity: 0, y: 35 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.8')
+  .fromTo('#trailer .trailer-card', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.8 }, '-=0.6');
+
   // Section: About SNDR
   const aboutTl = gsap.timeline({
     scrollTrigger: {

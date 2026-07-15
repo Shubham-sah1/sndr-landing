@@ -1111,21 +1111,21 @@ function setupGSAPTimelines() {
   .fromTo('#cv-matcher .section-intro', { opacity: 0, y: 35 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.8')
   .fromTo('#cv-matcher .cv-matcher-container', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.8 }, '-=0.6');
 
-  // Section D: Pricing
-  const pricingTl = gsap.timeline({
+  // Section: About SNDR
+  const aboutTl = gsap.timeline({
     scrollTrigger: {
-      trigger: '#pricing',
+      trigger: '#about',
       start: 'top 95%',
-      end: 'top 45%',
+      end: 'top 50%',
       scrub: 0.8
     }
   });
-  pricingTl.fromTo('#pricing > .container', 
+  aboutTl.fromTo('#about > .container',
     { rotationX: -30, opacity: 0, z: -100, transformOrigin: 'top center' },
     { rotationX: 0, opacity: 1, z: 0, duration: 1.0, ease: 'power1.out' }
   )
-  .fromTo('#pricing .section-intro', { opacity: 0, y: 35 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.8')
-  .fromTo('#pricing .pricing-card', { opacity: 0, y: 50, rotationX: 10 }, { opacity: 1, y: 0, rotationX: 0, stagger: 0.15, duration: 0.8 }, '-=0.6');
+  .fromTo('#about .section-intro', { opacity: 0, y: 35 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.8')
+  .fromTo('#about .about-card', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.8 }, '-=0.6');
 
   // Section E: Founders
   const foundersTl = gsap.timeline({

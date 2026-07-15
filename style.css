@@ -3022,3 +3022,16 @@ html[data-theme="dark"] .sandbox-dropzone {
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
+
+
+/* About SNDR card */
+.about-card {
+  padding: 40px 48px;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--tx-muted);
+}
+.about-card p { margin: 0 0 16px; }
+.about-card p:last-child { margin-bottom: 0; }
+.about-card a { color: var(--primary); font-weight: 600; text-decoration: none; }
+.about-card a:hover { text-decoration: underline; }

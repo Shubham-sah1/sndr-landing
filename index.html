@@ -4,7 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SNDR. Landing Gigs at the Speed of Thought</title>
-  <script>document.documentElement.classList.add('js-active');</script>
+  <script>
+    document.documentElement.classList.add('js-active');
+    // Always start at the top on reload: mid-scroll restore looks broken with the pinned intro
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+    window.addEventListener('load', function () {
+      window.scrollTo(0, 0);
+      // Reveal icon glyphs only once the icon font is ready, so ligature names never flash as raw text
+      var iconsReady = function () { document.documentElement.classList.add('icons-ready'); };
+      if (document.fonts && document.fonts.ready) { document.fonts.ready.then(iconsReady); }
+      setTimeout(iconsReady, 2000);
+    });
+  </script>
+  <style>.material-symbols-outlined{opacity:0}html.icons-ready .material-symbols-outlined,html:not(.js-active) .material-symbols-outlined{opacity:1}</style>
   <meta name="description" content="SNDR is a Chrome extension that automates cold outreach for students: find verified recruiter emails, send personalized pitches from your own Gmail, track opens live, and follow up automatically. Built by students, for students.">
   <link rel="canonical" href="https://www.sndr.co.in/">
 
@@ -40,10 +53,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet">
   
   <!-- CSS Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=1.4">
+  <link rel="stylesheet" href="style.css?v=1.5">
   
   <!-- GSAP Animation Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -578,19 +591,6 @@
   </section>
 
   <!-- CV Analyzer Section (Sample CV Chatbot Simulator) -->
-  <!-- Trailer -->
-  <section id="trailer" class="trailer-section">
-    <div class="container">
-      <div class="section-intro text-center reveal">
-        <h2 class="section-title">See SNDR in Action</h2>
-        <p class="section-subtitle">A 50 second look at how SNDR finds emails, drafts pitches, tracks opens, and follows up for you.</p>
-      </div>
-      <div class="trailer-card glass-card reveal">
-        <video src="assets/sndr-trailer.mp4" poster="assets/trailer-poster.jpg" controls preload="metadata" playsinline></video>
-      </div>
-    </div>
-  </section>
-
   <section id="cv-matcher" class="cv-matcher-section">
     <div class="container">
       <div class="section-intro text-center reveal">
@@ -733,7 +733,8 @@
       </div>
       <div class="about-card glass-card reveal">
         <p>SNDR is a Chrome extension and outreach platform built in India. It helps students and early professionals find verified work emails, send personalized cold emails from their own Gmail, track opens and replies on a live dashboard, and follow up automatically until they get a response. The product is live on this site and free to install.</p>
-        <p>Reach us anytime at <a href="mailto:contact@sndr.co.in">contact@sndr.co.in</a> or on <a href="https://www.linkedin.com/company/sndrai/" target="_blank">LinkedIn</a>.</p>
+        <video src="assets/sndr-trailer.mp4" poster="assets/trailer-poster.jpg" controls preload="none" playsinline></video>
+        <p class="about-contact">Reach us anytime at <a href="mailto:contact@sndr.co.in">contact@sndr.co.in</a> or on <a href="https://www.linkedin.com/company/sndrai/" target="_blank">LinkedIn</a>.</p>
       </div>
     </div>
   </section>

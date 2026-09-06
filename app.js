@@ -989,7 +989,22 @@ function setupGSAPTimelines() {
           // buffer where the pin stays active and the hero just sits there,
           // giving a fling's momentum something to spend before release.
           end: '+=2000', // Pinned duration sequence (half animation, half buffer — see note above)
-          scrub: 0.5,
+          // scrub: 0.5 (a smoothing lag) is the real, persistent cause of
+          // the clipped-heading landing seen on real phones even after the
+          // buffer and normalizeScroll fixes above. Pin/unpin is decided
+          // from the ScrollTrigger's raw, instant scroll-position progress
+          // — it has no relation to how far the *visual* timeline has
+          // actually animated when scrub smooths that catch-up over 0.5s.
+          // A phone flick easily covers the whole 2000px pinned distance
+          // in well under 500ms, so the raw progress hits 1 and the
+          // section unpins into normal page flow while the lagging visual
+          // tween is still mid-transition — landing exactly on the
+          // half-revealed, nav-clipped frame reported. `scrub: true` binds
+          // the timeline 1:1 to scroll position with no lag, so pin state
+          // and visual state can never disagree regardless of scroll
+          // speed; `snap` below still supplies the smooth settle feel
+          // once the user stops scrolling.
+          scrub: true,
           pin: true,
           pinSpacing: true,
           // Without snapping, a scrub timeline just stops wherever the

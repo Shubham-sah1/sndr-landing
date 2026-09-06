@@ -283,6 +283,7 @@ function initSandbox() {
   const core = document.getElementById('engine-core');
   const outputPlaceholder = document.querySelector('.output-placeholder');
   const outputCard = document.getElementById('output-card');
+  const dropHint = core ? core.querySelector('.drop-hint') : null;
 
   if (!shelf || !core) return;
 
@@ -301,8 +302,33 @@ function initSandbox() {
     }
   };
 
+  function compileOutbound(name) {
+    const data = outboundHooks[name];
+    if (!data) return;
+
+    // Hide placeholder and reveal custom card content
+    if (outputPlaceholder) outputPlaceholder.classList.add('hidden');
+    if (outputCard) {
+      outputCard.classList.remove('hidden');
+      document.getElementById('out-avatar').textContent = name[0];
+      document.getElementById('out-name').textContent = name;
+      document.getElementById('out-role').textContent = name === 'Manit' ? 'Professor @ IIT Bombay' : name === 'Arnav' ? 'Founder @ SaaSFlow' : 'HR Lead @ Razorpay';
+      document.getElementById('out-email').textContent = data.email;
+      document.getElementById('out-hook').textContent = `"${data.hook}"`;
+    }
+
+    // Add cool mini bounce animation
+    core.style.transform = 'scale(0.95)';
+    setTimeout(() => { core.style.transform = 'scale(1)'; }, 150);
+  }
+
   const leads = shelf.querySelectorAll('.drag-lead');
 
+  // HTML5 drag-and-drop (dragstart/dragover/drop below) has no touch
+  // equivalent — it simply never fires on a phone, so "drag a profile onto
+  // the core" was a dead, unusable demo for every touch visitor with no
+  // indication anything was wrong. A tap does the same compile immediately,
+  // so it works everywhere; mouse users keep the drag interaction untouched.
   leads.forEach(lead => {
     lead.addEventListener('dragstart', (e) => {
       e.dataTransfer.setData('text/plain', lead.getAttribute('data-name'));
@@ -312,7 +338,15 @@ function initSandbox() {
     lead.addEventListener('dragend', () => {
       document.body.classList.remove('dragging-active');
     });
+
+    lead.addEventListener('click', () => {
+      compileOutbound(lead.getAttribute('data-name'));
+    });
   });
+
+  if (dropHint && window.matchMedia('(hover: none), (pointer: coarse)').matches) {
+    dropHint.textContent = 'Tap a profile to compile email';
+  }
 
   core.addEventListener('dragover', (e) => {
     e.preventDefault();
@@ -326,26 +360,7 @@ function initSandbox() {
   core.addEventListener('drop', (e) => {
     e.preventDefault();
     core.classList.remove('dragover');
-    
-    const name = e.dataTransfer.getData('text/plain');
-    const data = outboundHooks[name];
-
-    if (data) {
-      // Hide placeholder and reveal custom card content
-      if (outputPlaceholder) outputPlaceholder.classList.add('hidden');
-      if (outputCard) {
-        outputCard.classList.remove('hidden');
-        document.getElementById('out-avatar').textContent = name[0];
-        document.getElementById('out-name').textContent = name;
-        document.getElementById('out-role').textContent = name === 'Manit' ? 'Professor @ IIT Bombay' : name === 'Arnav' ? 'Founder @ SaaSFlow' : 'HR Lead @ Razorpay';
-        document.getElementById('out-email').textContent = data.email;
-        document.getElementById('out-hook').textContent = `"${data.hook}"`;
-      }
-
-      // Add cool mini bounce animation
-      core.style.transform = 'scale(0.95)';
-      setTimeout(() => { core.style.transform = 'scale(1)'; }, 150);
-    }
+    compileOutbound(e.dataTransfer.getData('text/plain'));
   });
 }
 

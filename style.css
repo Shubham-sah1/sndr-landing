@@ -876,6 +876,16 @@ html[data-theme="dark"] .light-icon { display: block; }
   cursor: grabbing;
 }
 
+/* Drag-and-drop has no touch equivalent, so app.js makes a tap on a lead
+   card compile the email directly instead — this is the visual press
+   feedback for that tap, since there's no hover/grab cursor to rely on. */
+@media (hover: none), (pointer: coarse) {
+  .drag-lead:active {
+    transform: scale(0.97);
+    border-color: var(--primary);
+  }
+}
+
 .lead-info {
   flex: 1;
   text-align: left;
@@ -2973,6 +2983,23 @@ html.intro-lock body {
     flex-direction: column;
     align-items: stretch;
     gap: 12px;
+  }
+
+  /* Every major section uses padding: 100px 0 (desktop breathing room
+     between wide, content-dense rows) — stacked on a phone that's 200px
+     of pure blank scroll between each section, on top of each section's
+     own internal heading/intro spacing. It reads as sparse, disconnected
+     sections rather than one considered page. Tighten to a scale that
+     still separates sections clearly without the dead scrolling. */
+  .supported-by-section,
+  .playground-section,
+  .features-section,
+  .cv-matcher-section,
+  .pricing-section {
+    padding: 64px 0;
+  }
+  .founders-section {
+    padding: 64px 0 96px;
   }
 }
 

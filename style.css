@@ -342,6 +342,19 @@ html[data-theme="dark"] .light-icon { display: block; }
   position: relative;
 }
 
+/* Custom cursor is a desktop-mouse decoration — on a touchscreen there's no
+   persistent pointer position to follow, so it never receives a move event
+   and just sits stuck whever it last was, reading as a random stray dot and
+   ring on top of the page. (hover:none)/(pointer:coarse) target "no real
+   mouse" directly, which is the right test — better than a width breakpoint,
+   since it's about input capability, not screen size. */
+@media (hover: none), (pointer: coarse) {
+  .custom-cursor,
+  .custom-cursor-follower {
+    display: none;
+  }
+}
+
 .hero-grid {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
@@ -2829,6 +2842,23 @@ html[data-theme="dark"] .sandbox-dropzone {
   .nav-container {
     padding: 10px 16px;
     height: 60px;
+  }
+  /* .hero-title has no responsive rule at all — it renders at the same 56px
+     used on desktop, which wraps "Cold Emailing, at the Speed of Thought."
+     into 4-5 cramped lines on a 375px screen and makes the whole hero feel
+     oversized and unbalanced. Scale it down and tighten the surrounding
+     spacing so the hero reads as deliberately sized for the screen. */
+  .hero {
+    padding: 110px 0 60px;
+  }
+  .hero-title {
+    font-size: 34px;
+    line-height: 1.25;
+    margin-bottom: 16px;
+  }
+  .hero-subtitle {
+    font-size: 16px;
+    margin-bottom: 28px;
   }
   /* Anchor links to sections already on this single page — on a phone,
      scrolling to them costs nothing, so drop them rather than cram a

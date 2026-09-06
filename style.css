@@ -2191,6 +2191,17 @@ html[data-theme="dark"] .sandbox-dropzone {
   text-transform: uppercase;
   margin: 0 auto;
   letter-spacing: 0.05em;
+  /* .window-dots is position:absolute (left:16px, ~39px wide) and this title
+     centers across the FULL header width via margin:auto — on a narrow phone
+     screen a long generated title (e.g. "New Message (Pitch for SaaSFlow)")
+     centers close enough to the left edge to render underneath the dots.
+     Padding keeps the text clear of that zone; truncate as a safety net. */
+  padding: 0 12px 0 55px;
+  box-sizing: border-box;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .composer-meta {
@@ -2808,7 +2819,57 @@ html[data-theme="dark"] .sandbox-dropzone {
   }
 }
 
+/* Phone-specific fixes. The 992px breakpoint above handles tablet-width
+   grid stacking; nothing in it addresses the fixed nav bar, which was
+   overflowing/clipping its own links off the right edge of the viewport
+   below ~640px, or the Supported By row, which fell back to horizontal
+   scrolling (functional, but scrolling to see a logo strip is a poor
+   experience on a phone the moment it doesn't need to be). */
+@media (max-width: 640px) {
+  .nav-container {
+    padding: 10px 16px;
+    height: 60px;
+  }
+  /* Anchor links to sections already on this single page — on a phone,
+     scrolling to them costs nothing, so drop them rather than cram a
+     hamburger menu in for a one-page site. */
+  .nav-links {
+    display: none;
+  }
+  /* Least essential control; frees width for the actual CTA. */
+  #sfx-toggle {
+    display: none;
+  }
+  .nav-actions .primary-btn {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
 
+  .supported-by-logos {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    row-gap: 20px;
+  }
+  .supported-by-item {
+    flex: 1 1 40%;
+    padding: 4px 16px;
+  }
+  /* The single-row divider pattern (border on every item but the first)
+     reads as a stray line at the start of the second wrapped row — drop
+     dividers on phone and rely on the row-gap/padding for separation. */
+  .supported-by-item + .supported-by-item {
+    border-left: none;
+  }
+
+  /* html/body has overflow-x:hidden site-wide, so this row didn't just
+     look bad on phone — the second tab (Saksham) was genuinely clipped
+     and untappable, not merely scrolled off. Stack instead of a row. */
+  .cv-selector-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+}
 
 /* Sparkle Effect highlight word */
 .cold-mailing-sparkle {

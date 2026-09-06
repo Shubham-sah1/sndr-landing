@@ -12,6 +12,11 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Tells the browser this page manages its own light/dark appearance,
+       so it doesn't apply its own auto-dark color-inversion heuristic on
+       top (seen on real Android devices selectively washing out specific
+       elements — see the color-scheme note in style.css). -->
+  <meta name="color-scheme" content="light dark">
   <title>SNDR. Landing Gigs at the Speed of Thought</title>
   <script>
     document.documentElement.classList.add('js-active');

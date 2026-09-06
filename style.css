@@ -1,5 +1,16 @@
 /* Premium Design System and Style Variables for SNDR */
 :root {
+  /* Declares that this page handles its own light/dark appearance via the
+     --tx/--bg variables below. Without this, some Android browsers (seen
+     on real-device reports; not reproducible in desktop/emulated testing)
+     apply their own heuristic "auto-dark" color inversion to pages that
+     don't declare a color-scheme, which can selectively wash out
+     individual elements — e.g. an uppercase label whose color comes from
+     a CSS variable can get misjudged as "unstyled" and repainted to
+     match the surrounding background. Declaring the scheme explicitly
+     opts the page out of that heuristic entirely. */
+  color-scheme: light;
+
   /* Font Family definitions */
   --font-h: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-b: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -35,6 +46,7 @@
 
 /* Dark Theme Overrides */
 html[data-theme="dark"] {
+  color-scheme: dark;
   --bg: #070a13;
   --tx: #f3f5f9;
   --tx-muted: #919fb5;

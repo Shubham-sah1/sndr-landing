@@ -962,7 +962,20 @@ function setupGSAPTimelines() {
           end: '+=1000', // Pinned duration sequence
           scrub: 0.5,
           pin: true,
-          pinSpacing: true
+          pinSpacing: true,
+          // Without snapping, a scrub timeline just stops wherever the
+          // user's scroll gesture happens to stop — on desktop that's a
+          // precise wheel tick, but mobile touch/momentum scrolling
+          // routinely overshoots a little past the pin's release point,
+          // landing partway into the hero section with its heading
+          // clipped behind the fixed nav. Snapping to progress 0 or 1
+          // means the scroll always settles fully before or fully after
+          // the intro, never mid-transition.
+          snap: {
+            snapTo: [0, 1],
+            duration: 0.4,
+            ease: 'power1.inOut'
+          }
         }
       });
 

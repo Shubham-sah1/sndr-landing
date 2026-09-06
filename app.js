@@ -970,58 +970,22 @@ function setupGSAPTimelines() {
       // Force ScrollTrigger to refresh first so positions are resolved accurately
       ScrollTrigger.refresh();
 
-      const introTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: '.intro-scroll-wrapper',
-          start: 'top top',
-          // .hero is position:absolute, overlaying the exact same 100vh as
-          // the intro splash (see .intro-scroll-wrapper .hero in style.css)
-          // — it has no scroll height of its own. Every visible tween below
-          // finishes by timeline-time ~1.1, which used to line up almost
-          // exactly with this 1000px end: the instant the hero finished
-          // revealing, the pin released into real page flow with zero
-          // cushion. A single strong swipe's leftover momentum then carried
-          // straight through into the next real section in one motion —
-          // the hero was never actually stopped on, just flashed past.
-          // Doubling end to 2000 and appending an equal-length no-op tween
-          // below keeps every existing animation's speed identical (still
-          // the same proportion of the timeline) while adding a genuine
-          // buffer where the pin stays active and the hero just sits there,
-          // giving a fling's momentum something to spend before release.
-          end: '+=2000', // Pinned duration sequence (half animation, half buffer — see note above)
-          // scrub: 0.5 (a smoothing lag) is the real, persistent cause of
-          // the clipped-heading landing seen on real phones even after the
-          // buffer and normalizeScroll fixes above. Pin/unpin is decided
-          // from the ScrollTrigger's raw, instant scroll-position progress
-          // — it has no relation to how far the *visual* timeline has
-          // actually animated when scrub smooths that catch-up over 0.5s.
-          // A phone flick easily covers the whole 2000px pinned distance
-          // in well under 500ms, so the raw progress hits 1 and the
-          // section unpins into normal page flow while the lagging visual
-          // tween is still mid-transition — landing exactly on the
-          // half-revealed, nav-clipped frame reported. `scrub: true` binds
-          // the timeline 1:1 to scroll position with no lag, so pin state
-          // and visual state can never disagree regardless of scroll
-          // speed; `snap` below still supplies the smooth settle feel
-          // once the user stops scrolling.
-          scrub: true,
-          pin: true,
-          pinSpacing: true,
-          // Without snapping, a scrub timeline just stops wherever the
-          // user's scroll gesture happens to stop — on desktop that's a
-          // precise wheel tick, but mobile touch/momentum scrolling
-          // routinely overshoots a little past the pin's release point,
-          // landing partway into the hero section with its heading
-          // clipped behind the fixed nav. Snapping to progress 0 or 1
-          // means the scroll always settles fully before or fully after
-          // the intro, never mid-transition.
-          snap: {
-            snapTo: [0, 1],
-            duration: 0.4,
-            ease: 'power1.inOut'
-          }
-        }
-      });
+      // This intro used to be driven by ScrollTrigger's native pin+scrub,
+      // tied directly to the browser's own scroll position. Three rounds of
+      // tuning that approach (a longer pinned distance + buffer tween,
+      // ScrollTrigger.normalizeScroll for touch-delta granularity, then
+      // scrub:true to remove animation lag) each fixed a real issue, but
+      // real phones kept landing mid-transition regardless — because every
+      // version of that approach still let the browser's own native scroll
+      // position, which behaves inconsistently across devices during
+      // momentum/fling scrolling, decide the instant the section unpinned.
+      // This version removes that dependency entirely: real page scrolling
+      // is blocked outright (html.intro-lock, see style.css) while the
+      // intro plays, and progress is driven only by wheel/touch/keyboard
+      // input we read and clamp ourselves. There is no native scroll
+      // position for the browser to get "ahead of" — the page physically
+      // cannot move until the intro timeline reports progress 1.
+      const introTl = gsap.timeline({ paused: true });
 
       // Fade out scroll down hint and tagline immediately
       introTl.to(['.scroll-down-hint', '.intro-tagline'], {
@@ -1103,7 +1067,7 @@ function setupGSAPTimelines() {
         ease: 'power2.out'
       }, 0.6);
 
-      // Clean up visibility at the end of scrub
+      // Clean up visibility at the end
       introTl.to('.logo-transform-container', {
         display: 'none',
         duration: 0.1
@@ -1114,15 +1078,63 @@ function setupGSAPTimelines() {
         duration: 0.1
       }, 1.0);
 
-      // Buffer tween — see the `end` comment above. Matches the existing
-      // timeline's duration exactly (1.1s ↔ the original 1000px), doubling
-      // total duration to pair with end:'+=2000' at the same px-per-second
-      // rate, without changing how fast anything above actually animates.
-      // Tweens .hero's already-1 opacity to 1 — a real property tween (GSAP
-      // appears to collapse a tween on an empty {} target to near-zero
-      // duration regardless of what's specified, since there's nothing to
-      // interpolate) so the duration is genuinely honored.
-      introTl.to('.hero', { opacity: 1, duration: 1.1 }, 1.1);
+      // --- Manual input gate (replaces ScrollTrigger pin+scrub for this
+      // timeline — see the comment above introTl's creation for why).
+      const root = document.documentElement;
+      const INTRO_INPUT_RANGE = 1400; // total px-equivalent of input needed to finish
+      let introProgress = 0;
+      let introLocked = true;
+
+      root.classList.add('intro-lock');
+
+      const setIntroProgress = (p) => {
+        introProgress = Math.min(1, Math.max(0, p));
+        introTl.progress(introProgress);
+        if (introProgress >= 1 && introLocked) releaseIntroLock();
+      };
+
+      function releaseIntroLock() {
+        introLocked = false;
+        root.classList.remove('intro-lock');
+        window.removeEventListener('wheel', onIntroWheel);
+        window.removeEventListener('touchstart', onIntroTouchStart);
+        window.removeEventListener('touchmove', onIntroTouchMove);
+        window.removeEventListener('keydown', onIntroKeyDown);
+      }
+
+      function onIntroWheel(e) {
+        if (!introLocked) return;
+        e.preventDefault();
+        setIntroProgress(introProgress + e.deltaY / INTRO_INPUT_RANGE);
+      }
+
+      let introTouchY = 0;
+      function onIntroTouchStart(e) {
+        if (!introLocked) return;
+        introTouchY = e.touches[0].clientY;
+      }
+      function onIntroTouchMove(e) {
+        if (!introLocked) return;
+        e.preventDefault();
+        const y = e.touches[0].clientY;
+        setIntroProgress(introProgress + (introTouchY - y) / INTRO_INPUT_RANGE);
+        introTouchY = y;
+      }
+      function onIntroKeyDown(e) {
+        if (!introLocked) return;
+        if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+          e.preventDefault();
+          setIntroProgress(introProgress + 0.35);
+        } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+          e.preventDefault();
+          setIntroProgress(introProgress - 0.35);
+        }
+      }
+
+      window.addEventListener('wheel', onIntroWheel, { passive: false });
+      window.addEventListener('touchstart', onIntroTouchStart, { passive: true });
+      window.addEventListener('touchmove', onIntroTouchMove, { passive: false });
+      window.addEventListener('keydown', onIntroKeyDown);
     }
 
   // 3. INTERACTIVE 3D SCROLL-SCRUBBED UNFOLDING FOR ALL SECTIONS

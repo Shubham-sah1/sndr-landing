@@ -2654,6 +2654,16 @@ html[data-theme="dark"] .sandbox-dropzone {
 }
 
 /* FULL SCREEN SCROLL-UNFOLD INTRO SYSTEM */
+/* Applied to <html> while the intro's input gate (app.js) is active, so
+   the page physically cannot scroll until the intro timeline finishes —
+   see the comment above introTl's creation in app.js for why. */
+html.intro-lock,
+html.intro-lock body {
+  overflow: hidden;
+  height: 100%;
+  overscroll-behavior: none;
+}
+
 .intro-scroll-wrapper {
   position: relative;
   width: 100%;
@@ -2863,6 +2873,25 @@ html[data-theme="dark"] .sandbox-dropzone {
      spacing so the hero reads as deliberately sized for the screen. */
   .hero {
     padding: 110px 0 60px;
+  }
+  /* .intro-scroll-wrapper .hero (the intro's absolutely-positioned overlay
+     copy of .hero) sets padding:0 and overflow:hidden so it can fill the
+     100vh intro frame exactly — but on a phone, the heading + subtitle +
+     button + simulator mockup stack is taller than 100vh minus the nav's
+     60px, and align-items:center then centers that overflow equally in
+     both directions: the top of the heading gets pushed up underneath the
+     fixed nav and hard-clipped by overflow:hidden, which is what reads as
+     "the top bar is cutting the view". Anchoring to the top with the same
+     110px nav clearance the normal (non-intro) .hero uses, and letting
+     overflow go only downward (past the 100vh frame — .intro-scroll-wrapper
+     itself already allows this via overflow:visible, and it's just normal
+     scrollable page content once the intro finishes), means nothing ever
+     needs to render above the nav in the first place.
+  */
+  .intro-scroll-wrapper .hero {
+    align-items: flex-start;
+    padding-top: 110px;
+    overflow: visible;
   }
   .hero-title {
     font-size: 34px;

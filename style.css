@@ -2723,6 +2723,19 @@ html[data-theme="dark"] .sandbox-dropzone {
   .cv-outbound-panel {
     min-width: 0;
   }
+  /* .cv-chatbot-workspace's fixed 480px height (needed on desktop so the
+     three columns line up) forces the chat transcript into a small
+     internally-scrolling box on a phone — a nested scroll area is easy to
+     miss or fight with the page's own scroll on touch, which is why the
+     conversation read as unreadable/stuck rather than just short. Let it
+     grow to fit its actual content instead, so every message is part of
+     the normal page scroll like everything else on mobile. */
+  .cv-chatbot-workspace {
+    height: auto;
+  }
+  .chatbot-feed {
+    overflow-y: visible;
+  }
   .pricing-cards-container {
     grid-template-columns: 1fr;
   }

@@ -4,18 +4,19 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  initParticles();
-  initCustomCursor();
-  initThemeToggle();
-  initSimulator();
-  initSandbox();
-  initBentoWidgets();
-  initCVMatcher();
-  initModals();
-  initScrollReveal();
-  initSFX();
-  init3DParallax();
-  initHapticClicks();
+  // Each init is independent (particles, cursor, theme toggle, the various
+  // interactive demos, the scroll-reveal/intro system, SFX, parallax,
+  // haptics) — one throwing should never take the rest down with it, since
+  // a single broken widget silently killing every init after it in the
+  // list is a much worse failure than that one widget not working.
+  const steps = [initParticles, initCustomCursor, initThemeToggle, initSimulator, initSandbox, initBentoWidgets, initCVMatcher, initModals, initScrollReveal, initSFX, init3DParallax, initHapticClicks];
+  steps.forEach(fn => {
+    try {
+      fn();
+    } catch (e) {
+      console.error('[SNDR] Init step failed:', fn.name, e);
+    }
+  });
 });
 
 /* ==========================================
@@ -982,6 +983,7 @@ function setupGSAPTimelines() {
     const pixels = document.querySelectorAll('.large-logo .pixel');
 
     if (wrapper && logo && hero && pixels.length > 0) {
+     try {
       // Force ScrollTrigger to refresh first so positions are resolved accurately
       ScrollTrigger.refresh();
 
@@ -1150,6 +1152,21 @@ function setupGSAPTimelines() {
       window.addEventListener('touchstart', onIntroTouchStart, { passive: true });
       window.addEventListener('touchmove', onIntroTouchMove, { passive: false });
       window.addEventListener('keydown', onIntroKeyDown);
+     } catch (introErr) {
+      // A real device somewhere ended up with the nav and hero permanently
+      // invisible (js-active never removed) despite scrolling working fine
+      // — meaning something in the block above threw before finishing. The
+      // exact cause wasn't reproducible in testing, but leaving the page in
+      // that state is strictly worse than skipping the intro animation, so
+      // force everything visible the moment this happens instead of
+      // relying only on the separate 6s timeout backstop in index.html.
+      console.error('[SNDR] Intro setup failed, revealing page without animation:', introErr);
+      document.documentElement.classList.remove('js-active');
+      document.documentElement.classList.remove('intro-lock');
+      const logoOverlay = document.querySelector('.logo-transform-container');
+      if (logoOverlay) logoOverlay.style.display = 'none';
+      hero.style.pointerEvents = 'auto';
+     }
     }
 
   // 3. INTERACTIVE 3D SCROLL-SCRUBBED UNFOLDING FOR ALL SECTIONS

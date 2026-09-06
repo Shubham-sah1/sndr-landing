@@ -23,6 +23,25 @@
     // Always start at the top on reload: mid-scroll restore looks broken with the pinned intro
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
+    // Safety net, independent of app.js: js-active hides the nav and hero
+    // until the intro's GSAP timeline reveals them. If anything at all goes
+    // wrong before that happens — app.js fails to load, a CDN script
+    // (GSAP) times out on a slow connection, an unforeseen crash on some
+    // real device this was never tested on — the page is left stuck with
+    // the nav and hero permanently invisible, scrollable but effectively
+    // broken, with no error visible to the user. That failure mode is
+    // strictly worse than just not animating, so force everything visible
+    // unconditionally if it hasn't happened on its own within a few seconds.
+    setTimeout(function () {
+      if (document.documentElement.classList.contains('js-active')) {
+        document.documentElement.classList.remove('js-active');
+        document.documentElement.classList.remove('intro-lock');
+        var logoOverlay = document.querySelector('.logo-transform-container');
+        if (logoOverlay) logoOverlay.style.display = 'none';
+        var hero = document.querySelector('.hero');
+        if (hero) hero.style.pointerEvents = 'auto';
+      }
+    }, 6000);
     window.addEventListener('load', function () {
       window.scrollTo(0, 0);
       // Reveal icon glyphs only once the icon font is ready, so ligature names never flash as raw text
@@ -949,6 +968,6 @@
   </footer>
 
   <!-- App Script -->
-  <script src="app.js?v=1.6">
+  <script src="app.js?v=1.6"></script>
 </body>
 </html>

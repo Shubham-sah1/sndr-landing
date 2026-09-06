@@ -2688,158 +2688,6 @@ html[data-theme="dark"] .sandbox-dropzone {
   transform: translateY(0);
 }
 
-/* FULL SCREEN SCROLL-UNFOLD INTRO SYSTEM */
-/* Applied to <html> while the intro's input gate (app.js) is active, so
-   the page physically cannot scroll until the intro timeline finishes —
-   see the comment above introTl's creation in app.js for why. */
-html.intro-lock,
-html.intro-lock body {
-  overflow: hidden;
-  height: 100%;
-  overscroll-behavior: none;
-}
-
-.intro-scroll-wrapper {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  overflow: visible;
-  z-index: 1002;
-}
-
-.logo-transform-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: var(--bg);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  overflow: visible;
-  z-index: 1002;
-  pointer-events: auto;
-  transition: background-color 0.4s ease;
-}
-
-.logo-morph-box {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 300px;
-  width: 100%;
-}
-
-.intro-logo-wrap {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-}
-
-.large-logo {
-  width: 240px;
-  max-width: 80%;
-  height: auto;
-  aspect-ratio: 28 / 8;
-  transform: scale(1.6);
-  transform-origin: center;
-  overflow: visible !important;
-}
-
-.large-logo .pixel {
-  fill: var(--tx);
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-.large-logo .pixel.dot {
-  fill: var(--primary) !important;
-}
-
-.intro-tagline {
-  margin-top: 20px;
-  font-family: var(--font-h);
-  font-size: 19px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-align: center;
-  background: linear-gradient(135deg, var(--tx) 30%, var(--primary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  opacity: 0.85;
-  transition: opacity 0.3s ease;
-  z-index: 1003;
-  pointer-events: none;
-}
-
-
-
-/* Scroll down hint at the bottom of full-screen loader */
-.scroll-down-hint {
-  position: absolute;
-  bottom: 50px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  color: var(--tx-muted);
-  font-family: var(--font-h);
-  font-weight: 600;
-  font-size: 14px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  animation: pulseFade 2s infinite ease-in-out;
-}
-
-.scroll-icon {
-  font-size: 24px !important;
-}
-
-@keyframes pulseFade {
-  0%, 100% { opacity: 0.4; transform: translateY(0); }
-  50% { opacity: 1; transform: translateY(6px); }
-}
-
-.intro-scroll-wrapper .hero {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1001;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-/* Initial hidden states for Hero/Nav elements to enable smooth GSAP unfold reveal */
-.js-active .glass-nav {
-  opacity: 0;
-  transform: translateY(-30px);
-  pointer-events: none;
-}
-
-.js-active .hero-text-content {
-  opacity: 0;
-  transform: translateY(50px);
-}
-
-.js-active .hero-simulator {
-  opacity: 0;
-  transform: translateY(50px);
-}
-
 /* Responsive breakdowns */
 @media (max-width: 992px) {
   .hero-grid {
@@ -2861,6 +2709,17 @@ html.intro-lock body {
   }
   .cv-split-grid {
     grid-template-columns: 1fr;
+  }
+  /* Grid items default to min-width:auto, so a row that doesn't wrap (the
+     document header's filename + badge) forces .cv-document-preview to
+     stay at its content's natural width even though the grid track is a
+     single narrow 1fr column — the card overflows past the track and the
+     badge gets clipped off the edge. min-width:0 lets the item actually
+     shrink to the track's real width. */
+  .cv-document-preview,
+  .cv-chatbot-workspace,
+  .cv-outbound-panel {
+    min-width: 0;
   }
   .pricing-cards-container {
     grid-template-columns: 1fr;
@@ -2908,25 +2767,6 @@ html.intro-lock body {
      spacing so the hero reads as deliberately sized for the screen. */
   .hero {
     padding: 110px 0 60px;
-  }
-  /* .intro-scroll-wrapper .hero (the intro's absolutely-positioned overlay
-     copy of .hero) sets padding:0 and overflow:hidden so it can fill the
-     100vh intro frame exactly — but on a phone, the heading + subtitle +
-     button + simulator mockup stack is taller than 100vh minus the nav's
-     60px, and align-items:center then centers that overflow equally in
-     both directions: the top of the heading gets pushed up underneath the
-     fixed nav and hard-clipped by overflow:hidden, which is what reads as
-     "the top bar is cutting the view". Anchoring to the top with the same
-     110px nav clearance the normal (non-intro) .hero uses, and letting
-     overflow go only downward (past the 100vh frame — .intro-scroll-wrapper
-     itself already allows this via overflow:visible, and it's just normal
-     scrollable page content once the intro finishes), means nothing ever
-     needs to render above the nav in the first place.
-  */
-  .intro-scroll-wrapper .hero {
-    align-items: flex-start;
-    padding-top: 110px;
-    overflow: visible;
   }
   .hero-title {
     font-size: 34px;

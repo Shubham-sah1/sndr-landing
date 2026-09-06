@@ -401,12 +401,23 @@ html[data-theme="dark"] .light-icon { display: block; }
   perspective: 1000px;
 }
 
-/* Supported By: partner program badges */
-.supported-by-section {
+/* Supported By: partner program badges.
+   Classes here were renamed from .supported-by-* — that name matches the
+   generic "sponsor/partner disclosure" pattern some ad/content blockers
+   cosmetically hide by class name. Every code-level cause (opacity/reveal
+   timing, an Android auto-dark heuristic, stale caching, a broken script
+   tag) was checked and fixed in turn on a real-device report of this
+   label specifically going invisible while its logos always rendered
+   fine, and the label still didn't show after all of those — a
+   class-name-based cosmetic filter is the remaining explanation that
+   fits (logos are unaffected because they're images, not text hidden by
+   a generic class match). Renaming costs nothing and needs no user-side
+   changes to verify. */
+.partners-section {
   padding: 100px 0;
 }
 
-.supported-by-label {
+.partners-label {
   text-align: center;
   font-size: 17px;
   font-weight: 800;
@@ -416,7 +427,7 @@ html[data-theme="dark"] .light-icon { display: block; }
   margin-bottom: 32px;
 }
 
-.supported-by-logos {
+.partners-logos {
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
@@ -431,12 +442,12 @@ html[data-theme="dark"] .light-icon { display: block; }
    light regardless of site theme so they're always legible, rather than
    nesting a second white chip behind each logo (redundant double-boxing).
    Compound selector wins over plain .glass-card without needing !important. */
-.supported-by-logos.glass-card {
+.partners-logos.glass-card {
   background: #fcfdff;
   border-color: rgba(0, 0, 0, 0.06);
 }
 
-.supported-by-item {
+.partners-item {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -444,11 +455,11 @@ html[data-theme="dark"] .light-icon { display: block; }
   transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.supported-by-item + .supported-by-item {
+.partners-item + .partners-item {
   border-left: 1px solid var(--card-border);
 }
 
-.supported-by-item:hover {
+.partners-item:hover {
   transform: translateY(-4px);
 }
 
@@ -2859,7 +2870,7 @@ html.intro-lock body {
     grid-template-columns: 1fr;
     gap: 40px;
   }
-  .supported-by-item {
+  .partners-item {
     padding: 0 14px;
   }
 }
@@ -2972,19 +2983,19 @@ html.intro-lock body {
     font-size: 13px;
   }
 
-  .supported-by-logos {
+  .partners-logos {
     flex-wrap: wrap;
     overflow-x: visible;
     row-gap: 20px;
   }
-  .supported-by-item {
+  .partners-item {
     flex: 1 1 40%;
     padding: 4px 16px;
   }
   /* The single-row divider pattern (border on every item but the first)
      reads as a stray line at the start of the second wrapped row — drop
      dividers on phone and rely on the row-gap/padding for separation. */
-  .supported-by-item + .supported-by-item {
+  .partners-item + .partners-item {
     border-left: none;
   }
 
@@ -3003,7 +3014,7 @@ html.intro-lock body {
      own internal heading/intro spacing. It reads as sparse, disconnected
      sections rather than one considered page. Tighten to a scale that
      still separates sections clearly without the dead scrolling. */
-  .supported-by-section,
+  .partners-section,
   .playground-section,
   .features-section,
   .cv-matcher-section,

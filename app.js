@@ -959,7 +959,21 @@ function setupGSAPTimelines() {
         scrollTrigger: {
           trigger: '.intro-scroll-wrapper',
           start: 'top top',
-          end: '+=1000', // Pinned duration sequence
+          // .hero is position:absolute, overlaying the exact same 100vh as
+          // the intro splash (see .intro-scroll-wrapper .hero in style.css)
+          // — it has no scroll height of its own. Every visible tween below
+          // finishes by timeline-time ~1.1, which used to line up almost
+          // exactly with this 1000px end: the instant the hero finished
+          // revealing, the pin released into real page flow with zero
+          // cushion. A single strong swipe's leftover momentum then carried
+          // straight through into the next real section in one motion —
+          // the hero was never actually stopped on, just flashed past.
+          // Doubling end to 2000 and appending an equal-length no-op tween
+          // below keeps every existing animation's speed identical (still
+          // the same proportion of the timeline) while adding a genuine
+          // buffer where the pin stays active and the hero just sits there,
+          // giving a fling's momentum something to spend before release.
+          end: '+=2000', // Pinned duration sequence (half animation, half buffer — see note above)
           scrub: 0.5,
           pin: true,
           pinSpacing: true,
@@ -1069,6 +1083,16 @@ function setupGSAPTimelines() {
         pointerEvents: 'auto',
         duration: 0.1
       }, 1.0);
+
+      // Buffer tween — see the `end` comment above. Matches the existing
+      // timeline's duration exactly (1.1s ↔ the original 1000px), doubling
+      // total duration to pair with end:'+=2000' at the same px-per-second
+      // rate, without changing how fast anything above actually animates.
+      // Tweens .hero's already-1 opacity to 1 — a real property tween (GSAP
+      // appears to collapse a tween on an empty {} target to near-zero
+      // duration regardless of what's specified, since there's nothing to
+      // interpolate) so the duration is genuinely honored.
+      introTl.to('.hero', { opacity: 1, duration: 1.1 }, 1.1);
     }
 
   // 3. INTERACTIVE 3D SCROLL-SCRUBBED UNFOLDING FOR ALL SECTIONS

@@ -376,6 +376,69 @@ html[data-theme="dark"] .light-icon { display: block; }
   perspective: 1000px;
 }
 
+/* Supported By: partner program badges */
+.supported-by-section {
+  padding: 100px 0;
+}
+
+.supported-by-label {
+  text-align: center;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tx);
+  margin-bottom: 32px;
+}
+
+.supported-by-logos {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: stretch;
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 20px 12px;
+}
+
+/* Real partner logos carry fixed dark ink baked into the pixels — can't be
+   recolored per-theme like an inline SVG can. Force this one panel to stay
+   light regardless of site theme so they're always legible, rather than
+   nesting a second white chip behind each logo (redundant double-boxing).
+   Compound selector wins over plain .glass-card without needing !important. */
+.supported-by-logos.glass-card {
+  background: #fcfdff;
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.supported-by-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 44px;
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.supported-by-item + .supported-by-item {
+  border-left: 1px solid var(--card-border);
+}
+
+.supported-by-item:hover {
+  transform: translateY(-4px);
+}
+
+.sb-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sb-logo-img {
+  height: 30px;
+  width: auto;
+  display: block;
+}
+
 .glass-card {
   background-color: var(--card-bg);
   border: 1px solid var(--card-border);
@@ -2739,6 +2802,9 @@ html[data-theme="dark"] .sandbox-dropzone {
   .footer-grid {
     grid-template-columns: 1fr;
     gap: 40px;
+  }
+  .supported-by-item {
+    padding: 0 14px;
   }
 }
 

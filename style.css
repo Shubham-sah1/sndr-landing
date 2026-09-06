@@ -2839,6 +2839,19 @@ html[data-theme="dark"] .sandbox-dropzone {
    scrolling (functional, but scrolling to see a logo strip is a poor
    experience on a phone the moment it doesn't need to be). */
 @media (max-width: 640px) {
+  /* .glass-nav is intentionally translucent + blurred (frosted-glass look)
+     — fine over photos/decorative background, but a heading scrolling
+     underneath reads as a rendering glitch through the gap, not a deliberate
+     effect: sharp text with just its top sliver blurred looks broken. Phone
+     scroll position is far less controllable than desktop (no scroll-snap
+     here), so text sitting partly behind the nav is common, not an edge
+     case — make the nav opaque on phone instead of chasing every resting
+     scroll position that could expose the blur-through. */
+  .glass-nav {
+    background-color: var(--bg);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
   .nav-container {
     padding: 10px 16px;
     height: 60px;
@@ -2860,6 +2873,39 @@ html[data-theme="dark"] .sandbox-dropzone {
     font-size: 16px;
     margin-bottom: 28px;
   }
+
+  /* Outbound Manager mockup: .sim-sidebar is a fixed 120px column even on
+     a 375px phone, leaving the actual demo content (recruiter search,
+     template textarea) only ~180px wide — real strings like "Founders &
+     HR Leads in Bangalore" truncate mid-word. Turn the sidebar into a
+     horizontal tab strip above the content instead of a narrow side rail,
+     so the mockup reads as built for this screen rather than a shrunk
+     desktop layout. */
+  .window-body {
+    flex-direction: column;
+  }
+  .sim-sidebar {
+    width: 100%;
+    flex-direction: row;
+    border-right: none;
+    border-bottom: 1px solid var(--card-border);
+    padding: 10px 12px;
+    gap: 6px;
+  }
+  .sim-nav-item {
+    flex: 1;
+    justify-content: center;
+    white-space: nowrap;
+    padding: 8px 4px;
+    font-size: 10px;
+  }
+  .sim-nav-item span {
+    font-size: 15px;
+  }
+  .sim-main {
+    padding: 16px;
+  }
+
   /* Anchor links to sections already on this single page — on a phone,
      scrolling to them costs nothing, so drop them rather than cram a
      hamburger menu in for a one-page site. */

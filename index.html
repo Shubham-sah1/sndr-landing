@@ -39,7 +39,18 @@
         var logoOverlay = document.querySelector('.logo-transform-container');
         if (logoOverlay) logoOverlay.style.display = 'none';
         var hero = document.querySelector('.hero');
-        if (hero) hero.style.pointerEvents = 'auto';
+        if (hero) {
+          hero.style.pointerEvents = 'auto';
+          var wrapper = document.querySelector('.intro-scroll-wrapper');
+          var content = hero.firstElementChild;
+          if (wrapper && content) {
+            var heroStyle = getComputedStyle(hero);
+            var neededHeight = content.getBoundingClientRect().height
+              + parseFloat(heroStyle.paddingTop)
+              + parseFloat(heroStyle.paddingBottom);
+            if (neededHeight > wrapper.clientHeight) wrapper.style.height = neededHeight + 'px';
+          }
+        }
       }
     }, 6000);
     window.addEventListener('load', function () {
@@ -89,7 +100,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet">
   
   <!-- CSS Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=1.7">
+  <link rel="stylesheet" href="style.css?v=1.8">
   
   <!-- GSAP Animation Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -968,6 +979,6 @@
   </footer>
 
   <!-- App Script -->
-  <script src="app.js?v=1.7"></script>
+  <script src="app.js?v=1.8"></script>
 </body>
 </html>

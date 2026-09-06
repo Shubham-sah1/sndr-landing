@@ -1117,6 +1117,36 @@ function setupGSAPTimelines() {
         window.removeEventListener('touchstart', onIntroTouchStart);
         window.removeEventListener('touchmove', onIntroTouchMove);
         window.removeEventListener('keydown', onIntroKeyDown);
+        fixWrapperHeight();
+      }
+
+      // .hero is position:absolute so its content (heading + subtitle +
+      // button + simulator mockup) never pushes .intro-scroll-wrapper's own
+      // height — the wrapper stays a rigid 100vh box regardless of how tall
+      // the hero's actual content is. On a narrow phone that content is
+      // taller than 100vh even with the top-alignment fix above, so the
+      // overflow spills out the bottom of the wrapper's box, past where
+      // .partners-section (a normal-flow sibling right after the wrapper)
+      // starts — the two visually collide/overlap instead of stacking.
+      // Once the intro no longer needs to be exactly one rigid viewport
+      // tall (that was only ever needed while pinned/locked), let the
+      // wrapper grow to actually contain its content so the next section
+      // starts after it, not on top of it.
+      function fixWrapperHeight() {
+        const content = hero.firstElementChild;
+        if (!content) return;
+        // hero itself is locked to height:100% (see .intro-scroll-wrapper
+        // .hero), so measuring hero's own box always just reports 100vh
+        // back regardless of overflow — measure its actual content
+        // instead, which sizes to its content normally since it has no
+        // explicit height of its own.
+        const heroStyle = getComputedStyle(hero);
+        const neededHeight = content.getBoundingClientRect().height
+          + parseFloat(heroStyle.paddingTop)
+          + parseFloat(heroStyle.paddingBottom);
+        if (neededHeight > wrapper.clientHeight) {
+          wrapper.style.height = neededHeight + 'px';
+        }
       }
 
       function onIntroWheel(e) {
@@ -1166,6 +1196,14 @@ function setupGSAPTimelines() {
       const logoOverlay = document.querySelector('.logo-transform-container');
       if (logoOverlay) logoOverlay.style.display = 'none';
       hero.style.pointerEvents = 'auto';
+      const content = hero.firstElementChild;
+      if (content) {
+        const heroStyle = getComputedStyle(hero);
+        const neededHeight = content.getBoundingClientRect().height
+          + parseFloat(heroStyle.paddingTop)
+          + parseFloat(heroStyle.paddingBottom);
+        if (neededHeight > wrapper.clientHeight) wrapper.style.height = neededHeight + 'px';
+      }
      }
     }
 

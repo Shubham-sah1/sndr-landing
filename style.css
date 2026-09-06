@@ -420,11 +420,13 @@ html[data-theme="dark"] .light-icon { display: block; }
 .partners-label {
   text-align: center;
   font-size: 17px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--tx);
-  margin-bottom: 32px;
+  font-weight: bold;
+  color: #0b1320;
+  margin: 0 0 32px 0;
+}
+
+html[data-theme="dark"] .partners-label {
+  color: #f3f5f9;
 }
 
 .partners-logos {
@@ -3014,7 +3016,6 @@ html.intro-lock body {
      own internal heading/intro spacing. It reads as sparse, disconnected
      sections rather than one considered page. Tighten to a scale that
      still separates sections clearly without the dead scrolling. */
-  .partners-section,
   .playground-section,
   .features-section,
   .cv-matcher-section,
@@ -3023,6 +3024,17 @@ html.intro-lock body {
   }
   .founders-section {
     padding: 64px 0 96px;
+  }
+
+  /* Gets its own, more generous top padding rather than sharing the 64px
+     above: the hero's simulator mockup ends in a tall white card, and
+     without a clear gap the "Supported by" label read as running straight
+     into it rather than starting a new section. */
+  .partners-section {
+    padding: 96px 0 64px;
+  }
+  .partners-label {
+    margin-bottom: 40px;
   }
 }
 

@@ -476,30 +476,6 @@ function initBentoWidgets() {
     });
   }
 
-  // Widget D: Social Updates social references
-  const regenBtn = document.getElementById('regen-hook-btn');
-  const textContainer = document.getElementById('typed-hook-example');
-
-  if (regenBtn && textContainer) {
-    const sampleHook = "Hi Saksham, noticed you're assembling summer React hands. I built a consensus visualization side project that perfectly fits your front-end team outbound stack. Let me know if you are open to syncing.";
-    
-    regenBtn.addEventListener('click', () => {
-      textContainer.textContent = '';
-      regenBtn.disabled = true;
-      
-      let index = 0;
-      function typeText() {
-        if (index < sampleHook.length) {
-          textContainer.textContent += sampleHook[index];
-          index++;
-          setTimeout(typeText, 15);
-        } else {
-          regenBtn.disabled = false;
-        }
-      }
-      typeText();
-    });
-  }
 }
 
 /* ==========================================

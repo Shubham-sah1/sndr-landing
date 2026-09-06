@@ -1306,8 +1306,7 @@ html[data-theme="dark"] .sandbox-dropzone {
 
 .col-span-8 { grid-column: span 8; }
 .col-span-4 { grid-column: span 4; }
-.col-span-5 { grid-column: span 5; }
-.col-span-7 { grid-column: span 7; }
+.col-span-12 { grid-column: span 12; }
 
 .bento-content {
   display: flex;
@@ -1579,85 +1578,6 @@ html[data-theme="dark"] .sandbox-dropzone {
   0% { opacity: 0.4; }
   50% { opacity: 1; }
   100% { opacity: 0.4; }
-}
-
-/* Reference updates bento styles */
-.ai-hook-generator {
-  padding: 16px;
-  margin-top: auto;
-}
-
-.social-post-mock {
-  background-color: rgba(0, 0, 0, 0.02);
-  border: 1px solid var(--input-border);
-  border-radius: 10px;
-  padding: 10px;
-}
-
-.social-post-mock .post-user {
-  font-size: 11px;
-  font-weight: 700;
-  display: block;
-  margin-bottom: 4px;
-}
-
-.social-post-mock .post-text {
-  font-size: 11.5px;
-  line-height: 1.4;
-}
-
-.arrow-down-divider {
-  text-align: center;
-  margin: 6px 0;
-  color: var(--primary);
-  opacity: 0.7;
-}
-
-.arrow-down-divider span {
-  font-size: 16px;
-}
-
-.ai-hook-result {
-  background-color: var(--input-bg);
-  border: 1px solid var(--input-border);
-  border-radius: 10px;
-  padding: 12px;
-}
-
-.hook-badge {
-  font-size: 9px;
-  font-weight: 900;
-  color: var(--primary);
-  letter-spacing: 0.05em;
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-
-.hook-badge span {
-  font-size: 12px;
-}
-
-.ai-hook-result p {
-  font-size: 12.5px;
-  font-style: italic;
-  min-height: 38px;
-  margin-bottom: 8px;
-}
-
-.action-text-btn {
-  background: none;
-  border: none;
-  color: var(--primary);
-  font-weight: 700;
-  font-size: 11px;
-  cursor: pointer;
-}
-
-.action-text-btn:hover {
-  text-decoration: underline;
 }
 
 /* CV Matcher Grid workspace styling */
@@ -2706,7 +2626,7 @@ html[data-theme="dark"] .sandbox-dropzone {
   .bento-grid {
     grid-template-columns: 1fr;
   }
-  .col-span-8, .col-span-4, .col-span-5, .col-span-7 {
+  .col-span-8, .col-span-4 {
     grid-column: span 12;
   }
   .cv-split-grid {

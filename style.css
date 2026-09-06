@@ -419,10 +419,12 @@ html[data-theme="dark"] .light-icon { display: block; }
 
 .partners-label {
   text-align: center;
-  font-size: 17px;
-  font-weight: bold;
+  font-family: var(--font-h);
+  font-size: 38px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   color: #0b1320;
-  margin: 0 0 32px 0;
+  margin: 0 0 12px 0;
 }
 
 html[data-theme="dark"] .partners-label {
@@ -2872,9 +2874,6 @@ html[data-theme="dark"] .sandbox-dropzone {
      into it rather than starting a new section. */
   .partners-section {
     padding: 96px 0 64px;
-  }
-  .partners-label {
-    margin-bottom: 40px;
   }
 }
 

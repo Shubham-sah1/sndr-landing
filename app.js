@@ -908,6 +908,21 @@ function initScrollReveal() {
 
   gsap.registerPlugin(ScrollTrigger);
 
+  // Mobile browsers report scroll position in large, uneven jumps during
+  // momentum/fling scrolling (compounded by the address bar hiding/showing,
+  // which changes the real viewport height mid-scroll) instead of the smooth
+  // per-frame deltas desktop wheel scrolling gives ScrollTrigger. For a
+  // scrubbed + pinned timeline like the intro below, that means the actual
+  // native scroll can leap clean past the pin's release point between two
+  // touchmove events even though the math (pin distance, snap, buffer) is
+  // correct — no amount of tuning end/snap fixes a problem that's really
+  // about *how* the scroll position itself arrives. normalizeScroll fixes
+  // this at the source by simulating scrolling via transforms on touch
+  // devices instead of trusting the browser's native touch-scroll deltas.
+  if (ScrollTrigger.isTouch) {
+    ScrollTrigger.normalizeScroll(true);
+  }
+
   // Initialize Canvas Avatars for Founders (keep existing logic)
   const canvases = document.querySelectorAll('.founder-avatar-canvas');
   canvases.forEach(canvas => {

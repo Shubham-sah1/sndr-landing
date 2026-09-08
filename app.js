@@ -27,9 +27,9 @@ function initThemeToggle() {
   const toggle = document.getElementById('theme-toggle');
   if (!toggle) return;
 
-  const currentTheme = localStorage.getItem('theme') || 'light';
-  document.documentElement.setAttribute('data-theme', currentTheme);
-
+  // The saved theme is already applied — see the blocking inline script in
+  // <head>, which runs before first paint so a saved "dark" preference
+  // never flashes light first. This only wires up the click handler.
   toggle.addEventListener('click', () => {
     let theme = document.documentElement.getAttribute('data-theme');
     let newTheme = theme === 'dark' ? 'light' : 'dark';
@@ -42,27 +42,31 @@ function initThemeToggle() {
 /* ==========================================
    Mobile Install Gate
    ========================================== */
-// A Chrome extension can't be installed from a phone browser at all, so the
-// install CTAs are disabled + relabeled on touch devices rather than
-// leading someone through a download that can never actually work.
+// A Chrome extension can't be installed from a phone browser at all. The
+// nav bar's copy is hidden on mobile entirely (CSS, phone media query —
+// no room there for an explanation). The hero CTA keeps its normal label
+// and appearance (still recognizable as "the install button") but is
+// disabled, with a caption revealed underneath explaining why — rather
+// than replacing the button's own text with a different message.
 // (hover:none)/(pointer:coarse) targets "no real mouse" directly, same
 // test already used elsewhere on this page for touch-only behavior.
 function initMobileInstallGate() {
   const isTouchOnly = window.matchMedia('(hover: none), (pointer: coarse)').matches;
   if (!isTouchOnly) return;
 
-  const navBtn = document.getElementById('nav-install-btn');
   const heroBtn = document.getElementById('hero-chrome-btn');
+  const navBtn = document.getElementById('nav-install-btn');
+  const note = document.getElementById('desktop-only-note');
 
-  [navBtn, heroBtn].forEach(btn => {
-    if (!btn) return;
-    btn.disabled = true;
-    btn.classList.add('desktop-only-btn');
-    const icon = btn.querySelector('.material-symbols-outlined');
-    btn.textContent = '';
-    if (icon) btn.appendChild(icon);
-    btn.appendChild(document.createTextNode('Works only on Desktop'));
-  });
+  if (heroBtn) {
+    heroBtn.disabled = true;
+    heroBtn.classList.add('desktop-only-btn');
+  }
+  // The CSS phone media query (max-width: 640px) hides this in the common
+  // case; disable it here too so a touch device that doesn't fall under
+  // that width (e.g. a touch-screen tablet) can't still click through.
+  if (navBtn) navBtn.disabled = true;
+  if (note) note.hidden = false;
 }
 
 /* ==========================================

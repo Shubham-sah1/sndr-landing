@@ -243,15 +243,23 @@ a {
 }
 
 /* A Chrome extension can't be installed from a phone browser — see
-   initMobileInstallGate() in app.js. Flat muted style instead of the
-   vivid gradient makes it read as genuinely inert, not just quieter. */
+   initMobileInstallGate() in app.js. Keeps the button's normal look (still
+   clearly "the install button") rather than restyling it as obviously
+   dead; the .desktop-only-note caption underneath explains why it's
+   inert. Just needs cursor + no hover-lift; `disabled` already blocks
+   the click itself and stops the browser's own dimmed-disabled look. */
 .primary-btn.desktop-only-btn,
 .primary-btn.desktop-only-btn:hover {
-  background: var(--card-border);
-  color: var(--tx-muted);
-  box-shadow: none;
   cursor: not-allowed;
   transform: none;
+  opacity: 1;
+}
+
+.desktop-only-note {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--tx-muted);
+  text-align: center;
 }
 
 /* Glare highlight effect */
@@ -2753,6 +2761,12 @@ html[data-theme="dark"] .sandbox-dropzone {
      scrolling to them costs nothing, so drop them rather than cram a
      hamburger menu in for a one-page site. */
   .nav-links {
+    display: none;
+  }
+  /* The nav bar has no room for the "works only on desktop" explanation
+     the hero CTA gets — rather than showing a second disabled button with
+     no context, just drop it here; the hero section covers this. */
+  #nav-install-btn {
     display: none;
   }
   .nav-actions .primary-btn {

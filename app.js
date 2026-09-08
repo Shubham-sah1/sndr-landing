@@ -4,12 +4,14 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Each init is independent (theme toggle, the various interactive demos,
-  // the scroll-reveal system) — one throwing should never take the rest
-  // down with it, since a single broken widget silently killing every init
-  // after it in the list is a much worse failure than that one widget not
-  // working.
-  const steps = [initThemeToggle, initMobileInstallGate, initSimulator, initSandbox, initBentoWidgets, initCVMatcher, initModals, initScrollReveal, init3DParallax];
+  // Each init is independent (particles, cursor, theme toggle, the various
+  // interactive demos, the scroll-reveal system, SFX, parallax, haptics) —
+  // one throwing should never take the rest down with it, since a single
+  // broken widget silently killing every init after it in the list is a
+  // much worse failure than that one widget not working. Several of these
+  // (particles, cursor, SFX) are desktop-only — see the html.touch-device
+  // guards inside each.
+  const steps = [initThemeToggle, initMobileInstallGate, initParticles, initCustomCursor, initSimulator, initSandbox, initBentoWidgets, initCVMatcher, initModals, initScrollReveal, initSFX, init3DParallax, initHapticClicks];
   steps.forEach(fn => {
     try {
       fn();
@@ -57,6 +59,142 @@ function initMobileInstallGate() {
 
   if (heroBtn) heroBtn.disabled = true;
   if (navBtn) navBtn.disabled = true;
+}
+
+/* ==========================================
+   1. Canvas Particle Background
+   ========================================== */
+// Desktop-only decoration, restored at the user's request. Guarded on
+// html.touch-device (set synchronously in <head>, before first paint) so
+// it never runs on mobile — the mobile experience stays exactly as tuned.
+function initParticles() {
+  if (document.documentElement.classList.contains('touch-device')) return;
+  const canvas = document.getElementById('bg-canvas');
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let width = (canvas.width = window.innerWidth);
+  let height = (canvas.height = window.innerHeight);
+
+  window.addEventListener('resize', () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  });
+
+  class Particle {
+    constructor() {
+      this.x = Math.random() * width;
+      this.y = Math.random() * height;
+      this.vx = (Math.random() - 0.5) * 0.5;
+      this.vy = (Math.random() - 0.5) * 0.5;
+      this.radius = Math.random() * 2 + 1;
+    }
+
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+
+      if (this.x < 0 || this.x > width) this.vx *= -1;
+      if (this.y < 0 || this.y > height) this.vy *= -1;
+    }
+
+    draw() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fillStyle = isDark ? 'rgba(59, 130, 246, 0.4)' : 'rgba(0, 90, 194, 0.2)';
+      ctx.fill();
+    }
+  }
+
+  // Create particles
+  const particleCount = Math.min(Math.floor((width * height) / 15000), 80);
+  for (let i = 0; i < particleCount; i++) {
+    particles.push(new Particle());
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, width, height);
+
+    // Draw connections
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const connectionColor = isDark ? 'rgba(59, 130, 246, 0.05)' : 'rgba(0, 90, 194, 0.03)';
+    const maxDistance = 120;
+
+    for (let i = 0; i < particles.length; i++) {
+      particles[i].update();
+      particles[i].draw();
+
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < maxDistance) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = connectionColor;
+          ctx.lineWidth = 1 - dist / maxDistance;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+}
+
+/* ==========================================
+   2. Magnetic Custom Cursor
+   ========================================== */
+// Desktop-only, same touch-device guard as above.
+function initCustomCursor() {
+  if (document.documentElement.classList.contains('touch-device')) return;
+  const cursor = document.querySelector('.custom-cursor');
+  const follower = document.querySelector('.custom-cursor-follower');
+  if (!cursor || !follower) return;
+
+  let mouseX = 0;
+  let mouseY = 0;
+  let followerX = 0;
+  let followerY = 0;
+
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+
+    cursor.style.left = mouseX + 'px';
+    cursor.style.top = mouseY + 'px';
+  });
+
+  // Follower lag animation loop
+  function updateFollower() {
+    const dx = mouseX - followerX;
+    const dy = mouseY - followerY;
+
+    followerX += dx * 0.15;
+    followerY += dy * 0.15;
+
+    follower.style.left = followerX + 'px';
+    follower.style.top = followerY + 'px';
+
+    requestAnimationFrame(updateFollower);
+  }
+  updateFollower();
+
+  // Highlight effect on interactive elements
+  const interactives = document.querySelectorAll('a, button, input, textarea, [draggable="true"]');
+  interactives.forEach((el) => {
+    el.addEventListener('mouseenter', () => {
+      document.body.classList.add('cursor-active');
+    });
+    el.addEventListener('mouseleave', () => {
+      document.body.classList.remove('cursor-active');
+    });
+  });
 }
 
 /* ==========================================
@@ -320,17 +458,15 @@ function initBentoWidgets() {
   // Widget C: Directory Scraper Mockup
   const scrapeBtn = document.getElementById('scrape-elon-btn');
   const detailsBox = document.getElementById('scraped-elon-details');
+  const radarOverlay = document.getElementById('sonar-radar');
+  const isTouch = document.documentElement.classList.contains('touch-device');
 
   if (scrapeBtn && detailsBox) {
     scrapeBtn.addEventListener('click', function() {
       const btn = this;
       btn.disabled = true;
-      btn.innerHTML = `<span class="material-symbols-outlined placeholder-pulse">sync</span><span>Finding...</span>`;
 
-      setTimeout(() => {
-        btn.innerHTML = `<span class="material-symbols-outlined">verified</span><span>Found</span>`;
-        btn.style.background = 'linear-gradient(135deg, var(--tertiary) 0%, #10b981 100%)';
-
+      const revealDetails = () => {
         detailsBox.innerHTML = `
           <div class="mock-detail-row">
             <span class="label">Direct:</span>
@@ -341,7 +477,44 @@ function initBentoWidgets() {
             <span class="value">Talent Operations</span>
           </div>
         `;
-      }, 900);
+      };
+
+      // Mobile keeps the plain, fast "Finding... -> Found" flow tuned for
+      // phones (no radar overlay, no sound). Desktop restores the fuller
+      // radar-scan + SFX version.
+      if (isTouch) {
+        btn.innerHTML = `<span class="material-symbols-outlined placeholder-pulse">sync</span><span>Finding...</span>`;
+        setTimeout(() => {
+          btn.innerHTML = `<span class="material-symbols-outlined">verified</span><span>Found</span>`;
+          btn.style.background = 'linear-gradient(135deg, var(--tertiary) 0%, #10b981 100%)';
+          revealDetails();
+        }, 900);
+        return;
+      }
+
+      btn.innerHTML = `<span class="material-symbols-outlined placeholder-pulse">sync</span><span>Scraping...</span>`;
+      playSFX('scrape');
+
+      if (radarOverlay) {
+        radarOverlay.style.display = 'flex';
+        setTimeout(() => {
+          radarOverlay.classList.add('active');
+          radarOverlay.querySelectorAll('.radar-blip').forEach(blip => blip.classList.add('active'));
+        }, 50);
+      }
+
+      setTimeout(() => {
+        btn.innerHTML = `<span class="material-symbols-outlined">verified</span><span>Scraped</span>`;
+        btn.style.background = 'linear-gradient(135deg, var(--tertiary) 0%, #10b981 100%)';
+
+        if (radarOverlay) {
+          radarOverlay.classList.remove('active');
+          setTimeout(() => { radarOverlay.style.display = 'none'; }, 300);
+        }
+
+        playSFX('success');
+        revealDetails();
+      }, 2200);
     });
   }
 
@@ -600,6 +773,7 @@ function initCVMatcher() {
           const siblings = matchBox.querySelectorAll('.company-match-card');
           siblings.forEach(sibling => sibling.classList.remove('active'));
           mNode.classList.add('active');
+          playSFX('match');
           updateActiveMatch(m);
         });
 
@@ -613,7 +787,8 @@ function initCVMatcher() {
         });
       });
       
-      // Update with the first match
+      // Update with the first match and play sound
+      playSFX('match');
       updateActiveMatch(info.matches[0]);
     }, 3200);
   }
@@ -979,4 +1154,104 @@ function init3DParallax() {
       layer.style.transform = `translate3d(0px, 0px, ${depth}px)`;
     });
   }
+}
+
+/* ==========================================
+   Dynamic Web Audio API Synthesizer & SFX Toggle
+   ========================================== */
+let sfxEnabled = true;
+
+function initSFX() {
+  const sfxBtn = document.getElementById('sfx-toggle');
+  if (sfxBtn) {
+    const sfxOnIcon = sfxBtn.querySelector('.sfx-on-icon');
+    const sfxOffIcon = sfxBtn.querySelector('.sfx-off-icon');
+    sfxBtn.addEventListener('click', () => {
+      sfxEnabled = !sfxEnabled;
+      if (sfxEnabled) {
+        sfxOnIcon.style.display = 'inline-block';
+        sfxOffIcon.style.display = 'none';
+        playSFX('click');
+      } else {
+        sfxOnIcon.style.display = 'none';
+        sfxOffIcon.style.display = 'inline-block';
+      }
+    });
+  }
+}
+
+// Desktop-only: single choke point so nothing plays on mobile regardless
+// of which desktop-restored feature calls this (scrape/match/success/
+// click), without needing to gate every call site individually.
+function playSFX(type) {
+  if (!sfxEnabled) return;
+  if (document.documentElement.classList.contains('touch-device')) return;
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    const now = ctx.currentTime;
+
+    if (type === 'click') {
+      osc.frequency.setValueAtTime(850, now);
+      osc.frequency.exponentialRampToValueAtTime(180, now + 0.06);
+      gain.gain.setValueAtTime(0.06, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+      osc.start(now);
+      osc.stop(now + 0.06);
+    } else if (type === 'scrape') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(320, now);
+      osc.frequency.exponentialRampToValueAtTime(1100, now + 0.45);
+      gain.gain.setValueAtTime(0.03, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+      osc.start(now);
+      osc.stop(now + 0.45);
+    } else if (type === 'match') {
+      // Dual note chord chime
+      osc.frequency.setValueAtTime(523.25, now); // C5
+      osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+      gain.gain.setValueAtTime(0.04, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+      osc.start(now);
+      osc.stop(now + 0.22);
+    } else if (type === 'success') {
+      // Satisfying pleasant rising major chord
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      notes.forEach((freq, idx) => {
+        const oNode = ctx.createOscillator();
+        const gNode = ctx.createGain();
+        oNode.connect(gNode);
+        gNode.connect(ctx.destination);
+        oNode.frequency.setValueAtTime(freq, now + idx * 0.06);
+        gNode.gain.setValueAtTime(0.035, now + idx * 0.06);
+        gNode.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.28);
+        oNode.start(now + idx * 0.06);
+        oNode.stop(now + idx * 0.06 + 0.28);
+      });
+    }
+  } catch (err) {
+    console.warn('Web Audio synthesis failed:', err.message);
+  }
+}
+
+/* ==========================================
+   Generic Sound UI feedback trigger
+   ========================================== */
+function initHapticClicks() {
+  // Trigger soft clicks on all primary UI elements
+  const interactiveNodes = document.querySelectorAll(
+    'a, button, .cv-select-tab, .sim-nav-item, .drag-lead, .chart-toggle-btn'
+  );
+  interactiveNodes.forEach(node => {
+    node.addEventListener('click', () => {
+      playSFX('click');
+    });
+  });
 }

@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // down with it, since a single broken widget silently killing every init
   // after it in the list is a much worse failure than that one widget not
   // working.
-  const steps = [initThemeToggle, initSimulator, initSandbox, initBentoWidgets, initCVMatcher, initModals, initScrollReveal, init3DParallax];
+  const steps = [initThemeToggle, initMobileInstallGate, initSimulator, initSandbox, initBentoWidgets, initCVMatcher, initModals, initScrollReveal, init3DParallax];
   steps.forEach(fn => {
     try {
       fn();
@@ -36,6 +36,32 @@ function initThemeToggle() {
     
     document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
+  });
+}
+
+/* ==========================================
+   Mobile Install Gate
+   ========================================== */
+// A Chrome extension can't be installed from a phone browser at all, so the
+// install CTAs are disabled + relabeled on touch devices rather than
+// leading someone through a download that can never actually work.
+// (hover:none)/(pointer:coarse) targets "no real mouse" directly, same
+// test already used elsewhere on this page for touch-only behavior.
+function initMobileInstallGate() {
+  const isTouchOnly = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+  if (!isTouchOnly) return;
+
+  const navBtn = document.getElementById('nav-install-btn');
+  const heroBtn = document.getElementById('hero-chrome-btn');
+
+  [navBtn, heroBtn].forEach(btn => {
+    if (!btn) return;
+    btn.disabled = true;
+    btn.classList.add('desktop-only-btn');
+    const icon = btn.querySelector('.material-symbols-outlined');
+    btn.textContent = '';
+    if (icon) btn.appendChild(icon);
+    btn.appendChild(document.createTextNode('Works only on Desktop'));
   });
 }
 

@@ -91,13 +91,14 @@
   <!-- Google Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- display=optional (not swap): on a fast/cached load the real fonts
-       apply normally, but on a slow connection the browser commits to the
-       fallback font immediately rather than rendering it then visibly
-       reflowing everything once Outfit/Inter finish downloading a moment
-       later — that swap-triggered reflow is what read as the page
-       "refreshing" a second after load on phones. -->
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=optional" rel="stylesheet">
+  <!-- display=swap, not optional: optional's tradeoff turned out to be
+       worse than the reflow it was avoiding — on a real (non-cached)
+       mobile connection the ~100ms budget it gives Outfit/Inter often
+       isn't enough, so the browser commits to the fallback system font
+       for that whole page view and the hero heading never gets its
+       actual branded look at all. swap guarantees the real font is used
+       once it arrives, on any connection speed. -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet">
   
   <!-- CSS Stylesheet -->

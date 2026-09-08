@@ -105,57 +105,6 @@ a {
   color: inherit;
 }
 
-/* Background Canvas Particles */
-#bg-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0.6;
-}
-
-/* Custom Cursor */
-.custom-cursor {
-  width: 6px;
-  height: 6px;
-  background-color: var(--primary);
-  border-radius: 50%;
-  position: fixed;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  z-index: 9999;
-  transition: width 0.2s ease, height 0.2s ease;
-}
-
-.custom-cursor-follower {
-  width: 30px;
-  height: 30px;
-  border: 1.5px solid var(--primary);
-  border-radius: 50%;
-  position: fixed;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  z-index: 9998;
-  opacity: 0.5;
-  transition: transform 0.08s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.2s ease, width 0.2s ease, height 0.2s ease;
-}
-
-/* Custom Cursor Hover scaling */
-body.cursor-active .custom-cursor {
-  width: 12px;
-  height: 12px;
-  background-color: var(--secondary);
-}
-
-body.cursor-active .custom-cursor-follower {
-  width: 44px;
-  height: 44px;
-  border-color: var(--secondary);
-}
-
 /* Navigation layout & styles */
 .glass-nav {
   position: fixed;
@@ -352,19 +301,6 @@ html[data-theme="dark"] .light-icon { display: block; }
 .hero {
   padding: 150px 0 100px;
   position: relative;
-}
-
-/* Custom cursor is a desktop-mouse decoration — on a touchscreen there's no
-   persistent pointer position to follow, so it never receives a move event
-   and just sits stuck whever it last was, reading as a random stray dot and
-   ring on top of the page. (hover:none)/(pointer:coarse) target "no real
-   mouse" directly, which is the right test — better than a width breakpoint,
-   since it's about input capability, not screen size. */
-@media (hover: none), (pointer: coarse) {
-  .custom-cursor,
-  .custom-cursor-follower {
-    display: none;
-  }
 }
 
 .hero-grid {
@@ -2145,41 +2081,20 @@ html[data-theme="dark"] .sandbox-dropzone {
   padding: 10px 16px;
   display: flex;
   align-items: center;
-  position: relative;
+  gap: 8px;
 }
 
-.composer-header .window-dots {
-  display: flex;
-  gap: 6px;
-  position: absolute;
-  left: 16px;
+.composer-icon {
+  font-size: 16px !important;
+  color: var(--tx-muted);
 }
-
-.window-dots .dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.window-dots .dot.red { background-color: #ff5f56; }
-.window-dots .dot.yellow { background-color: #ffbd2e; }
-.window-dots .dot.green { background-color: #27c93f; }
 
 .composer-title {
   font-size: 11px;
   font-weight: 800;
   color: var(--tx-muted);
   text-transform: uppercase;
-  margin: 0 auto;
   letter-spacing: 0.05em;
-  /* .window-dots is position:absolute (left:16px, ~39px wide) and this title
-     centers across the FULL header width via margin:auto — on a narrow phone
-     screen a long generated title (e.g. "New Message (Pitch for SaaSFlow)")
-     centers close enough to the left edge to render underneath the dots.
-     Padding keeps the text clear of that zone; truncate as a safety net. */
-  padding: 0 12px 0 55px;
-  box-sizing: border-box;
   max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
@@ -2423,6 +2338,7 @@ html[data-theme="dark"] .sandbox-dropzone {
 }
 
 .founder-avatar-wrapper {
+  position: relative;
   width: 90px;
   height: 90px;
   border-radius: 50%;
@@ -2437,15 +2353,49 @@ html[data-theme="dark"] .sandbox-dropzone {
   height: 100%;
 }
 
+/* Sits on top of the initials canvas; onerror hides it so the canvas shows
+   through for any founder whose photo hasn't been added yet. */
+.founder-avatar-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .founder-card h3 {
   font-size: 20px;
   margin-bottom: 4px;
 }
 
-.founder-card .founder-role {
-  font-size: 13px;
+.founder-card .founder-college {
+  font-size: 12.5px;
   color: var(--tx-muted);
-  font-weight: 600;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.founder-linkedin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: var(--pfp-bg);
+  border: 1px solid var(--card-border);
+  color: var(--tx-muted);
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.founder-linkedin svg {
+  fill: currentColor;
+}
+
+.founder-linkedin:hover {
+  background-color: #0a66c2;
+  border-color: #0a66c2;
+  color: #ffffff;
 }
 
 /* Modal Checkout overlay styles */
@@ -2763,10 +2713,6 @@ html[data-theme="dark"] .sandbox-dropzone {
   .nav-links {
     display: none;
   }
-  /* Least essential control; frees width for the actual CTA. */
-  #sfx-toggle {
-    display: none;
-  }
   .nav-actions .primary-btn {
     padding: 8px 14px;
     font-size: 13px;
@@ -2829,28 +2775,9 @@ html[data-theme="dark"] .sandbox-dropzone {
   transition: text-shadow 0.3s ease;
 }
 
-/* Dynamic Sparkle Particles */
-.sparkle-star {
-  position: absolute;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  filter: drop-shadow(0 0 4px currentColor);
-}
-
 /* ==========================================
-   Premium Upgrades: SFX Toggle, 3D Mockup, Sonar Radar & CV Match Gauge
+   3D Mockup & CV Match Gauge
    ========================================== */
-
-/* SFX Toggle Button */
-#sfx-toggle span {
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-#sfx-toggle:hover span {
-  transform: scale(1.1);
-}
 
 /* 3D Parallax Dashboard Mockup */
 .hero-simulator {
@@ -2929,111 +2856,6 @@ html[data-theme="dark"] .sandbox-dropzone {
   filter: drop-shadow(0 0 4px #eab308);
 }
 
-/* Scraper Sonar Radar Overlay */
-.sonar-radar-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(10, 15, 30, 0.92);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  z-index: 20;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.sonar-radar-overlay.active {
-  opacity: 1;
-  pointer-events: auto;
-}
-.radar-scan-circle {
-  position: relative;
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(0, 90, 194, 0.35);
-  background: radial-gradient(circle, rgba(0, 90, 194, 0.05) 0%, rgba(10, 15, 30, 0.8) 100%);
-  overflow: hidden;
-  margin-bottom: 14px;
-}
-.radar-scan-circle::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 70px;
-  height: 70px;
-  margin-top: -35px;
-  margin-left: -35px;
-  border-radius: 50%;
-  border: 1px dashed rgba(0, 90, 194, 0.25);
-}
-.radar-sweep {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: conic-gradient(from 0deg, rgba(0, 90, 194, 0.38) 0deg, transparent 180deg);
-  border-radius: 50%;
-  animation: radar-sweep-rotate 2.5s linear infinite;
-  transform-origin: center;
-}
-@keyframes radar-sweep-rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-.radar-blip {
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--primary);
-  color: #fff;
-  font-family: var(--font-display);
-  font-size: 8px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 10px var(--primary);
-  opacity: 0;
-}
-.radar-blip.blip-1 {
-  top: 30%;
-  left: 25%;
-}
-.radar-blip.blip-2 {
-  bottom: 25%;
-  right: 30%;
-}
-.radar-blip.active {
-  animation: blip-pulse-flash 1.2s ease-out infinite;
-}
-@keyframes blip-pulse-flash {
-  0% { transform: scale(0.8); opacity: 0; }
-  50% { opacity: 1; }
-  100% { transform: scale(1.3); opacity: 0; }
-}
-.radar-status-text {
-  font-family: var(--font-display);
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--primary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  animation: text-pulse-flash 1.5s ease-in-out infinite;
-}
-@keyframes text-pulse-flash {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
-}
 
 /* CV Matcher Score Gauge */
 .companies-header-gauge {

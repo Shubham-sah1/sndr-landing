@@ -4,12 +4,12 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Each init is independent (particles, cursor, theme toggle, the various
-  // interactive demos, the scroll-reveal/intro system, SFX, parallax,
-  // haptics) — one throwing should never take the rest down with it, since
-  // a single broken widget silently killing every init after it in the
-  // list is a much worse failure than that one widget not working.
-  const steps = [initParticles, initCustomCursor, initThemeToggle, initSimulator, initSandbox, initBentoWidgets, initCVMatcher, initModals, initScrollReveal, initSFX, init3DParallax, initHapticClicks];
+  // Each init is independent (theme toggle, the various interactive demos,
+  // the scroll-reveal system) — one throwing should never take the rest
+  // down with it, since a single broken widget silently killing every init
+  // after it in the list is a much worse failure than that one widget not
+  // working.
+  const steps = [initThemeToggle, initSimulator, initSandbox, initBentoWidgets, initCVMatcher, initModals, initScrollReveal, init3DParallax];
   steps.forEach(fn => {
     try {
       fn();
@@ -19,135 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-/* ==========================================
-   1. Canvas Particle Background
-   ========================================== */
-function initParticles() {
-  const canvas = document.getElementById('bg-canvas');
-  if (!canvas) return;
-
-  const ctx = canvas.getContext('2d');
-  let particles = [];
-  let width = (canvas.width = window.innerWidth);
-  let height = (canvas.height = window.innerHeight);
-
-  window.addEventListener('resize', () => {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-  });
-
-  class Particle {
-    constructor() {
-      this.x = Math.random() * width;
-      this.y = Math.random() * height;
-      this.vx = (Math.random() - 0.5) * 0.5;
-      this.vy = (Math.random() - 0.5) * 0.5;
-      this.radius = Math.random() * 2 + 1;
-    }
-
-    update() {
-      this.x += this.vx;
-      this.y += this.vy;
-
-      if (this.x < 0 || this.x > width) this.vx *= -1;
-      if (this.y < 0 || this.y > height) this.vy *= -1;
-    }
-
-    draw() {
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-      ctx.fillStyle = isDark ? 'rgba(59, 130, 246, 0.4)' : 'rgba(0, 90, 194, 0.2)';
-      ctx.fill();
-    }
-  }
-
-  // Create particles
-  const particleCount = Math.min(Math.floor((width * height) / 15000), 80);
-  for (let i = 0; i < particleCount; i++) {
-    particles.push(new Particle());
-  }
-
-  function animate() {
-    ctx.clearRect(0, 0, width, height);
-    
-    // Draw connections
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    const connectionColor = isDark ? 'rgba(59, 130, 246, 0.05)' : 'rgba(0, 90, 194, 0.03)';
-    const maxDistance = 120;
-
-    for (let i = 0; i < particles.length; i++) {
-      particles[i].update();
-      particles[i].draw();
-
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < maxDistance) {
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.strokeStyle = connectionColor;
-          ctx.lineWidth = 1 - dist / maxDistance;
-          ctx.stroke();
-        }
-      }
-    }
-    requestAnimationFrame(animate);
-  }
-
-  animate();
-}
-
-/* ==========================================
-   2. Magnetic Custom Cursor
-   ========================================== */
-function initCustomCursor() {
-  const cursor = document.querySelector('.custom-cursor');
-  const follower = document.querySelector('.custom-cursor-follower');
-  if (!cursor || !follower) return;
-
-  let mouseX = 0;
-  let mouseY = 0;
-  let followerX = 0;
-  let followerY = 0;
-
-  document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    
-    cursor.style.left = mouseX + 'px';
-    cursor.style.top = mouseY + 'px';
-  });
-
-  // Follower lag animation loop
-  function updateFollower() {
-    const dx = mouseX - followerX;
-    const dy = mouseY - followerY;
-    
-    followerX += dx * 0.15;
-    followerY += dy * 0.15;
-    
-    follower.style.left = followerX + 'px';
-    follower.style.top = followerY + 'px';
-    
-    requestAnimationFrame(updateFollower);
-  }
-  updateFollower();
-
-  // Highlight effect on interactive elements
-  const interactives = document.querySelectorAll('a, button, input, textarea, [draggable="true"]');
-  interactives.forEach((el) => {
-    el.addEventListener('mouseenter', () => {
-      document.body.classList.add('cursor-active');
-    });
-    el.addEventListener('mouseleave', () => {
-      document.body.classList.remove('cursor-active');
-    });
-  });
-}
 
 /* ==========================================
    3. Light/Dark Theme Switcher
@@ -429,38 +300,16 @@ function initBentoWidgets() {
   // Widget C: Directory Scraper Mockup
   const scrapeBtn = document.getElementById('scrape-elon-btn');
   const detailsBox = document.getElementById('scraped-elon-details');
-  const radarOverlay = document.getElementById('sonar-radar');
 
   if (scrapeBtn && detailsBox) {
     scrapeBtn.addEventListener('click', function() {
       const btn = this;
       btn.disabled = true;
-      btn.innerHTML = `<span class="material-symbols-outlined placeholder-pulse">sync</span><span>Scraping...</span>`;
-
-      // Play looping scrape sound
-      playSFX('scrape');
-
-      // Show radar overlay scanning effect
-      if (radarOverlay) {
-        radarOverlay.style.display = 'flex';
-        setTimeout(() => {
-          radarOverlay.classList.add('active');
-          radarOverlay.querySelectorAll('.radar-blip').forEach(blip => blip.classList.add('active'));
-        }, 50);
-      }
+      btn.innerHTML = `<span class="material-symbols-outlined placeholder-pulse">sync</span><span>Finding...</span>`;
 
       setTimeout(() => {
-        btn.innerHTML = `<span class="material-symbols-outlined">verified</span><span>Scraped</span>`;
+        btn.innerHTML = `<span class="material-symbols-outlined">verified</span><span>Found</span>`;
         btn.style.background = 'linear-gradient(135deg, var(--tertiary) 0%, #10b981 100%)';
-        
-        // Hide radar
-        if (radarOverlay) {
-          radarOverlay.classList.remove('active');
-          setTimeout(() => { radarOverlay.style.display = 'none'; }, 300);
-        }
-
-        // Play success chime
-        playSFX('success');
 
         detailsBox.innerHTML = `
           <div class="mock-detail-row">
@@ -472,7 +321,7 @@ function initBentoWidgets() {
             <span class="value">Talent Operations</span>
           </div>
         `;
-      }, 2200);
+      }, 900);
     });
   }
 
@@ -731,7 +580,6 @@ function initCVMatcher() {
           const siblings = matchBox.querySelectorAll('.company-match-card');
           siblings.forEach(sibling => sibling.classList.remove('active'));
           mNode.classList.add('active');
-          playSFX('match');
           updateActiveMatch(m);
         });
 
@@ -745,8 +593,7 @@ function initCVMatcher() {
         });
       });
       
-      // Update with the first match and play sound
-      playSFX('match');
+      // Update with the first match
       updateActiveMatch(info.matches[0]);
     }, 3200);
   }
@@ -1071,155 +918,6 @@ function initTilt() {
 }
 
 /* ==========================================
-   11. Particle Sparkles Burst Effect
-   ========================================== */
-function triggerSparkles(element) {
-  if (!element) return;
-  const rect = element.getBoundingClientRect();
-  const parent = element.offsetParent || document.body;
-  const parentRect = parent.getBoundingClientRect();
-  
-  // Calculate center of element relative to offsetParent
-  const centerX = rect.left + rect.width / 2 - parentRect.left;
-  const centerY = rect.top + rect.height / 2 - parentRect.top;
-
-  const colors = ['#3b82f6', '#818cf8', '#60a5fa', '#a5b4fc', '#ffffff'];
-
-  for (let i = 0; i < 12; i++) {
-    const sparkle = document.createElement('div');
-    sparkle.className = 'sparkle-star';
-    sparkle.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z" fill="currentColor"/>
-      </svg>
-    `;
-    
-    // Style sparkle
-    sparkle.style.width = `${Math.random() * 10 + 6}px`;
-    sparkle.style.height = sparkle.style.width;
-    sparkle.style.color = colors[Math.floor(Math.random() * colors.length)];
-    
-    // Position at text center
-    sparkle.style.left = `${centerX}px`;
-    sparkle.style.top = `${centerY}px`;
-    
-    parent.appendChild(sparkle);
-
-    // Burst directions
-    const angle = Math.random() * Math.PI * 2;
-    const distance = Math.random() * 50 + 25;
-    const targetX = centerX + Math.cos(angle) * distance;
-    const targetY = centerY + Math.sin(angle) * distance;
-    const duration = Math.random() * 0.4 + 0.3;
-
-    gsap.set(sparkle, {
-      scale: 0,
-      rotation: 0,
-      opacity: 1
-    });
-
-    gsap.to(sparkle, {
-      left: targetX,
-      top: targetY,
-      scale: Math.random() * 1.0 + 0.5,
-      rotation: Math.random() * 360 + 90,
-      duration: duration * 0.5,
-      ease: 'power1.out',
-      onComplete: () => {
-        gsap.to(sparkle, {
-          opacity: 0,
-          scale: 0,
-          duration: duration * 0.5,
-          ease: 'power1.in',
-          onComplete: () => sparkle.remove()
-        });
-      }
-    });
-  }
-}
-
-/* ==========================================
-   Dynamic Web Audio API Synthesizer & SFX Toggle
-   ========================================== */
-let sfxEnabled = true;
-
-function initSFX() {
-  const sfxBtn = document.getElementById('sfx-toggle');
-  if (sfxBtn) {
-    const sfxOnIcon = sfxBtn.querySelector('.sfx-on-icon');
-    const sfxOffIcon = sfxBtn.querySelector('.sfx-off-icon');
-    sfxBtn.addEventListener('click', () => {
-      sfxEnabled = !sfxEnabled;
-      if (sfxEnabled) {
-        sfxOnIcon.style.display = 'inline-block';
-        sfxOffIcon.style.display = 'none';
-        playSFX('click');
-      } else {
-        sfxOnIcon.style.display = 'none';
-        sfxOffIcon.style.display = 'inline-block';
-      }
-    });
-  }
-}
-
-function playSFX(type) {
-  if (!sfxEnabled) return;
-  try {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    
-    const now = ctx.currentTime;
-    
-    if (type === 'click') {
-      osc.frequency.setValueAtTime(850, now);
-      osc.frequency.exponentialRampToValueAtTime(180, now + 0.06);
-      gain.gain.setValueAtTime(0.06, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
-      osc.start(now);
-      osc.stop(now + 0.06);
-    } else if (type === 'scrape') {
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(320, now);
-      osc.frequency.exponentialRampToValueAtTime(1100, now + 0.45);
-      gain.gain.setValueAtTime(0.03, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
-      osc.start(now);
-      osc.stop(now + 0.45);
-    } else if (type === 'match') {
-      // Dual note chord chime
-      osc.frequency.setValueAtTime(523.25, now); // C5
-      osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
-      gain.gain.setValueAtTime(0.04, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
-      osc.start(now);
-      osc.stop(now + 0.22);
-    } else if (type === 'success') {
-      // Satisfying pleasant rising major chord
-      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
-      notes.forEach((freq, idx) => {
-        const oNode = ctx.createOscillator();
-        const gNode = ctx.createGain();
-        oNode.connect(gNode);
-        gNode.connect(ctx.destination);
-        oNode.frequency.setValueAtTime(freq, now + idx * 0.06);
-        gNode.gain.setValueAtTime(0.035, now + idx * 0.06);
-        gNode.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.28);
-        oNode.start(now + idx * 0.06);
-        oNode.stop(now + idx * 0.06 + 0.28);
-      });
-    }
-  } catch (err) {
-    console.warn('Web Audio synthesis failed:', err.message);
-  }
-}
-
-/* ==========================================
    3D Parallax Tilt Hover Effect
    ========================================== */
 function init3DParallax() {
@@ -1261,19 +959,4 @@ function init3DParallax() {
       layer.style.transform = `translate3d(0px, 0px, ${depth}px)`;
     });
   }
-}
-
-/* ==========================================
-   Generic Sound UI feedback trigger
-   ========================================== */
-function initHapticClicks() {
-  // Trigger soft clicks on all primary UI elements
-  const interactiveNodes = document.querySelectorAll(
-    'a, button, .cv-select-tab, .sim-nav-item, .drag-lead, .chart-toggle-btn'
-  );
-  interactiveNodes.forEach(node => {
-    node.addEventListener('click', () => {
-      playSFX('click');
-    });
-  });
 }

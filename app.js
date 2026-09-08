@@ -43,30 +43,20 @@ function initThemeToggle() {
    Mobile Install Gate
    ========================================== */
 // A Chrome extension can't be installed from a phone browser at all. The
-// nav bar's copy is hidden on mobile entirely (CSS, phone media query —
-// no room there for an explanation). The hero CTA keeps its normal label
-// and appearance (still recognizable as "the install button") but is
-// disabled, with a caption revealed underneath explaining why — rather
-// than replacing the button's own text with a different message.
-// (hover:none)/(pointer:coarse) targets "no real mouse" directly, same
-// test already used elsewhere on this page for touch-only behavior.
+// visual state (caption shown, icon hidden, button visually inert) is all
+// driven by the html.touch-device class set synchronously in <head> —
+// before first paint, so there's nothing to visibly toggle later. This
+// only sets the real `disabled` property, for semantic correctness
+// (screen readers, form semantics) on top of the CSS pointer-events:none
+// that already makes it inert from frame one.
 function initMobileInstallGate() {
-  const isTouchOnly = window.matchMedia('(hover: none), (pointer: coarse)').matches;
-  if (!isTouchOnly) return;
+  if (!document.documentElement.classList.contains('touch-device')) return;
 
   const heroBtn = document.getElementById('hero-chrome-btn');
   const navBtn = document.getElementById('nav-install-btn');
-  const note = document.getElementById('desktop-only-note');
 
-  if (heroBtn) {
-    heroBtn.disabled = true;
-    heroBtn.classList.add('desktop-only-btn');
-  }
-  // The CSS phone media query (max-width: 640px) hides this in the common
-  // case; disable it here too so a touch device that doesn't fall under
-  // that width (e.g. a touch-screen tablet) can't still click through.
+  if (heroBtn) heroBtn.disabled = true;
   if (navBtn) navBtn.disabled = true;
-  if (note) note.hidden = false;
 }
 
 /* ==========================================

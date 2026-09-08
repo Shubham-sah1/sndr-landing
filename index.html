@@ -30,6 +30,21 @@
       if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
     } catch (e) {}
 
+    // Same idea as the theme fix above: decide mobile-vs-desktop before
+    // first paint instead of in app.js after DOMContentLoaded. Deciding it
+    // late meant the "works only on desktop" caption was invisible on
+    // first paint and only appeared a beat later once JS ran — a real,
+    // visible layout shift (everything below it jumping down) on top of
+    // whatever else was already settling on load. Doing it here means the
+    // final layout is correct from the very first frame, nothing to shift
+    // into later. Combines touch-capability with a width check, since some
+    // mobile browsers/in-app webviews misreport (hover:none)/(pointer:coarse).
+    try {
+      if (window.matchMedia('(hover: none), (pointer: coarse), (max-width: 640px)').matches) {
+        document.documentElement.classList.add('touch-device');
+      }
+    } catch (e) {}
+
     // Always start at the top on reload
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
@@ -86,7 +101,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet">
   
   <!-- CSS Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=2.5">
+  <link rel="stylesheet" href="style.css?v=2.6">
   
   <!-- GSAP Animation Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -110,7 +125,7 @@
               <span class="material-symbols-outlined btn-icon">download</span>
               Install Free Extension
             </button>
-            <p class="desktop-only-note" id="desktop-only-note" hidden>Extension only works on desktop</p>
+            <p class="desktop-only-note">Extension only works on desktop</p>
           </div>
         </div>
 
@@ -848,6 +863,6 @@
   </footer>
 
   <!-- App Script -->
-  <script src="app.js?v=2.3"></script>
+  <script src="app.js?v=2.4"></script>
 </body>
 </html>

@@ -242,24 +242,37 @@ a {
   border-radius: 6px;
 }
 
-/* A Chrome extension can't be installed from a phone browser — see
-   initMobileInstallGate() in app.js. Keeps the button's normal look (still
-   clearly "the install button") rather than restyling it as obviously
-   dead; the .desktop-only-note caption underneath explains why it's
-   inert. Just needs cursor + no hover-lift; `disabled` already blocks
-   the click itself and stops the browser's own dimmed-disabled look. */
-.primary-btn.desktop-only-btn,
-.primary-btn.desktop-only-btn:hover {
+/* A Chrome extension can't be installed from a phone browser. html.touch-
+   device is set synchronously in the blocking <head> script (before first
+   paint), so this is the page's actual state from frame one — not a
+   toggle applied after DOMContentLoaded, which caused a visible jump when
+   the caption below appeared and pushed everything under it down a beat
+   after load. pointer-events:none makes the button inert immediately,
+   independent of app.js's later `.disabled = true` (belt and suspenders —
+   that fires with zero visible change since this already looks the same).
+   The button keeps its normal look/label; only the download icon (implies
+   an action that can't happen here) is dropped on mobile. */
+html.touch-device #hero-chrome-btn {
+  pointer-events: none;
   cursor: not-allowed;
+}
+html.touch-device #hero-chrome-btn .btn-icon {
+  display: none;
+}
+html.touch-device #hero-chrome-btn:hover {
   transform: none;
-  opacity: 1;
 }
 
 .desktop-only-note {
+  display: none;
   margin-top: 10px;
   font-size: 13px;
+  font-weight: 700;
   color: var(--tx-muted);
   text-align: center;
+}
+html.touch-device .desktop-only-note {
+  display: block;
 }
 
 /* Glare highlight effect */

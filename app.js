@@ -859,7 +859,8 @@ function initModals() {
       }
       
       if (modal) modal.classList.remove('hidden');
-      
+      if (window.sndrWeb) window.sndrWeb('cta', isChromeBtn ? 'Add to Chrome' : (modalTitle ? modalTitle.textContent.replace(/^Launch\s+SNDR\.\s*/, '') + ' plan' : 'Pricing plan'));
+
       // Reset progress
       if (progressFill) progressFill.style.width = '0%';
       if (statusText) statusText.textContent = 'Ready to integrate...';
@@ -918,6 +919,7 @@ function initModals() {
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
+          if (window.sndrWeb) window.sndrWeb('download');
 
           setTimeout(() => {
             if (modal) modal.classList.add('hidden');

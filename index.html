@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-MDHDR12X9G"></script>
@@ -11,64 +11,30 @@
     gtag('config', 'G-MDHDR12X9G');
   </script>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Tells the browser this page manages its own light/dark appearance,
-       so it doesn't apply its own auto-dark color-inversion heuristic on
-       top (seen on real Android devices selectively washing out specific
-       elements — see the color-scheme note in style.css). -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
-  <title>SNDR. Landing Gigs at the Speed of Thought</title>
+  <title>SNDR. Stop getting ghosted. Start getting replies.</title>
   <script>
-    // Apply the saved theme before first paint — this runs synchronously,
-    // ahead of any CSS/JS, so a saved "dark" preference never shows the
-    // hardcoded light default first and then visibly flips (the "flash"
-    // this is fixing). initThemeToggle() in app.js only wires up the
-    // toggle button's click handler now; it no longer needs to set the
-    // theme itself since it's already correct by the time that runs.
+    // The page follows the device's light/dark setting. A choice saved by the
+    // previous site's theme toggle still applies, before first paint.
     try {
       var savedTheme = localStorage.getItem('theme');
-      if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+      if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.setAttribute('data-theme', savedTheme);
     } catch (e) {}
-
-    // Same idea as the theme fix above: decide mobile-vs-desktop before
-    // first paint instead of in app.js after DOMContentLoaded. Deciding it
-    // late meant the "works only on desktop" caption was invisible on
-    // first paint and only appeared a beat later once JS ran — a real,
-    // visible layout shift (everything below it jumping down) on top of
-    // whatever else was already settling on load. Doing it here means the
-    // final layout is correct from the very first frame, nothing to shift
-    // into later. Combines touch-capability with a width check, since some
-    // mobile browsers/in-app webviews misreport (hover:none)/(pointer:coarse).
-    try {
-      if (window.matchMedia('(hover: none), (pointer: coarse), (max-width: 640px)').matches) {
-        document.documentElement.classList.add('touch-device');
-      }
-    } catch (e) {}
-
-    // Always start at the top on reload
-    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-    window.scrollTo(0, 0);
-    window.addEventListener('load', function () {
-      window.scrollTo(0, 0);
-      // Reveal icon glyphs only once the icon font is ready, so ligature names never flash as raw text
-      var iconsReady = function () { document.documentElement.classList.add('icons-ready'); };
-      if (document.fonts && document.fonts.ready) { document.fonts.ready.then(iconsReady); }
-      setTimeout(iconsReady, 2000);
-    });
   </script>
-  <style>.material-symbols-outlined{opacity:0}html.icons-ready .material-symbols-outlined{opacity:1}</style>
-  <meta name="description" content="SNDR is a Chrome extension that automates cold outreach for students: find verified recruiter emails, send personalized pitches from your own Gmail, track opens live, and follow up automatically. Built by students, for students.">
+  <meta name="description" content="SNDR is a free Chrome extension that finds a recruiter's work email on LinkedIn, helps you write the email, sends it from your own Gmail and follows up until they reply.">
   <link rel="canonical" href="https://www.sndr.co.in/">
 
   <!-- Open Graph / social -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="SNDR">
-  <meta property="og:title" content="SNDR. Landing Gigs at the Speed of Thought">
-  <meta property="og:description" content="SNDR is a Chrome extension that automates cold outreach for students: find verified recruiter emails, send personalized pitches from Gmail, track opens live, and follow up automatically.">
+  <meta property="og:title" content="SNDR. Stop getting ghosted. Start getting replies.">
+  <meta property="og:description" content="SNDR is a free Chrome extension that finds a recruiter's work email on LinkedIn, helps you write the email, sends it from your own Gmail and follows up until they reply.">
   <meta property="og:url" content="https://www.sndr.co.in/">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="SNDR. Landing Gigs at the Speed of Thought">
-  <meta name="twitter:description" content="SNDR is a Chrome extension that automates cold outreach for students: find verified recruiter emails, send personalized pitches from Gmail, track opens live, and follow up automatically.">
+  <meta property="og:image" content="https://www.sndr.co.in/assets/ghosted-poster.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SNDR. Stop getting ghosted. Start getting replies.">
+  <meta name="twitter:description" content="SNDR is a free Chrome extension that finds a recruiter's work email on LinkedIn, helps you write the email, sends it from your own Gmail and follows up until they reply.">
 
   <!-- Organization schema for verification and search -->
   <script type="application/ld+json">
@@ -78,7 +44,7 @@
     "name": "SNDR",
     "url": "https://www.sndr.co.in/",
     "email": "contact@sndr.co.in",
-    "description": "SNDR is a Chrome extension that automates cold outreach for students: verified email discovery, personalized drafting, Gmail sending, live open tracking, and automated follow-ups.",
+    "description": "SNDR is a free Chrome extension that finds a recruiter's work email on LinkedIn, helps you write the email, sends it from your own Gmail and follows up until they reply.",
     "sameAs": ["https://www.linkedin.com/company/sndrai/"],
     "founders": [
       {"@type": "Person", "name": "Shubham Sah"},
@@ -88,809 +54,275 @@
   }
   </script>
 
-  <!-- Google Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- display=swap, not optional: optional's tradeoff turned out to be
-       worse than the reflow it was avoiding — on a real (non-cached)
-       mobile connection the ~100ms budget it gives Outfit/Inter often
-       isn't enough, so the browser commits to the fallback system font
-       for that whole page view and the hero heading never gets its
-       actual branded look at all. swap guarantees the real font is used
-       once it arrives, on any connection speed. -->
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet">
-  
-  <!-- CSS Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=2.7">
-  
-  <!-- GSAP Animation Library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;900&family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="style.css?v=3.0">
   <script src="track.js" defer></script>
 </head>
 <body>
+<div class="loader" id="loader" aria-hidden="true"><div class="px" id="px"></div></div>
 
-  <!-- Particle Background Canvas (desktop only — see html.touch-device guards) -->
-  <canvas id="bg-canvas"></canvas>
-
-  <!-- Custom Cursor (desktop only) -->
-  <div class="custom-cursor"></div>
-  <div class="custom-cursor-follower"></div>
-
-    <!-- Hero Section -->
-    <header class="hero">
-      <div class="container hero-grid">
-        <div class="hero-text-content">
-          <h1 class="hero-title fade-in">
-            <span class="cold-mailing-sparkle">Cold Emailing</span>, <br>
-            <span class="text-gradient">at the Speed of Thought.</span>
-          </h1>
-          <p class="hero-subtitle fade-in">
-            Built by students, for students. Automate cold outreach to founders, recruiters, and professors. Scrape emails instantly and land your next internship or research project without the portals.
-          </p>
-          <div class="hero-buttons fade-in">
-            <button class="primary-btn size-lg hover-glare" id="hero-chrome-btn">
-              <span class="material-symbols-outlined btn-icon">download</span>
-              Install Free Extension
-            </button>
-            <p class="desktop-only-note">Extension only works on Desktop</p>
-          </div>
-        </div>
-
-        <!-- Hero Interactive Campaign Simulator -->
-        <div class="hero-simulator fade-in">
-          <div class="simulator-window glass-card">
-            <div class="window-header">
-              <div class="window-dots">
-                <span class="w-dot red"></span>
-                <span class="w-dot yellow"></span>
-                <span class="w-dot green"></span>
-              </div>
-              <div class="window-title">SNDR. Outbound Manager</div>
-              <div class="window-status" id="sim-status">Idle</div>
-            </div>
-            
-            <div class="window-body">
-              <div class="sim-sidebar">
-                <div class="sim-nav-item active"><span class="material-symbols-outlined">send</span>Outreach</div>
-                <div class="sim-nav-item"><span class="material-symbols-outlined">group</span>Recruiters</div>
-                <div class="sim-nav-item"><span class="material-symbols-outlined">analytics</span>Replies</div>
-              </div>
-              
-              <div class="sim-main">
-                <!-- Step 1: Input -->
-                <div class="sim-composer" id="sim-composer">
-                  <div class="input-group">
-                    <label>Recruiter Directory Search</label>
-                    <input type="text" id="sim-query" value="Founders & HR Leads in Bangalore" readonly>
-                  </div>
-                  <div class="input-group">
-                    <label>Introductory Template</label>
-                    <textarea id="sim-template" rows="2" readonly>Frontend react internship role inquiry; mention Raft consensus side project.</textarea>
-                  </div>
-                  <button class="run-sim-btn" id="start-sim-btn">
-                    <span>Send Cold Pitch</span>
-                    <span class="material-symbols-outlined">send</span>
-                  </button>
-                </div>
-
-                <!-- Step 2: Live Processing Stream -->
-                <div class="sim-stream hidden" id="sim-stream">
-                  <div class="stream-header">
-                    <span class="subtitle">Scraping & Personalizing...</span>
-                    <span class="counter" id="stream-counter">0/3</span>
-                  </div>
-                  <div class="stream-cards" id="stream-cards-container">
-                    <!-- Dynamic Leads appear here -->
-                  </div>
-                  <!-- Flying mail channel -->
-                  <div class="mail-tube" id="mail-tube">
-                    <div class="tube-line"></div>
-                  </div>
-                </div>
-
-                <!-- Step 3: Success Analytics -->
-                <div class="sim-analytics hidden" id="sim-analytics">
-                  <div class="analytics-card">
-                    <div class="circle-progress-wrapper">
-                      <svg class="circle-progress" viewBox="0 0 36 36">
-                        <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                        <path class="circle-fill" id="analytics-progress" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                      </svg>
-                      <div class="circle-percentage" id="analytics-percentage">0%</div>
-                    </div>
-                    <div class="analytics-text">
-                      <h3>Pitches Sent</h3>
-                      <p>Emails customized and delivered directly to recruiter inboxes.</p>
-                    </div>
-                  </div>
-                  <button class="run-sim-btn secondary" id="reset-sim-btn">
-                    <span>Reset</span>
-                    <span class="material-symbols-outlined">restart_alt</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </header>
-
-  <!-- Supported By: partner program badges -->
-  <section class="partners-section">
-    <div class="container">
-      <p class="partners-label">Supported by</p>
-      <div class="partners-logos glass-card">
-
-        <div class="partners-item">
-          <div class="sb-chip"><img class="sb-logo-img" src="assets/logos/claude.png" alt="Claude for Startups"></div>
-        </div>
-
-        <div class="partners-item">
-          <div class="sb-chip"><img class="sb-logo-img" src="assets/logos/aws.png" alt="AWS for Startups"></div>
-        </div>
-
-        <div class="partners-item">
-          <div class="sb-chip"><img class="sb-logo-img" src="assets/logos/cartesia.png" alt="Cartesia"></div>
-        </div>
-
-        <div class="partners-item">
-          <div class="sb-chip"><img class="sb-logo-img" src="assets/logos/mongodb.png" alt="MongoDB"></div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- Navigation Bar -->
-  <nav class="glass-nav">
-    <div class="nav-container">
-      <div class="logo-wrapper" id="logo-trigger">
-        <svg class="pixel-logo" viewBox="-1 -1 27 7" width="130" height="35">
-          <!-- S -->
-          <rect class="pixel" data-origin-x="0" data-origin-y="0" x="0" y="0" width="1" height="1" />
-          <rect class="pixel" data-origin-x="1" data-origin-y="0" x="1" y="0" width="1" height="1" />
-          <rect class="pixel" data-origin-x="2" data-origin-y="0" x="2" y="0" width="1" height="1" />
-          <rect class="pixel" data-origin-x="3" data-origin-y="0" x="3" y="0" width="1" height="1" />
-          <rect class="pixel" data-origin-x="4" data-origin-y="0" x="4" y="0" width="1" height="1" />
-          <rect class="pixel" data-origin-x="0" data-origin-y="1" x="0" y="1" width="1" height="1" />
-          <rect class="pixel" data-origin-x="0" data-origin-y="2" x="0" y="2" width="1" height="1" />
-          <rect class="pixel" data-origin-x="1" data-origin-y="2" x="1" y="2" width="1" height="1" />
-          <rect class="pixel" data-origin-x="2" data-origin-y="2" x="2" y="2" width="1" height="1" />
-          <rect class="pixel" data-origin-x="3" data-origin-y="2" x="3" y="2" width="1" height="1" />
-          <rect class="pixel" data-origin-x="4" data-origin-y="2" x="4" y="2" width="1" height="1" />
-          <rect class="pixel" data-origin-x="4" data-origin-y="3" x="4" y="3" width="1" height="1" />
-          <rect class="pixel" data-origin-x="0" data-origin-y="4" x="0" y="4" width="1" height="1" />
-          <rect class="pixel" data-origin-x="1" data-origin-y="4" x="1" y="4" width="1" height="1" />
-          <rect class="pixel" data-origin-x="2" data-origin-y="4" x="2" y="4" width="1" height="1" />
-          <rect class="pixel" data-origin-x="3" data-origin-y="4" x="3" y="4" width="1" height="1" />
-          <rect class="pixel" data-origin-x="4" data-origin-y="4" x="4" y="4" width="1" height="1" />
-
-          <!-- N -->
-          <rect class="pixel" data-origin-x="6" data-origin-y="0" x="6" y="0" width="1" height="1" />
-          <rect class="pixel" data-origin-x="10" data-origin-y="0" x="10" y="0" width="1" height="1" />
-          <rect class="pixel" data-origin-x="6" data-origin-y="1" x="6" y="1" width="1" height="1" />
-          <rect class="pixel" data-origin-x="7" data-origin-y="1" x="7" y="1" width="1" height="1" />
-          <rect class="pixel" data-origin-x="10" data-origin-y="1" x="10" y="1" width="1" height="1" />
-          <rect class="pixel" data-origin-x="6" data-origin-y="2" x="6" y="2" width="1" height="1" />
-          <rect class="pixel" data-origin-x="8" data-origin-y="2" x="8" y="2" width="1" height="1" />
-          <rect class="pixel" data-origin-x="10" data-origin-y="2" x="10" y="2" width="1" height="1" />
-          <rect class="pixel" data-origin-x="6" data-origin-y="3" x="6" y="3" width="1" height="1" />
-          <rect class="pixel" data-origin-x="9" data-origin-y="3" x="9" y="3" width="1" height="1" />
-          <rect class="pixel" data-origin-x="10" data-origin-y="3" x="10" y="3" width="1" height="1" />
-          <rect class="pixel" data-origin-x="6" data-origin-y="4" x="6" y="4" width="1" height="1" />
-          <rect class="pixel" data-origin-x="10" data-origin-y="4" x="10" y="4" width="1" height="1" />
-
-          <!-- D -->
-          <rect class="pixel" data-origin-x="12" data-origin-y="0" x="12" y="0" width="1" height="1" />
-          <rect class="pixel" data-origin-x="13" data-origin-y="0" x="13" y="0" width="1" height="1" />
-          <rect class="pixel" data-origin-x="14" data-origin-y="0" x="14" y="0" width="1" height="1" />
-          <rect class="pixel" data-origin-x="15" data-origin-y="0" x="15" y="0" width="1" height="1" />
-          <rect class="pixel" data-origin-x="12" data-origin-y="1" x="12" y="1" width="1" height="1" />
-          <rect class="pixel" data-origin-x="16" data-origin-y="1" x="16" y="1" width="1" height="1" />
-          <rect class="pixel" data-origin-x="12" data-origin-y="2" x="12" y="2" width="1" height="1" />
-          <rect class="pixel" data-origin-x="16" data-origin-y="2" x="16" y="2" width="1" height="1" />
-          <rect class="pixel" data-origin-x="12" data-origin-y="3" x="12" y="3" width="1" height="1" />
-          <rect class="pixel" data-origin-x="16" data-origin-y="3" x="16" y="3" width="1" height="1" />
-          <rect class="pixel" data-origin-x="12" data-origin-y="4" x="12" y="4" width="1" height="1" />
-          <rect class="pixel" data-origin-x="13" data-origin-y="4" x="13" y="4" width="1" height="1" />
-          <rect class="pixel" data-origin-x="14" data-origin-y="4" x="14" y="4" width="1" height="1" />
-          <rect class="pixel" data-origin-x="15" data-origin-y="4" x="15" y="4" width="1" height="1" />
-
-          <!-- R -->
-          <rect class="pixel" data-origin-x="18" data-origin-y="0" x="18" y="0" width="1" height="1" />
-          <rect class="pixel" data-origin-x="19" data-origin-y="0" x="19" y="0" width="1" height="1" />
-          <rect class="pixel" data-origin-x="20" data-origin-y="0" x="20" y="0" width="1" height="1" />
-          <rect class="pixel" data-origin-x="21" data-origin-y="0" x="21" y="0" width="1" height="1" />
-          <rect class="pixel" data-origin-x="18" data-origin-y="1" x="18" y="1" width="1" height="1" />
-          <rect class="pixel" data-origin-x="22" data-origin-y="1" x="22" y="1" width="1" height="1" />
-          <rect class="pixel" data-origin-x="18" data-origin-y="2" x="18" y="2" width="1" height="1" />
-          <rect class="pixel" data-origin-x="19" data-origin-y="2" x="19" y="2" width="1" height="1" />
-          <rect class="pixel" data-origin-x="20" data-origin-y="2" x="20" y="2" width="1" height="1" />
-          <rect class="pixel" data-origin-x="21" data-origin-y="2" x="21" y="2" width="1" height="1" />
-          <rect class="pixel" data-origin-x="22" data-origin-y="2" x="22" y="2" width="1" height="1" />
-          <rect class="pixel" data-origin-x="18" data-origin-y="3" x="18" y="3" width="1" height="1" />
-          <rect class="pixel" data-origin-x="21" data-origin-y="3" x="21" y="3" width="1" height="1" />
-          <rect class="pixel" data-origin-x="18" data-origin-y="4" x="18" y="4" width="1" height="1" />
-          <rect class="pixel" data-origin-x="22" data-origin-y="4" x="22" y="4" width="1" height="1" />
-
-          <!-- . (Dot) -->
-          <rect class="pixel dot" data-origin-x="24" data-origin-y="4" x="24" y="4" width="1" height="1" />
-        </svg>
-      </div>
-      
-      <div class="nav-links">
-        <a href="#features" class="nav-link">Features</a>
-        <a href="#cv-matcher" class="nav-link">CV Matcher</a>
-        <a href="#about" class="nav-link">About</a>
-      </div>
-
-      <div class="nav-actions">
-        <!-- SFX Toggle (desktop only) -->
-        <button id="sfx-toggle" class="icon-btn" aria-label="Toggle SFX">
-          <span class="material-symbols-outlined sfx-on-icon">volume_up</span>
-          <span class="material-symbols-outlined sfx-off-icon" style="display:none">volume_off</span>
-        </button>
-        <!-- Theme Toggle -->
-        <button id="theme-toggle" class="icon-btn" aria-label="Toggle Theme">
-          <span class="material-symbols-outlined dark-icon">dark_mode</span>
-          <span class="material-symbols-outlined light-icon">light_mode</span>
-        </button>
-        <button class="primary-btn hover-glare" id="nav-install-btn">Install Extension</button>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Interactive Sandbox: The Outreach Sandbox -->
-  <section id="playground" class="playground-section">
-    <div class="container text-center">
-      <div class="section-intro reveal">
-        <h2 class="section-title">The Outreach Sandbox</h2>
-        <p class="section-subtitle">Drag a recruiter or professor profile into the compiler core to instantly structure an authentic cold outreach draft.</p>
-      </div>
-
-      <div class="sandbox-container reveal">
-        <!-- Raw leads on the left -->
-        <div class="leads-shelf" id="leads-shelf">
-          <div class="shelf-title">Target Profiles</div>
-          <div class="drag-lead" draggable="true" data-name="Arnav" data-role="Founder @ SaaSFlow" data-avatar="A">
-            <div class="lead-avatar">A</div>
-            <div class="lead-info">
-              <span class="name">Arnav</span>
-              <span class="role">Founder @ SaaSFlow</span>
-            </div>
-            <span class="material-symbols-outlined drag-handle">drag_indicator</span>
-          </div>
-
-          <div class="drag-lead" draggable="true" data-name="Manit" data-role="Professor @ IIT Bombay" data-avatar="M">
-            <div class="lead-avatar">M</div>
-            <div class="lead-info">
-              <span class="name">Manit</span>
-              <span class="role">Professor @ IIT Bombay</span>
-            </div>
-            <span class="material-symbols-outlined drag-handle">drag_indicator</span>
-          </div>
-
-          <div class="drag-lead" draggable="true" data-name="Saksham" data-role="HR Lead @ Razorpay" data-avatar="S">
-            <div class="lead-avatar">S</div>
-            <div class="lead-info">
-              <span class="name">Saksham</span>
-              <span class="role">HR Lead @ Razorpay</span>
-            </div>
-            <span class="material-symbols-outlined drag-handle">drag_indicator</span>
-          </div>
-        </div>
-
-        <!-- Central drop zone -->
-        <div class="sandbox-dropzone" id="engine-core">
-          <div class="scanner-line"></div>
-          <div class="core-glow-pulse"></div>
-          <div class="engine-core-ring ring-1"></div>
-          <div class="engine-core-ring ring-2"></div>
-          <div class="engine-core-ring ring-3"></div>
-          <div class="engine-core-center">
-            <span class="material-symbols-outlined core-icon">description</span>
-            <span class="core-label">SNDR<br>COMPILE</span>
-          </div>
-          <div class="drop-hint">Drag a profile here to compile email</div>
-        </div>
-
-        <!-- Output details on the right -->
-        <div class="sandbox-output" id="sandbox-output">
-          <div class="output-placeholder">
-            <span class="material-symbols-outlined">inbox</span>
-            <p>Awaiting profile selection...</p>
-          </div>
-          
-          <div class="output-card hidden" id="output-card">
-            <div class="output-card-header">
-              <div class="output-avatar" id="out-avatar">A</div>
-              <div class="output-meta">
-                <h4 id="out-name">Arnav</h4>
-                <p id="out-role">Founder @ SaaSFlow</p>
-              </div>
-              <span class="verified-badge"><span class="material-symbols-outlined">verified</span> Active</span>
-            </div>
-            <div class="output-card-body">
-              <div class="email-row">
-                <span class="label">Direct Email:</span>
-                <span class="value" id="out-email">arnav@saasflow.com</span>
-              </div>
-              <div class="hook-box">
-                <div class="hook-header">
-                  <span class="material-symbols-outlined">chat_bubble</span>
-                  <span>Personalized Pitch Draft</span>
-                </div>
-                <p class="hook-text" id="out-hook">"Hi Arnav, saw your update..."</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Features Bento Grid Section -->
-  <section id="features" class="features-section">
-    <div class="container">
-      <div class="section-intro text-center reveal">
-        <h2 class="section-title">Built for Real Outreach</h2>
-        <p class="section-subtitle">Skip the generic application buttons. Reach founders and recruiters directly.</p>
-      </div>
-
-      <div class="bento-grid">
-        <!-- Bento 1: Drag & Throttle Bulk -->
-        <div class="bento-item col-span-8 hover-tilt reveal">
-          <div class="bento-content">
-            <span class="bento-tag">SAFETY</span>
-            <h3 class="bento-title">Smart Outbound Throttling</h3>
-            <p class="bento-desc">Adjust daily limits smoothly. Send batches spacing them out dynamically to ensure your personal mail id never gets flagged or blocked.</p>
-            
-            <!-- Dynamic Controls inside card -->
-            <div class="mini-control-panel glass-card">
-              <div class="control-row">
-                <span>Daily Limit:</span>
-                <span id="slider-val" class="text-highlight">250 emails</span>
-              </div>
-              <input type="range" min="50" max="500" value="250" class="premium-slider" id="limit-slider">
-              
-              <div class="speedometer-bars">
-                <div class="speed-bar active"></div>
-                <div class="speed-bar active"></div>
-                <div class="speed-bar active"></div>
-                <div class="speed-bar"></div>
-                <div class="speed-bar"></div>
-                <div class="speed-bar"></div>
-              </div>
-              <span class="speed-label">Optimal Delivery Interval Active</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Bento 2: Interactive Live Insights Chart -->
-        <div class="bento-item col-span-4 hover-tilt reveal">
-          <div class="bento-content">
-            <span class="bento-tag">RECEIPTS</span>
-            <h3 class="bento-title">Read Receipts</h3>
-            <p class="bento-desc">Track exactly when recruiters open your emails, so you can follow up timely.</p>
-            
-            <div class="chart-container glass-card">
-              <div class="chart-toggles">
-                <button class="chart-toggle-btn active" data-metric="open">Open Rate</button>
-                <button class="chart-toggle-btn" data-metric="reply">Reply Rate</button>
-              </div>
-              
-              <div class="bar-chart">
-                <div class="chart-bar">
-                  <div class="bar-track"><div class="bar-fill" style="--val: 92%"></div></div>
-                  <span class="bar-label">Mon</span>
-                </div>
-                <div class="chart-bar">
-                  <div class="bar-track"><div class="bar-fill" style="--val: 88%"></div></div>
-                  <span class="bar-label">Tue</span>
-                </div>
-                <div class="chart-bar">
-                  <div class="bar-track"><div class="bar-fill" style="--val: 95%"></div></div>
-                  <span class="bar-label">Wed</span>
-                </div>
-                <div class="chart-bar">
-                  <div class="bar-track"><div class="bar-fill" style="--val: 98%"></div></div>
-                  <span class="bar-label">Thu</span>
-                </div>
-              </div>
-              <div class="metric-summary">
-                <span class="summary-number" id="metric-number">98%</span>
-                <span class="summary-text">Average rate achieved</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Bento 3: Extension Interface HUD -->
-        <div class="bento-item col-span-12 hover-tilt reveal">
-          <div class="bento-content">
-            <span class="bento-tag">GRABBER</span>
-            <h3 class="bento-title">Directory Email Grabber</h3>
-            <p class="bento-desc">Grab direct business emails directly from recruiter profiles with a single click overlay.</p>
-
-            <!-- Mock profile scraper -->
-            <div class="linkedin-mock glass-card" style="position: relative; overflow: hidden;">
-              <!-- Sonar Radar overlay container (desktop only) -->
-              <div class="sonar-radar-overlay" id="sonar-radar" style="display:none">
-                <div class="radar-scan-circle">
-                  <div class="radar-sweep"></div>
-                  <div class="radar-blip blip-1">M</div>
-                  <div class="radar-blip blip-2">R</div>
-                </div>
-                <div class="radar-status-text">Scanning Recruiter Channels...</div>
-              </div>
-              <div class="profile-header-mock">
-                <div class="mock-pfp">M</div>
-                <div class="mock-meta">
-                  <div class="mock-line-lg">Mayank</div>
-                  <div class="mock-line-sm">Talent Acquisition @ Razorpay</div>
-                </div>
-                <!-- Interactive Button Overlay -->
-                <button class="sndr-scrape-btn" id="scrape-elon-btn">
-                  <span class="material-symbols-outlined">search</span>
-                  <span>Find Email</span>
-                </button>
-              </div>
-              <div class="mock-details" id="scraped-elon-details">
-                <div class="mock-detail-row">
-                  <span class="label">Direct:</span>
-                  <span class="value placeholder-pulse"></span>
-                </div>
-                <div class="mock-detail-row">
-                  <span class="label">Department:</span>
-                  <span class="value placeholder-pulse"></span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CV Analyzer Section (Sample CV Chatbot Simulator) -->
-  <section id="cv-matcher" class="cv-matcher-section">
-    <div class="container">
-      <div class="section-intro text-center reveal">
-        <h2 class="section-title">Resume Analyzer &amp; Target Generator</h2>
-        <p class="section-subtitle">Select a sample student resume to see how the built-in advisor chatbot maps skills, generates target companies, and drafts personalized pitches.</p>
-        
-        <div class="cv-selector-wrapper">
-          <button class="cv-select-tab active" data-sample="tanishq">
-            <img src="assets/tanishq_avatar.png" alt="Tanishq Ray Avatar" class="tab-avatar">
-            <div class="tab-meta">
-              <span class="tab-name">Tanishq Ray</span>
-              <span class="tab-sub">Finance Track • SRCC Delhi</span>
-            </div>
-          </button>
-          <button class="cv-select-tab" data-sample="saksham">
-            <img src="assets/saksham_avatar.png" alt="Saksham Avatar" class="tab-avatar">
-            <div class="tab-meta">
-              <span class="tab-name">Saksham</span>
-              <span class="tab-sub">Tech Track • IIT Bombay</span>
-            </div>
-          </button>
-        </div>
-      </div>
-      
-      <div class="cv-matcher-container glass-card reveal">
-        <div class="cv-split-grid">
-          <!-- Left: CV Mock Document -->
-          <div class="cv-document-preview">
-            <div class="document-header">
-              <span class="material-symbols-outlined header-icon">description</span>
-              <span>RESUME_PREVIEW.PDF</span>
-              <span class="doc-badge">SIGNED</span>
-            </div>
-            <div class="document-sheet" id="cv-sheet-content">
-              <!-- Rendered dynamically via JS -->
-            </div>
-          </div>
-          
-          <!-- Middle: Chatbot Stream -->
-          <div class="cv-chatbot-workspace">
-            <div class="chatbot-header">
-              <div class="chatbot-status">
-                <span class="dot-ping green-dot"></span>
-                <span>SNDR AI Advisor Chatbot</span>
-              </div>
-              <div class="chatbot-actions">
-                <span class="material-symbols-outlined">sync</span>
-                <span class="material-symbols-outlined">more_vert</span>
-              </div>
-            </div>
-            <div class="chatbot-feed" id="chatbot-feed-container">
-              <!-- Dynamically populated chatbot bubble items -->
-            </div>
-            <!-- Mock input field at the bottom -->
-            <div class="chatbot-input-mock">
-              <span class="material-symbols-outlined input-icon">bolt</span>
-              <div class="input-placeholder">Ask SNDR Advisor to refine pitch...</div>
-              <div class="input-actions">
-                <span class="material-symbols-outlined">mic</span>
-                <span class="material-symbols-outlined">send</span>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Right: Matches & Email Output -->
-          <div class="cv-outbound-panel">
-            <div class="companies-section">
-              <div class="companies-header-gauge">
-                <h5>Matched Targets</h5>
-                
-                <!-- Profile Fit Arc Score Gauge -->
-                <div class="score-gauge-widget">
-                  <div class="gauge-svg-wrap">
-                    <svg viewBox="0 0 36 36" class="gauge-arc">
-                      <path class="gauge-bg-arc" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke-dasharray="75, 100" stroke-dashoffset="37.5" />
-                      <path class="gauge-fill-arc" id="cv-match-gauge-fill" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke-dasharray="0, 100" stroke-dashoffset="37.5" />
-                    </svg>
-                    <div class="gauge-val" id="cv-match-gauge-val">0%</div>
-                  </div>
-                  <div class="gauge-title">Profile Fit</div>
-                </div>
-              </div>
-              <div id="company-cards-box">
-                <!-- Matches generated here -->
-              </div>
-            </div>
-            
-            <div class="email-section">
-              <h5>Generated Cold Pitch</h5>
-              <div class="outbound-draft-box email-composer">
-                <!-- macOS Style Window Control Dots -->
-                <div class="composer-header">
-                  <div class="window-dots">
-                    <span class="dot red"></span>
-                    <span class="dot yellow"></span>
-                    <span class="dot green"></span>
-                  </div>
-                  <div class="composer-title" id="draft-target-name">New Message</div>
-                </div>
-                
-                <div class="composer-meta">
-                  <div class="meta-row">
-                    <span class="meta-label">To:</span>
-                    <span class="meta-val" id="composer-to-val">Saksham (Razorpay HR)</span>
-                  </div>
-                  <div class="meta-row">
-                    <span class="meta-label">Subject:</span>
-                    <span class="meta-val font-semibold" id="composer-subject-val">Treasury Analyst Intern Application</span>
-                  </div>
-                </div>
-                
-                <div class="composer-body">
-                  <div class="draft-text" id="cv-draft-text">Select a CV above to trigger analysis...</div>
-                </div>
-
-                <div class="composer-footer">
-                  <button class="primary-btn btn-sm hover-glare copy-draft-btn" id="cv-copy-btn">
-                    <span class="material-symbols-outlined">send</span>
-                    <span>Copy Pitch Draft</span>
-                  </button>
-                  <div class="composer-footer-actions">
-                    <span class="material-symbols-outlined">format_size</span>
-                    <span class="material-symbols-outlined">attach_file</span>
-                    <span class="material-symbols-outlined">link</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- About SNDR -->
-  <section id="about" class="founders-section">
-    <div class="container">
-      <div class="section-intro text-center reveal">
-        <h2 class="section-title">About SNDR</h2>
-      </div>
-      <div class="about-card glass-card reveal">
-        <p>SNDR is a Chrome extension and outreach platform built in India. It helps students and early professionals find verified work emails, send personalized cold emails from their own Gmail, track opens and replies on a live dashboard, and follow up automatically until they get a response. The product is live on this site and free to install.</p>
-        <video src="assets/sndr-trailer.mp4" poster="assets/trailer-poster.jpg" controls preload="none" playsinline></video>
-        <p class="about-contact">Reach us anytime at <a href="mailto:contact@sndr.co.in">contact@sndr.co.in</a> or on <a href="https://www.linkedin.com/company/sndrai/" target="_blank">LinkedIn</a>.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Interactive Founders Cards -->
-  <section id="founders" class="founders-section">
-    <div class="container">
-      <div class="section-intro text-center reveal">
-        <h2 class="section-title">Co-Founders</h2>
-        <p class="section-subtitle">We are college students and friends building outreach systems to land projects and roles.</p>
-      </div>
-
-      <div class="founders-grid">
-        <!-- Founder 1: Shubham Sah -->
-        <div class="founder-card reveal" data-color="#005ac2">
-          <div class="founder-avatar-wrapper">
-            <img class="founder-avatar-photo" src="assets/founders/shubham-sah.jpg" alt="Shubham Sah" onerror="this.style.display='none'">
-            <canvas class="founder-avatar-canvas" data-initials="SS"></canvas>
-          </div>
-          <h3>Shubham Sah</h3>
-          <p class="founder-college">Sri Venkateswara College<br>University of Delhi</p>
-          <a class="founder-linkedin" href="https://www.linkedin.com/in/shubham-sah-148551299" target="_blank" rel="noopener" aria-label="Shubham Sah on LinkedIn">
-            <svg viewBox="0 0 24 24" width="18" height="18">
-              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-            </svg>
-          </a>
-        </div>
-
-        <!-- Founder 2: Harsh Gadia -->
-        <div class="founder-card reveal" data-color="#4648d4">
-          <div class="founder-avatar-wrapper">
-            <img class="founder-avatar-photo" src="assets/founders/harsh-gadia.jpg" alt="Harsh Gadia" onerror="this.style.display='none'">
-            <canvas class="founder-avatar-canvas" data-initials="HG"></canvas>
-          </div>
-          <h3>Harsh Gadia</h3>
-          <p class="founder-college">Shri Ram College of Commerce<br>University of Delhi</p>
-          <a class="founder-linkedin" href="https://www.linkedin.com/in/harshgadia25/" target="_blank" rel="noopener" aria-label="Harsh Gadia on LinkedIn">
-            <svg viewBox="0 0 24 24" width="18" height="18">
-              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-            </svg>
-          </a>
-        </div>
-
-        <!-- Founder 3: Tanishq Ray -->
-        <div class="founder-card reveal" data-color="#008376">
-          <div class="founder-avatar-wrapper">
-            <img class="founder-avatar-photo" src="assets/founders/tanishq-ray.jpg" alt="Tanishq Ray" onerror="this.style.display='none'">
-            <canvas class="founder-avatar-canvas" data-initials="TR"></canvas>
-          </div>
-          <h3>Tanishq Ray</h3>
-          <p class="founder-college">Shri Ram College of Commerce<br>University of Delhi</p>
-          <a class="founder-linkedin" href="https://www.linkedin.com/in/tanishq-ray-00a0b9264/" target="_blank" rel="noopener" aria-label="Tanishq Ray on LinkedIn">
-            <svg viewBox="0 0 24 24" width="18" height="18">
-              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-            </svg>
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Checkout/Action Modal (Interactive) -->
-  <div class="modal-overlay hidden" id="checkout-modal">
-    <div class="modal-card glass-card">
-      <div class="modal-header">
-        <h3 id="modal-title">Launch SNDR. Pro</h3>
-        <button class="close-modal-btn" id="close-modal"><span class="material-symbols-outlined">close</span></button>
-      </div>
-      <div class="modal-body">
-        <p id="modal-body-text">You have selected the <strong id="modal-plan-name">Pro</strong> plan. Setting up your browser extension workspace...</p>
-        
-        <div class="modal-progress-bar">
-          <div class="modal-progress-fill" id="modal-progress-fill"></div>
-        </div>
-        
-        <div class="modal-status-text" id="modal-status-text">Ready to integrate...</div>
-        
-        <button class="primary-btn w-full mt-6" id="modal-action-btn">Install Extension</button>
-      </div>
-    </div>
+<header class="nav gut" id="nav">
+  <div class="in wrap">
+    <a class="brand" href="#top" aria-label="SNDR home"><svg width="96" height="20" viewBox="0 0 25 5" shape-rendering="crispEdges" role="img" aria-label="SNDR"><path fill="currentColor" d="M0 0h5v1H0zM0 1h1v1H0zM0 2h5v1H0zM4 3h1v1H4zM0 4h5v1H0zM6 0h1v5H6zM7 1h1v1H7zM8 2h1v1H8zM9 3h1v1H9zM10 0h1v5h-1zM12 0h4v1h-4zM12 1h1v3h-1zM16 1h1v3h-1zM12 4h4v1h-4zM18 0h4v1h-4zM18 1h1v4h-1zM22 1h1v1h-1zM19 2h4v1h-4zM21 3h1v1h-1zM22 4h1v1h-1z"></path><rect x="24" y="4" width="1" height="1" style="fill:var(--accent)"></rect></svg></a>
+    <nav aria-label="Main"><a href="#how">How it works</a><a href="#features">Features</a><a href="#team">Team</a><a href="#faq">FAQ</a></nav>
+    <button class="btn main sm cta" type="button" data-install>Add to Chrome</button>
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2 5h12M2 11h12"></path></svg></button>
   </div>
+</header>
+<div class="sheet-menu gut" id="menu" hidden>
+  <button class="menu-btn close" id="menuClose" type="button" aria-label="Close menu"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"></path></svg></button>
+  <a href="#how">How it works</a><a href="#features">Features</a><a href="#team">Team</a><a href="#faq">FAQ</a>
+  <button class="btn main" type="button" data-install>Add to Chrome, it's free</button>
+</div>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container footer-grid">
-      <div class="footer-brand">
-        <!-- Render exact SVG logo here too -->
-        <div class="footer-logo-wrapper">
-          <svg class="pixel-logo" viewBox="-1 -1 27 7" width="130" height="35">
-            <!-- S -->
-            <rect class="pixel" data-origin-x="0" data-origin-y="0" x="0" y="0" width="1" height="1" />
-            <rect class="pixel" data-origin-x="1" data-origin-y="0" x="1" y="0" width="1" height="1" />
-            <rect class="pixel" data-origin-x="2" data-origin-y="0" x="2" y="0" width="1" height="1" />
-            <rect class="pixel" data-origin-x="3" data-origin-y="0" x="3" y="0" width="1" height="1" />
-            <rect class="pixel" data-origin-x="4" data-origin-y="0" x="4" y="0" width="1" height="1" />
-            <rect class="pixel" data-origin-x="0" data-origin-y="1" x="0" y="1" width="1" height="1" />
-            <rect class="pixel" data-origin-x="0" data-origin-y="2" x="0" y="2" width="1" height="1" />
-            <rect class="pixel" data-origin-x="1" data-origin-y="2" x="1" y="2" width="1" height="1" />
-            <rect class="pixel" data-origin-x="2" data-origin-y="2" x="2" y="2" width="1" height="1" />
-            <rect class="pixel" data-origin-x="3" data-origin-y="2" x="3" y="2" width="1" height="1" />
-            <rect class="pixel" data-origin-x="4" data-origin-y="2" x="4" y="2" width="1" height="1" />
-            <rect class="pixel" data-origin-x="4" data-origin-y="3" x="4" y="3" width="1" height="1" />
-            <rect class="pixel" data-origin-x="0" data-origin-y="4" x="0" y="4" width="1" height="1" />
-            <rect class="pixel" data-origin-x="1" data-origin-y="4" x="1" y="4" width="1" height="1" />
-            <rect class="pixel" data-origin-x="2" data-origin-y="4" x="2" y="4" width="1" height="1" />
-            <rect class="pixel" data-origin-x="3" data-origin-y="4" x="3" y="4" width="1" height="1" />
-            <rect class="pixel" data-origin-x="4" data-origin-y="4" x="4" y="4" width="1" height="1" />
-
-            <!-- N -->
-            <rect class="pixel" data-origin-x="6" data-origin-y="0" x="6" y="0" width="1" height="1" />
-            <rect class="pixel" data-origin-x="10" data-origin-y="0" x="10" y="0" width="1" height="1" />
-            <rect class="pixel" data-origin-x="6" data-origin-y="1" x="6" y="1" width="1" height="1" />
-            <rect class="pixel" data-origin-x="7" data-origin-y="1" x="7" y="1" width="1" height="1" />
-            <rect class="pixel" data-origin-x="10" data-origin-y="1" x="10" y="1" width="1" height="1" />
-            <rect class="pixel" data-origin-x="6" data-origin-y="2" x="6" y="2" width="1" height="1" />
-            <rect class="pixel" data-origin-x="8" data-origin-y="2" x="8" y="2" width="1" height="1" />
-            <rect class="pixel" data-origin-x="10" data-origin-y="2" x="10" y="2" width="1" height="1" />
-            <rect class="pixel" data-origin-x="6" data-origin-y="3" x="6" y="3" width="1" height="1" />
-            <rect class="pixel" data-origin-x="9" data-origin-y="3" x="9" y="3" width="1" height="1" />
-            <rect class="pixel" data-origin-x="10" data-origin-y="3" x="10" y="3" width="1" height="1" />
-            <rect class="pixel" data-origin-x="6" data-origin-y="4" x="6" y="4" width="1" height="1" />
-            <rect class="pixel" data-origin-x="10" data-origin-y="4" x="10" y="4" width="1" height="1" />
-
-            <!-- D -->
-            <rect class="pixel" data-origin-x="12" data-origin-y="0" x="12" y="0" width="1" height="1" />
-            <rect class="pixel" data-origin-x="13" data-origin-y="0" x="13" y="0" width="1" height="1" />
-            <rect class="pixel" data-origin-x="14" data-origin-y="0" x="14" y="0" width="1" height="1" />
-            <rect class="pixel" data-origin-x="15" data-origin-y="0" x="15" y="0" width="1" height="1" />
-            <rect class="pixel" data-origin-x="12" data-origin-y="1" x="12" y="1" width="1" height="1" />
-            <rect class="pixel" data-origin-x="16" data-origin-y="1" x="16" y="1" width="1" height="1" />
-            <rect class="pixel" data-origin-x="12" data-origin-y="2" x="12" y="2" width="1" height="1" />
-            <rect class="pixel" data-origin-x="16" data-origin-y="2" x="16" y="2" width="1" height="1" />
-            <rect class="pixel" data-origin-x="12" data-origin-y="3" x="12" y="3" width="1" height="1" />
-            <rect class="pixel" data-origin-x="16" data-origin-y="3" x="16" y="3" width="1" height="1" />
-            <rect class="pixel" data-origin-x="12" data-origin-y="4" x="12" y="4" width="1" height="1" />
-            <rect class="pixel" data-origin-x="13" data-origin-y="4" x="13" y="4" width="1" height="1" />
-            <rect class="pixel" data-origin-x="14" data-origin-y="4" x="14" y="4" width="1" height="1" />
-            <rect class="pixel" data-origin-x="15" data-origin-y="4" x="15" y="4" width="1" height="1" />
-
-            <!-- R -->
-            <rect class="pixel" data-origin-x="18" data-origin-y="0" x="18" y="0" width="1" height="1" />
-            <rect class="pixel" data-origin-x="19" data-origin-y="0" x="19" y="0" width="1" height="1" />
-            <rect class="pixel" data-origin-x="20" data-origin-y="0" x="20" y="0" width="1" height="1" />
-            <rect class="pixel" data-origin-x="21" data-origin-y="0" x="21" y="0" width="1" height="1" />
-            <rect class="pixel" data-origin-x="18" data-origin-y="1" x="18" y="1" width="1" height="1" />
-            <rect class="pixel" data-origin-x="22" data-origin-y="1" x="22" y="1" width="1" height="1" />
-            <rect class="pixel" data-origin-x="18" data-origin-y="2" x="18" y="2" width="1" height="1" />
-            <rect class="pixel" data-origin-x="19" data-origin-y="2" x="19" y="2" width="1" height="1" />
-            <rect class="pixel" data-origin-x="20" data-origin-y="2" x="20" y="2" width="1" height="1" />
-            <rect class="pixel" data-origin-x="21" data-origin-y="2" x="21" y="2" width="1" height="1" />
-            <rect class="pixel" data-origin-x="22" data-origin-y="2" x="22" y="2" width="1" height="1" />
-            <rect class="pixel" data-origin-x="18" data-origin-y="3" x="18" y="3" width="1" height="1" />
-            <rect class="pixel" data-origin-x="21" data-origin-y="3" x="21" y="3" width="1" height="1" />
-            <rect class="pixel" data-origin-x="18" data-origin-y="4" x="18" y="4" width="1" height="1" />
-            <rect class="pixel" data-origin-x="22" data-origin-y="4" x="22" y="4" width="1" height="1" />
-
-            <!-- . (Dot) -->
-            <rect class="pixel dot" data-origin-x="24" data-origin-y="4" x="24" y="4" width="1" height="1" />
-          </svg>
+<main id="top">
+  <section class="hero gut" aria-labelledby="h1">
+    <div class="in wrap">
+      <div class="hero-copy">
+        <span class="kicker"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5h3V3.3a1.3 1.3 0 0 1 2.6 0v1.2h2.9v2.9h1.2a1.3 1.3 0 0 1 0 2.6h-1.2v3.5H3V10h1.2a1.3 1.3 0 0 0 0-2.6H3z"></path></svg>Free Chrome extension for LinkedIn and Gmail</span>
+        <h1 class="h1" id="h1">Stop getting ghosted.<br><em>Start getting replies.</em></h1>
+        <p class="sub">SNDR finds a recruiter's work email right from LinkedIn, helps you write the email, sends it from your own Gmail and follows up until they reply.</p>
+        <div class="ctas">
+          <button class="btn main" type="button" data-install><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v9M4 7l4 4 4-4M3 14h10"></path></svg>Add to Chrome, it's free</button>
+          <a class="btn line" href="#how">See how it works</a>
         </div>
-        <p class="brand-pitch">Built by college students, for students. Land your next internship, research project, or role directly.</p>
+        <p class="aside">Your emails go out from your own Gmail. Setting it up takes about a minute.</p>
       </div>
-      <div class="footer-links-group">
-        <div class="links-column">
-          <h4>Features</h4>
-          <a href="#features">Scraper</a>
-          <a href="#features">Email Tracker</a>
-          <a href="#about">About</a>
+
+      <div class="win inbox" aria-hidden="true">
+        <div class="bar"><i title="Close"></i><i title="Minimise"></i><i title="Put back"></i><b>Gmail · Inbox</b></div>
+        <div class="ibox-head"><span class="tab-on"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5l2-6h8l2 6v3H2zM2 9.5h3.5l1 1.5h3l1-1.5H14"></path></svg>Primary</span><span class="newc"><b id="newN">2</b> new replies</span></div>
+        <ul class="mails" id="mails">
+          <li class="m unread"><div class="mi"><span class="av" style="background:#f9a8d4">RI</span><div class="mt"><p class="l1"><b>Rohan Iyer</b><time>Yesterday</time></p><p class="l2">Re: Quick question about the credit team</p><p class="l3">Happy to chat. Does 4 pm tomorrow work for you?</p></div></div></li>
+          <li class="m unread"><div class="mi"><span class="av" style="background:#86efac">NK</span><div class="mt"><p class="l1"><b>Neha Kapoor</b><time>Yesterday</time></p><p class="l2">Re: Founder's office role at Kite</p><p class="l3">Loved your note. Let's set up a call this week.</p></div></div></li>
+          <li class="m"><div class="mi"><span class="av" style="background:#fcd34d">KM</span><div class="mt"><p class="l1"><b>Kabir Malhotra</b><time>Mon</time></p><p class="l2">Re: Data analyst internship</p><p class="l3">Thanks! I've forwarded this to our hiring manager.</p></div></div></li>
+          <li class="m"><div class="mi"><span class="av" style="background:#a5b4fc">AR</span><div class="mt"><p class="l1"><b>Ananya Rao</b><time>Mon</time></p><p class="l2">Re: Summer internship at Bluepeak</p><p class="l3">Applications open next week. I'll make sure yours is seen.</p></div></div></li>
+        </ul>
+        <div class="ibox-foot"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"></path></svg>SNDR stopped the follow ups for everyone who replied</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="backed gut" aria-labelledby="supT">
+    <div class="in wrap">
+      <p class="label" id="supT">Supported by</p>
+      <div class="logos">
+        <ul class="belt" id="belt">
+          <li class="logo"><img src="assets/logos/aws.png" alt="AWS Activate" style="height:28px;width:auto"><span class="cap">AWS Activate</span></li>
+          <li class="logo"><img src="assets/logos/microsoft.svg" alt="Microsoft" style="height:21px;width:auto"><span class="cap">Microsoft for Startups</span></li>
+          <li class="logo"><span class="wm"><img src="assets/logos/auth0-color.svg" alt="" style="height:21px;width:auto">Auth0</span><span class="cap">Auth0 for Startups</span></li>
+          <li class="logo"><img src="assets/logos/cartesia.png" alt="Cartesia" style="height:18px;width:auto"><span class="cap">Cartesia for Startups</span></li>
+          <li class="logo"><span class="wm" aria-label="Fireworks AI"><img src="assets/logos/fireworks-color.svg" alt="" style="height:21px;width:auto"><img src="assets/logos/fireworks-text-dark.svg" alt="" style="height:13px;width:auto"></span><span class="cap">Fireworks AI</span></li>
+          <li class="logo"><img src="assets/logos/claude.png" alt="Claude" style="height:21px;width:auto"><span class="cap">Claude for Startups</span></li>
+          <li class="logo"><img src="assets/logos/mongodb.png" alt="MongoDB" style="height:24px;width:auto"><span class="cap">MongoDB</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="story section gut" id="why" aria-labelledby="whyT">
+    <div class="in wrap">
+      <div class="player" id="player">
+        <video id="video" src="assets/ghosted.mp4" poster="assets/ghosted-poster.jpg" playsinline muted loop preload="auto" aria-label="Ghosted, a short film by SNDR"></video>
+        <button class="sound" id="sound" type="button" aria-label="Turn sound on" aria-pressed="false">
+          <svg class="off" width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6v4h2.5l3.5 3V3L5 6z" fill="currentColor"></path><path d="M11 6l3.5 4M14.5 6L11 10"></path></svg>
+          <svg class="on" width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6v4h2.5l3.5 3V3L5 6z" fill="currentColor"></path><path d="M11 5.5a3.5 3.5 0 010 5M12.8 3.8a6 6 0 010 8.4"></path></svg>
+        </button>
+      </div>
+      <div class="story-copy">
+        <h2 class="h2" id="whyT">Job portals don't reply. People do.</h2>
+        <p class="lede">Most applications sent through job portals never hear back. A short, personal email to the person who hires stands a much better chance. SNDR does the slow parts for you: finding the right people, getting their work email, sending, and following up.</p>
+        <dl class="stats">
+          <div><dt id="liveN">1,00,000+</dt><dd>emails sent with SNDR, and counting</dd></div>
+          <div><dt>About 2×</dt><dd>the usual cold email reply rate</dd></div>
+          <div><dt>500 a day</dt><dd>from your own Gmail, paced safely</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="how section gut" id="how" aria-labelledby="howT">
+    <div class="wrap">
+      <div class="head">
+        <h2 class="h2" id="howT">From a LinkedIn page to a reply</h2>
+        <p class="lede">Four steps, and SNDR does most of the work in each one.</p>
+      </div>
+      <div class="stepper" id="stepper">
+        <div class="steps" role="tablist" aria-label="How SNDR works">
+          <button class="st" role="tab" id="s1" aria-selected="true" aria-controls="w1"><span class="no">1</span><span class="tx"><b>Find the people</b><span>Search a company and the roles you want. SNDR opens its LinkedIn people page and saves names as you scroll.</span></span><span class="tm" aria-hidden="true"><i></i></span></button>
+          <button class="st" role="tab" id="s2" aria-selected="false" aria-controls="w2" tabindex="-1"><span class="no">2</span><span class="tx"><b>Get their work emails</b><span>SNDR works out how the company writes its email addresses and fills in everyone's work email in one click.</span></span><span class="tm" aria-hidden="true"><i></i></span></button>
+          <button class="st" role="tab" id="s3" aria-selected="false" aria-controls="w3" tabindex="-1"><span class="no">3</span><span class="tx"><b>Send from your Gmail</b><span>Write it yourself or let SNDR AI draft it from your CV. Every email has their name in it and your CV attached.</span></span><span class="tm" aria-hidden="true"><i></i></span></button>
+          <button class="st" role="tab" id="s4" aria-selected="false" aria-controls="w4" tabindex="-1"><span class="no">4</span><span class="tx"><b>Let SNDR follow up</b><span>SNDR follows up on its own and stops the moment someone replies. You see who opened your email, and when.</span></span><span class="tm" aria-hidden="true"><i></i></span></button>
         </div>
-        <div class="links-column">
-          <h4>Contact Us</h4>
-          <a href="mailto:contact@sndr.co.in">contact@sndr.co.in</a>
-          <a href="privacy.html">Privacy Policy</a>
-        </div>
-        <!-- LinkedIn Gateway Link -->
-        <div class="links-column linkedin-gateway">
-          <h4>Connect</h4>
-          <a href="https://www.linkedin.com/company/sndrai/" target="_blank" class="linkedin-gateway-btn">
-            <svg class="linkedin-svg" viewBox="0 0 24 24" width="18" height="18">
-              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-            </svg>
-            <span>LinkedIn</span>
-          </a>
+        <div class="stage2">
+          <div class="win" role="tabpanel" id="w1" aria-labelledby="s1" data-play="find"><div class="bar"><i title="Close"></i><i title="Minimise"></i><i title="Put back"></i><b>LinkedIn · Nova Fintech · People</b></div><div class="wbody">
+            <div class="row"><span class="av" style="background:#c4b5fd">PS</span><span class="t"><b>Priya Sharma</b><small>HR Business Partner</small></span><span class="pill">Saved</span></div>
+            <div class="row"><span class="av" style="background:#7dd3fc">AM</span><span class="t"><b>Arjun Mehta</b><small>Talent Acquisition</small></span><span class="pill">Saved</span></div>
+            <div class="row"><span class="av" style="background:#fdba74">SK</span><span class="t"><b>Sara Khan</b><small>Campus Recruiter</small></span><span class="pill">Saved</span></div>
+            <div class="row"><span class="av" style="background:#f9a8d4">RI</span><span class="t"><b>Rohan Iyer</b><small>Hiring Manager</small></span><span class="pill">Saved</span></div>
+          </div><div class="wfoot"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"></path></svg><span>SNDR saved <b data-n>4</b> people. Keep scrolling for more.</span></div></div>
+          <div class="win" role="tabpanel" id="w2" aria-labelledby="s2" data-play="emails" hidden><div class="bar"><i title="Close"></i><i title="Minimise"></i><i title="Put back"></i><b>SNDR · Find emails</b></div><div class="wbody">
+            <div class="row fmt"><span class="t"><small>Email format at Nova Fintech</small><b data-fmt>firstname.lastname@novafintech.com</b></span><span class="pill ok">Verified</span></div>
+            <div class="row"><span class="av" style="background:#c4b5fd">PS</span><span class="t"><b>Priya Sharma</b><small data-email="priya.sharma@novafintech.com">priya.sharma@novafintech.com</small></span><span class="pill">Found</span></div>
+            <div class="row"><span class="av" style="background:#7dd3fc">AM</span><span class="t"><b>Arjun Mehta</b><small data-email="arjun.mehta@novafintech.com">arjun.mehta@novafintech.com</small></span><span class="pill">Found</span></div>
+            <div class="row"><span class="av" style="background:#fdba74">SK</span><span class="t"><b>Sara Khan</b><small data-email="sara.khan@novafintech.com">sara.khan@novafintech.com</small></span><span class="pill">Found</span></div>
+          </div></div>
+          <div class="win" role="tabpanel" id="w3" aria-labelledby="s3" data-play="send" hidden><div class="bar"><i title="Close"></i><i title="Minimise"></i><i title="Put back"></i><b>Gmail · Summer analyst outreach</b></div><div class="wbody">
+            <div class="mail"><b>Subject:</b> Summer analyst, quick question<br><br>Hi <span class="v" data-v="first">{{firstName}}</span>, I've been following <span class="v" data-v="co">{{company}}</span>'s lending work and would love to help your analyst team this summer…</div>
+            <div class="meter"><i data-meter></i></div>
+            <div class="row"><span class="t"><b><span data-sent>50</span> of 50 sent</b><small>from you@gmail.com, CV.pdf attached, spaced out to stay safe</small></span><span class="pill ok" data-state>All sent</span></div>
+          </div></div>
+          <div class="win" role="tabpanel" id="w4" aria-labelledby="s4" data-play="follow" hidden><div class="bar"><i title="Close"></i><i title="Minimise"></i><i title="Put back"></i><b>SNDR · Follow ups</b></div><div class="wbody">
+            <div class="row"><span class="t"><b>Mon, first email sent</b><small>Opened twice</small></span><span class="pill grey">Done</span></div>
+            <div class="row"><span class="t"><b>Thu, first follow up sent</b><small>Opened</small></span><span class="pill grey">Done</span></div>
+            <div class="row"><span class="av" style="background:#c4b5fd">PS</span><span class="t"><b>Fri, Priya replied</b><small>"Free on Thursday for a quick call?"</small></span><span class="pill ok">Replied</span></div>
+            <div class="row stopped"><span class="t"><b>Second follow up</b><small>Stopped automatically</small></span><span class="pill grey">Cancelled</span></div>
+          </div></div>
+          <p class="hint">Tip: grab a window and throw it. It flies back on its own.</p>
         </div>
       </div>
     </div>
-    <div class="footer-bottom text-center">
-      <p>© 2026 SNDR. All rights reserved. Original Logo by SNDR.</p>
-    </div>
-  </footer>
+  </section>
 
-  <!-- App Script -->
-  <script src="app.js?v=2.5"></script>
+  <section class="feats section gut" id="features" aria-labelledby="fT">
+    <div class="wrap">
+      <div class="head">
+        <h2 class="h2" id="fT">Four things only SNDR does</h2>
+        <p class="lede">Try them right here. Everything below runs on sample data.</p>
+      </div>
+      <div class="ftabs" role="tablist" aria-label="What only SNDR does">
+        <span class="fhl" id="fhl" aria-hidden="true"></span>
+        <button class="ftab" role="tab" id="ft1" aria-selected="true" aria-controls="fp1"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1.5" y="3.5" width="13" height="9" rx="1.5"></rect><path d="M1.5 5.5l6.5 4 6.5-4"></path></svg>LinkedIn to emails<span class="tm" aria-hidden="true"><i></i></span></button>
+        <button class="ftab" role="tab" id="ft2" aria-selected="false" aria-controls="fp2" tabindex="-1"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12l4-4 3 3 5-6"></path><path d="M10 5h4v4"></path></svg>Past LinkedIn's limit<span class="tm" aria-hidden="true"><i></i></span></button>
+        <button class="ftab" role="tab" id="ft3" aria-selected="false" aria-controls="fp3" tabindex="-1"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 8a5.5 5.5 0 1 0 1.6-3.9M2.5 2.5v3h3"></path></svg>Smart follow ups<span class="tm" aria-hidden="true"><i></i></span></button>
+        <button class="ftab" role="tab" id="ft4" aria-selected="false" aria-controls="fp4" tabindex="-1"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 1.5l1.6 3.6 3.9.4-2.9 2.6.8 3.9L8 10l-3.4 2 .8-3.9-2.9-2.6 3.9-.4z"></path></svg>AI that read your CV<span class="tm" aria-hidden="true"><i></i></span></button>
+      </div>
+      <div class="fstage">
+        <div class="fpanel" role="tabpanel" id="fp1" aria-labelledby="ft1">
+          <div class="fcopy">
+            <h3>LinkedIn in, work emails out</h3>
+            <p>Type any company. SNDR finds the people who hire there and works out their work emails.</p>
+            <ul class="pts"><li><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"></path></svg>Saves names while you scroll LinkedIn</li><li><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"></path></svg>Works out how the company writes its emails</li><li><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"></path></svg>Fills in every work email in one click</li></ul>
+            <button class="nextf" type="button" data-go="ft2">Next: reach past LinkedIn's limit <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"></path></svg></button>
+          </div>
+          <div class="demo">
+            <div class="d-top"><div class="field"><label for="co">Company</label><input id="co" value="Nova Fintech" autocomplete="off" spellcheck="false"></div><button class="btn main sm" id="d1go" type="button">Find their emails</button></div>
+            <p class="status" id="d1status">Type a company, then press <b>Find their emails</b>.</p>
+            <ul class="plist" id="d1list"></ul>
+          </div>
+        </div>
+        <div class="fpanel" role="tabpanel" id="fp2" aria-labelledby="ft2" hidden>
+          <div class="fcopy">
+            <h3>Reach past LinkedIn's limit</h3>
+            <p>LinkedIn stops the list early. SNDR opens more lists, team by team, and skips anyone you already have.</p>
+            <ul class="pts"><li><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"></path></svg>Opens a new list for each team</li><li><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"></path></svg>Skips people you already saved</li><li><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"></path></svg>Reach far more people at one company</li></ul>
+            <button class="nextf" type="button" data-go="ft3">Next: smart follow ups <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"></path></svg></button>
+          </div>
+          <div class="demo">
+            <div class="reach-top"><b id="d2n">74</b><span>of 1,908 people at Nova Fintech</span></div>
+            <div class="bar2"><i id="d2bar"></i></div>
+            <p class="msg2" id="d2msg">LinkedIn stopped the list at 74. Tap a team to open a new list.</p>
+            <div class="chips2" id="d2chips"><button class="chip2" type="button" data-add="57" data-name="Engineering">Engineering</button><button class="chip2" type="button" data-add="61" data-name="Sales">Sales</button><button class="chip2" type="button" data-add="48" data-name="Operations">Operations</button><button class="chip2" type="button" data-add="39" data-name="Marketing">Marketing</button><button class="chip2" type="button" data-add="22" data-name="HR">HR</button></div>
+            <button class="textlink" id="d2reset" type="button">Start over</button>
+          </div>
+        </div>
+        <div class="fpanel" role="tabpanel" id="fp3" aria-labelledby="ft3" hidden>
+          <div class="fcopy">
+            <h3>Follow ups that know when to stop</h3>
+            <p>SNDR follows up for you and cancels the rest the moment someone replies.</p>
+            <ul class="pts"><li><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"></path></svg>Follow ups go out on their own</li><li><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"></path></svg>Stop the moment someone replies</li><li><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"></path></svg>See who opened your email, and when</li></ul>
+            <button class="nextf" type="button" data-go="ft4">Next: an AI that read your CV <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"></path></svg></button>
+          </div>
+          <div class="demo d3">
+            <ol class="tl"><li class="sent"><b>Mon</b><span>First email to Priya</span><em>Sent</em></li><li class="fu"><b>Thu</b><span>First follow up</span><em>Scheduled</em></li><li class="fu"><b>Next Mon</b><span>Second follow up</span><em>Scheduled</em></li><li class="fu"><b>Next Thu</b><span>Third follow up</span><em>Scheduled</em></li></ol>
+            <p class="d3note" id="d3note">Priya opened your first email twice but hasn't replied yet.</p>
+            <button class="btn main sm" id="d3go" type="button">Make Priya reply</button>
+          </div>
+        </div>
+        <div class="fpanel" role="tabpanel" id="fp4" aria-labelledby="ft4" hidden>
+          <div class="fcopy">
+            <h3>An AI that has read your CV</h3>
+            <p>It reviews your CV, writes your emails, suggests companies and preps you for interviews.</p>
+            <ul class="pts"><li><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"></path></svg>Feedback on your CV for the role</li><li><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"></path></svg>Cold emails written from your CV</li><li><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"></path></svg>Interview prep for the companies you pick</li></ul>
+            <button class="nextf" type="button" data-go="ft1">Back to the first one <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"></path></svg></button>
+          </div>
+          <div class="demo">
+            <div class="chat" id="chat" aria-live="polite"><div class="bub">Hi! I've read your CV. What should we work on?</div><div class="bub me">Review my CV for IB</div><div class="bub">Three fixes before you apply:
+1. Lead with your DCF model project, numbers first.
+2. Cut the hobbies line.
+3. Name one deal you followed closely and what you learned.</div></div>
+            <div class="prompts" id="prompts"><button class="chip2" type="button" data-a="0">Review my CV for IB</button><button class="chip2" type="button" data-a="1">Write my cold email</button><button class="chip2" type="button" data-a="2">Which companies fit me?</button><button class="chip2" type="button" data-a="3">Prep me for an interview</button></div>
+          </div>
+        </div>
+      </div>
+      <p class="fhint">The demos play on their own. Click into one to try it yourself.</p>
+    </div>
+  </section>
+
+  <section class="team section gut" id="team" aria-labelledby="tT">
+    <div class="wrap">
+      <div class="head center"><h2 class="h2" id="tT">The team behind SNDR</h2></div>
+      <div class="people">
+        <a class="person" href="https://www.linkedin.com/in/shubham-sah-148551299" target="_blank" rel="noopener"><span class="ph"><img src="assets/team/shubham-sah.jpg" alt="Shubham Sah" loading="lazy"></span><span class="who"><b>Shubham Sah</b><span class="col">Sri Venkateswara College</span><small>Founder</small></span></a>
+        <a class="person" href="https://www.linkedin.com/in/harshgadia25/" target="_blank" rel="noopener"><span class="ph"><img src="assets/team/harsh-gadia.jpg" alt="Harsh Gadia" loading="lazy"></span><span class="who"><b>Harsh Gadia</b><span class="col">Shri Ram College of Commerce</span><small>Founder</small></span></a>
+        <a class="person" href="https://www.linkedin.com/in/tanishq-ray-00a0b9264/" target="_blank" rel="noopener"><span class="ph"><img src="assets/team/tanishq-ray.jpg" alt="Tanishq Ray" loading="lazy"></span><span class="who"><b>Tanishq Ray</b><span class="col">Shri Ram College of Commerce</span><small>Founder</small></span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq section gut" id="faq" aria-labelledby="faqT">
+    <div class="in wrap">
+      <div class="faq-side"><h2 class="h2" id="faqT">Questions, answered</h2><p>Didn't find yours? Write to us at <b>contact@sndr.co.in</b> and we'll get back to you.</p></div>
+      <div class="qa" id="qa">
+        <details open><summary>Is SNDR really free?<i aria-hidden="true"></i></summary><div class="a">Yes. Install it, connect your Gmail and start sending. No card, no trial timer.</div></details>
+        <details><summary>Which Gmail account should I use?<i aria-hidden="true"></i></summary><div class="a"><b>Best:</b> a Google Workspace account on your own domain. Google lets those send about 2,000 emails a day, so SNDR's 500 has plenty of room.<br><b>Fine:</b> a personal Gmail you've used for months.<br><b>Avoid:</b> a new account. Use it normally for a couple of weeks first.</div></details>
+        <details><summary>Will my Gmail get blocked?<i aria-hidden="true"></i></summary><div class="a">SNDR sends at most 500 emails a day, spaces them out, and pauses when you hit your limit. Keep emails personal and relevant, and your account stays in good standing.</div></details>
+        <details><summary>Does SNDR read my inbox?<i aria-hidden="true"></i></summary><div class="a">SNDR only looks at the email threads it started, to spot replies and bounces and stop following up. It never sends anything you didn't set up.</div></details>
+        <details><summary>Is it safe to use on LinkedIn?<i aria-hidden="true"></i></summary><div class="a">SNDR reads the names already on your screen while you scroll. It never clicks, scrolls, messages or sends connection requests for you.</div></details>
+        <details><summary>How do I install it?<i aria-hidden="true"></i></summary><div class="a">On a laptop with Chrome, click <b>Add to Chrome</b>, unzip the download, and load it on <b>chrome://extensions</b> with Developer mode on. It takes about a minute, and SNDR tells you when there's an update.</div></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="end gut" aria-labelledby="endT">
+    <div class="wrap">
+      <div class="band">
+        <div><h2 class="h1" id="endT">Stop getting ghosted.<br><em>Start getting replies.</em></h2><p>Free on Chrome. Takes about a minute to set up.</p></div>
+        <button class="btn inv" type="button" data-install>Add to Chrome, it's free</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="gut">
+  <div class="in wrap">
+    <div><svg width="96" height="20" viewBox="0 0 25 5" shape-rendering="crispEdges" role="img" aria-label="SNDR"><path fill="currentColor" d="M0 0h5v1H0zM0 1h1v1H0zM0 2h5v1H0zM4 3h1v1H4zM0 4h5v1H0zM6 0h1v5H6zM7 1h1v1H7zM8 2h1v1H8zM9 3h1v1H9zM10 0h1v5h-1zM12 0h4v1h-4zM12 1h1v3h-1zM16 1h1v3h-1zM12 4h4v1h-4zM18 0h4v1h-4zM18 1h1v4h-1zM22 1h1v1h-1zM19 2h4v1h-4zM21 3h1v1h-1zM22 4h1v1h-1z"></path><rect x="24" y="4" width="1" height="1" style="fill:var(--accent)"></rect></svg><p>Find the recruiter, send from your Gmail, and follow up until they reply.</p></div>
+    <div><h4>Product</h4><ul><li><a href="#how">How it works</a></li><li><a href="#features">Features</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+    <div><h4>Company</h4><ul><li><a href="#team">Team</a></li><li><a href="https://www.linkedin.com/company/sndrai/" target="_blank" rel="noopener">LinkedIn ↗</a></li><li><a href="privacy.html">Privacy policy</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><span>contact@sndr.co.in</span></li></ul></div>
+    <div class="small">© 2026 SNDR</div>
+  </div>
+</footer>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetT" hidden>
+  <div class="card2">
+    <button class="x" id="sheetX" type="button" aria-label="Close"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"></path></svg></button>
+    <h3 id="sheetT">Add SNDR to Chrome</h3>
+    <p class="lead">Free, and takes about a minute.</p>
+    <div id="sheetDesk">
+      <ol>
+        <li><span>Download SNDR and unzip the file.</span></li>
+        <li><span>Open <span class="k">chrome://extensions</span> and switch on <b>Developer mode</b> (top right).</span></li>
+        <li><span>Click <b>Load unpacked</b> and pick the unzipped folder. Pin SNDR to your toolbar.</span></li>
+      </ol>
+      <a class="btn main" id="downloadBtn" href="sndr-extension.zip" download style="width:100%"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v9M4 7l4 4 4-4M3 14h10"></path></svg>Download SNDR</a>
+    </div>
+    <div id="sheetMobile" class="mobile-note" hidden>Chrome extensions only work on a laptop or desktop. Open <b>sndr.co.in</b> there to install SNDR.</div>
+  </div>
+</div>
+
+<script src="app.js?v=3.0"></script>
 </body>
 </html>

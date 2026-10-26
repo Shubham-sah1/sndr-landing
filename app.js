@@ -1,1259 +1,525 @@
-/**
- * SNDR. Outbound Assistant Landing Page Scripts
- * Premium Interactivity, Animations, and Simulations
- */
+// SNDR website. Plain script, no libraries: intro, inbox demo, draggable
+// windows, self-playing steps and feature tour, live email count, install sheet.
+(function () {
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fine = matchMedia('(pointer: fine)').matches;
+  var NAV_H = 68;
+  var root = document.documentElement;
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Each init is independent (particles, cursor, theme toggle, the various
-  // interactive demos, the scroll-reveal system, SFX, parallax, haptics) —
-  // one throwing should never take the rest down with it, since a single
-  // broken widget silently killing every init after it in the list is a
-  // much worse failure than that one widget not working. Several of these
-  // (particles, cursor, SFX) are desktop-only — see the html.touch-device
-  // guards inside each.
-  const steps = [initThemeToggle, initMobileInstallGate, initParticles, initCustomCursor, initSimulator, initSandbox, initBentoWidgets, initCVMatcher, initModals, initScrollReveal, initSFX, init3DParallax, initHapticClicks];
-  steps.forEach(fn => {
-    try {
-      fn();
-    } catch (e) {
-      console.error('[SNDR] Init step failed:', fn.name, e);
-    }
-  });
-});
-
-
-/* ==========================================
-   3. Light/Dark Theme Switcher
-   ========================================== */
-function initThemeToggle() {
-  const toggle = document.getElementById('theme-toggle');
-  if (!toggle) return;
-
-  // The saved theme is already applied — see the blocking inline script in
-  // <head>, which runs before first paint so a saved "dark" preference
-  // never flashes light first. This only wires up the click handler.
-  toggle.addEventListener('click', () => {
-    let theme = document.documentElement.getAttribute('data-theme');
-    let newTheme = theme === 'dark' ? 'light' : 'dark';
-    
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-  });
-}
-
-/* ==========================================
-   Mobile Install Gate
-   ========================================== */
-// A Chrome extension can't be installed from a phone browser at all. The
-// visual state (caption shown, icon hidden, button visually inert) is all
-// driven by the html.touch-device class set synchronously in <head> —
-// before first paint, so there's nothing to visibly toggle later. This
-// only sets the real `disabled` property, for semantic correctness
-// (screen readers, form semantics) on top of the CSS pointer-events:none
-// that already makes it inert from frame one.
-function initMobileInstallGate() {
-  if (!document.documentElement.classList.contains('touch-device')) return;
-
-  const heroBtn = document.getElementById('hero-chrome-btn');
-  const navBtn = document.getElementById('nav-install-btn');
-
-  if (heroBtn) heroBtn.disabled = true;
-  if (navBtn) navBtn.disabled = true;
-}
-
-/* ==========================================
-   1. Canvas Particle Background
-   ========================================== */
-// Desktop-only decoration, restored at the user's request. Guarded on
-// html.touch-device (set synchronously in <head>, before first paint) so
-// it never runs on mobile — the mobile experience stays exactly as tuned.
-function initParticles() {
-  if (document.documentElement.classList.contains('touch-device')) return;
-  const canvas = document.getElementById('bg-canvas');
-  if (!canvas) return;
-
-  const ctx = canvas.getContext('2d');
-  let particles = [];
-  let width = (canvas.width = window.innerWidth);
-  let height = (canvas.height = window.innerHeight);
-
-  window.addEventListener('resize', () => {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-  });
-
-  class Particle {
-    constructor() {
-      this.x = Math.random() * width;
-      this.y = Math.random() * height;
-      this.vx = (Math.random() - 0.5) * 0.5;
-      this.vy = (Math.random() - 0.5) * 0.5;
-      this.radius = Math.random() * 2 + 1;
-    }
-
-    update() {
-      this.x += this.vx;
-      this.y += this.vy;
-
-      if (this.x < 0 || this.x > width) this.vx *= -1;
-      if (this.y < 0 || this.y > height) this.vy *= -1;
-    }
-
-    draw() {
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-      ctx.fillStyle = isDark ? 'rgba(59, 130, 246, 0.4)' : 'rgba(0, 90, 194, 0.2)';
-      ctx.fill();
-    }
-  }
-
-  // Create particles
-  const particleCount = Math.min(Math.floor((width * height) / 15000), 80);
-  for (let i = 0; i < particleCount; i++) {
-    particles.push(new Particle());
-  }
-
-  function animate() {
-    ctx.clearRect(0, 0, width, height);
-
-    // Draw connections
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    const connectionColor = isDark ? 'rgba(59, 130, 246, 0.05)' : 'rgba(0, 90, 194, 0.03)';
-    const maxDistance = 120;
-
-    for (let i = 0; i < particles.length; i++) {
-      particles[i].update();
-      particles[i].draw();
-
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < maxDistance) {
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.strokeStyle = connectionColor;
-          ctx.lineWidth = 1 - dist / maxDistance;
-          ctx.stroke();
-        }
-      }
-    }
-    requestAnimationFrame(animate);
-  }
-
-  animate();
-}
-
-/* ==========================================
-   2. Magnetic Custom Cursor
-   ========================================== */
-// Desktop-only, same touch-device guard as above.
-function initCustomCursor() {
-  if (document.documentElement.classList.contains('touch-device')) return;
-  const cursor = document.querySelector('.custom-cursor');
-  const follower = document.querySelector('.custom-cursor-follower');
-  if (!cursor || !follower) return;
-
-  let mouseX = 0;
-  let mouseY = 0;
-  let followerX = 0;
-  let followerY = 0;
-
-  document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-
-    cursor.style.left = mouseX + 'px';
-    cursor.style.top = mouseY + 'px';
-  });
-
-  // Follower lag animation loop
-  function updateFollower() {
-    const dx = mouseX - followerX;
-    const dy = mouseY - followerY;
-
-    followerX += dx * 0.15;
-    followerY += dy * 0.15;
-
-    follower.style.left = followerX + 'px';
-    follower.style.top = followerY + 'px';
-
-    requestAnimationFrame(updateFollower);
-  }
-  updateFollower();
-
-  // Highlight effect on interactive elements
-  const interactives = document.querySelectorAll('a, button, input, textarea, [draggable="true"]');
-  interactives.forEach((el) => {
-    el.addEventListener('mouseenter', () => {
-      document.body.classList.add('cursor-active');
+  // ── Intro: the pixel logo flies together, then lifts away to the page ──
+  // A click on it skips straight to the page.
+  var loader = document.getElementById('loader'), introMs = 0;
+  (function () {
+    var LOGO = 'M0 0h5v1H0zM0 1h1v1H0zM0 2h5v1H0zM4 3h1v1H4zM0 4h5v1H0zM6 0h1v5H6zM7 1h1v1H7zM8 2h1v1H8zM9 3h1v1H9zM10 0h1v5h-1zM12 0h4v1h-4zM12 1h1v3h-1zM16 1h1v3h-1zM12 4h4v1h-4zM18 0h4v1h-4zM18 1h1v4h-1zM22 1h1v1h-1zM19 2h4v1h-4zM21 3h1v1h-1zM22 4h1v1h-1z';
+    var on = {};
+    LOGO.split('z').forEach(function (seg) {
+      var m = seg.match(/M(\d+) (\d+)h(-?\d+)v(\d+)/); if (!m) return;
+      var x = +m[1], y = +m[2], w = +m[3], h = +m[4], x0 = w < 0 ? x + w : x, x1 = w < 0 ? x : x + w;
+      for (var i = x0; i < x1; i++) for (var j = y; j < y + h; j++) on[i + ',' + j] = 1;
     });
-    el.addEventListener('mouseleave', () => {
-      document.body.classList.remove('cursor-active');
-    });
-  });
-}
-
-/* ==========================================
-   4. Campaign Outbound Simulator
-   ========================================== */
-function initSimulator() {
-  const startBtn = document.getElementById('start-sim-btn');
-  const resetBtn = document.getElementById('reset-sim-btn');
-  const composer = document.getElementById('sim-composer');
-  const stream = document.getElementById('sim-stream');
-  const analytics = document.getElementById('sim-analytics');
-  const statusEl = document.getElementById('sim-status');
-  const counterEl = document.getElementById('stream-counter');
-  const cardsContainer = document.getElementById('stream-cards-container');
-  const progressBar = document.getElementById('analytics-progress');
-  const percentageEl = document.getElementById('analytics-percentage');
-
-  if (!startBtn) return;
-
-  const sampleLeads = [
-    { name: 'Arnav', role: 'Founder @ SaaSFlow', delay: 1000 },
-    { name: 'Saksham', role: 'HR Lead @ Razorpay', delay: 2200 },
-    { name: 'Manit', role: 'Professor @ IIT Bombay', delay: 3400 }
-  ];
-
-  let simTimeouts = [];
-
-  startBtn.addEventListener('click', () => {
-    // Phase 1: Sending -> Stream phase
-    composer.classList.add('hidden');
-    stream.classList.remove('hidden');
-    statusEl.textContent = 'Active';
-    statusEl.style.color = '#10b981';
-    statusEl.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
-
-    cardsContainer.innerHTML = '';
-    counterEl.textContent = '0/3';
-
-    // Simulate lead generation cards sequentially
-    sampleLeads.forEach((lead, index) => {
-      let t = setTimeout(() => {
-        const card = document.createElement('div');
-        card.className = 'sim-lead-card';
-        card.innerHTML = `
-          <div class="lead-pfp">${lead.name[0]}</div>
-          <div class="lead-body">
-            <h5>${lead.name}</h5>
-            <p>${lead.role}</p>
-          </div>
-          <div class="lead-status" id="lead-status-${index}">Processing</div>
-        `;
-        cardsContainer.appendChild(card);
-        cardsContainer.scrollTop = cardsContainer.scrollHeight;
-        counterEl.textContent = `${index + 1}/3`;
-
-        // Mock pitch validation success status
-        let tStatus = setTimeout(() => {
-          const statusNode = document.getElementById(`lead-status-${index}`);
-          if (statusNode) {
-            statusNode.textContent = 'Delivered';
-            statusNode.classList.add('success');
-          }
-        }, 800);
-        simTimeouts.push(tStatus);
-
-      }, lead.delay);
-      simTimeouts.push(t);
-    });
-
-    // Phase 2: Transits to Analytics
-    let tEnd = setTimeout(() => {
-      stream.classList.add('hidden');
-      analytics.classList.remove('hidden');
-      statusEl.textContent = 'Complete';
-      
-      // Animate progress circle & number percentage counters
-      let percent = 0;
-      let interval = setInterval(() => {
-        percent += 2;
-        percentageEl.textContent = `${percent}%`;
-        if (progressBar) {
-          // Calculate circle path circumference dash offset
-          const dashLen = 2 * Math.PI * 15.9155; // ~100
-          progressBar.style.strokeDasharray = `${(percent / 100) * dashLen}, 100`;
-        }
-        if (percent >= 100) {
-          clearInterval(interval);
-        }
-      }, 20);
-
-    }, 4800);
-    simTimeouts.push(tEnd);
-  });
-
-  resetBtn.addEventListener('click', () => {
-    // Clear timeouts
-    simTimeouts.forEach(clearTimeout);
-    simTimeouts = [];
-
-    analytics.classList.add('hidden');
-    stream.classList.add('hidden');
-    composer.classList.remove('hidden');
-    statusEl.textContent = 'Idle';
-    statusEl.style.color = 'var(--primary)';
-    statusEl.style.backgroundColor = 'var(--pfp-bg)';
-    percentageEl.textContent = '0%';
-    if (progressBar) progressBar.style.strokeDasharray = '0, 100';
-  });
-}
-
-/* ==========================================
-   5. Drag-and-Drop Outreach Sandbox
-   ========================================== */
-function initSandbox() {
-  const shelf = document.getElementById('leads-shelf');
-  const core = document.getElementById('engine-core');
-  const outputPlaceholder = document.querySelector('.output-placeholder');
-  const outputCard = document.getElementById('output-card');
-  const dropHint = core ? core.querySelector('.drop-hint') : null;
-
-  if (!shelf || !core) return;
-
-  const outboundHooks = {
-    Arnav: {
-      email: 'arnav@saasflow.com',
-      hook: 'Hi Arnav, saw SaaSFlow\'s recent update about scaling outbounds. I built a Raft consensus visualization that resolves distributed locks directly. Would love to contribute frontend skills as an intern.'
-    },
-    Manit: {
-      email: 'manit@cse.iitb.ac.in',
-      hook: 'Dear Dr. Manit, read your paper on distributed compiler optimization. I\'ve put together a local WebAssembly parser that speeds up code transformations. Hope to explore research assistance opportunities under your guidance.'
-    },
-    Saksham: {
-      email: 'saksham.singh@razorpay.com',
-      hook: 'Hi Saksham, noticed you\'re looking for active frontend React interns who build side projects. I built a consensus dashboard utilizing Outfit design grids. I\'d love to sync and pitch my skills for the team.'
+    var px = document.getElementById('px'), cells = [];
+    for (var y = 0; y < 5; y++) for (var x = 0; x < 25; x++) {
+      var c = document.createElement('i');
+      if (on[x + ',' + y]) { c.className = 'on'; cells.push(c); }
+      if (x === 24 && y === 4) { c.className = 'dot'; cells.push(c); }
+      px.appendChild(c);
     }
-  };
-
-  function compileOutbound(name) {
-    const data = outboundHooks[name];
-    if (!data) return;
-
-    // Hide placeholder and reveal custom card content
-    if (outputPlaceholder) outputPlaceholder.classList.add('hidden');
-    if (outputCard) {
-      outputCard.classList.remove('hidden');
-      document.getElementById('out-avatar').textContent = name[0];
-      document.getElementById('out-name').textContent = name;
-      document.getElementById('out-role').textContent = name === 'Manit' ? 'Professor @ IIT Bombay' : name === 'Arnav' ? 'Founder @ SaaSFlow' : 'HR Lead @ Razorpay';
-      document.getElementById('out-email').textContent = data.email;
-      document.getElementById('out-hook').textContent = `"${data.hook}"`;
-    }
-
-    // Add cool mini bounce animation
-    core.style.transform = 'scale(0.95)';
-    setTimeout(() => { core.style.transform = 'scale(1)'; }, 150);
-  }
-
-  const leads = shelf.querySelectorAll('.drag-lead');
-
-  // HTML5 drag-and-drop (dragstart/dragover/drop below) has no touch
-  // equivalent — it simply never fires on a phone, so "drag a profile onto
-  // the core" was a dead, unusable demo for every touch visitor with no
-  // indication anything was wrong. A tap does the same compile immediately,
-  // so it works everywhere; mouse users keep the drag interaction untouched.
-  leads.forEach(lead => {
-    lead.addEventListener('dragstart', (e) => {
-      e.dataTransfer.setData('text/plain', lead.getAttribute('data-name'));
-      document.body.classList.add('dragging-active');
+    if (reduce || !loader.animate) { loader.remove(); return; }
+    introMs = 2200;
+    root.style.overflow = 'hidden'; root.classList.add('intro');
+    cells.forEach(function (c) {
+      var dx = ((Math.random() - 0.5) * 800).toFixed(0), dy = ((Math.random() - 0.5) * 500).toFixed(0), r = ((Math.random() - 0.5) * 300).toFixed(0);
+      c.animate([{ transform: 'translate(' + dx + 'px, ' + dy + 'px) rotate(' + r + 'deg)', opacity: 0 }, { transform: 'none', opacity: 1 }],
+        { duration: 800, delay: Math.random() * 400, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'backwards' });
     });
-
-    lead.addEventListener('dragend', () => {
-      document.body.classList.remove('dragging-active');
-    });
-
-    lead.addEventListener('click', () => {
-      compileOutbound(lead.getAttribute('data-name'));
-    });
-  });
-
-  if (dropHint && window.matchMedia('(hover: none), (pointer: coarse)').matches) {
-    dropHint.textContent = 'Tap a profile to compile email';
-  }
-
-  core.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    core.classList.add('dragover');
-  });
-
-  core.addEventListener('dragleave', () => {
-    core.classList.remove('dragover');
-  });
-
-  core.addEventListener('drop', (e) => {
-    e.preventDefault();
-    core.classList.remove('dragover');
-    compileOutbound(e.dataTransfer.getData('text/plain'));
-  });
-}
-
-/* ==========================================
-   6. Bento Grid Feature Widgets
-   ========================================== */
-function initBentoWidgets() {
-  // Widget A: Smart Limits Slider
-  const slider = document.getElementById('limit-slider');
-  const sliderVal = document.getElementById('slider-val');
-  const speedBars = document.querySelectorAll('.speed-bar');
-
-  if (slider && sliderVal) {
-    slider.addEventListener('input', function() {
-      const val = this.value;
-      sliderVal.textContent = `${val} emails`;
-      
-      // Update speedometer indicator bars
-      const activeCount = Math.ceil((val / 500) * speedBars.length);
-      speedBars.forEach((bar, idx) => {
-        if (idx < activeCount) {
-          bar.classList.add('active');
-        } else {
-          bar.classList.remove('active');
-        }
+    var lifted = false;
+    // The finished logo shrinks into the one in the nav as the backdrop fades.
+    function lift() {
+      if (lifted) return; lifted = true;
+      root.style.overflow = '';
+      var a = px.getBoundingClientRect(), b = document.querySelector('.nav .brand svg').getBoundingClientRect();
+      var dx = (b.left + b.width / 2) - (a.left + a.width / 2), dy = (b.top + b.height / 2) - (a.top + a.height / 2);
+      px.animate([{ transform: 'none' }, { transform: 'translate(' + dx + 'px, ' + dy + 'px) scale(' + (b.width / a.width) + ')' }], { duration: 800, easing: 'cubic-bezier(.65,0,.35,1)', fill: 'forwards' })
+        .onfinish = function () { loader.remove(); root.classList.remove('intro'); };
+      var bg = getComputedStyle(loader).backgroundColor;
+      loader.animate([{ backgroundColor: bg }, { backgroundColor: bg.replace(/^rgb\((.*)\)$/, 'rgba($1, 0)') }], { duration: 600, delay: 150, easing: 'ease-out', fill: 'forwards' });
+      document.querySelectorAll('.hero-copy > *, .hero .inbox').forEach(function (el, i) {
+        el.animate([{ opacity: 0, transform: 'translateY(28px)' }, { opacity: 1, transform: 'none' }], { duration: 750, delay: 300 + i * 70, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'backwards' });
       });
-    });
-  }
-
-  // Widget B: Rates Toggle Chart
-  const chartToggles = document.querySelectorAll('.chart-toggle-btn');
-  const bars = document.querySelectorAll('.bar-fill');
-  const metricNumber = document.getElementById('metric-number');
-
-  const chartData = {
-    open: {
-      rates: ['92%', '88%', '95%', '98%'],
-      avg: '98%',
-      heights: ['92%', '88%', '95%', '98%']
-    },
-    reply: {
-      rates: ['58%', '62%', '68%', '64%'],
-      avg: '64%',
-      heights: ['58%', '62%', '68%', '64%']
     }
-  };
+    setTimeout(lift, 1400);
+    loader.addEventListener('click', lift);
+  })();
 
-  chartToggles.forEach(toggle => {
-    toggle.addEventListener('click', function() {
-      chartToggles.forEach(btn => btn.classList.remove('active'));
-      this.classList.add('active');
+  // ── Nav: a hairline once the page scrolls ──
+  var nav = document.getElementById('nav');
+  function onScroll() { nav.classList.toggle('scrolled', scrollY > 8); }
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
 
-      const metric = this.getAttribute('data-metric');
-      const data = chartData[metric];
+  var menu = document.getElementById('menu'), menuBtn = document.getElementById('menuBtn');
+  function closeMenu() { if (!menu.hidden) { menu.hidden = true; menuBtn.setAttribute('aria-expanded', 'false'); } }
+  menuBtn.addEventListener('click', function () { menu.hidden = false; menuBtn.setAttribute('aria-expanded', 'true'); document.getElementById('menuClose').focus(); });
+  document.getElementById('menuClose').addEventListener('click', function () { closeMenu(); menuBtn.focus(); });
 
-      if (data) {
-        metricNumber.textContent = data.avg;
-        bars.forEach((bar, idx) => {
-          bar.style.height = data.heights[idx];
-        });
-      }
+  // In-page links scroll smoothly and leave the address alone.
+  document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var el = document.querySelector(a.getAttribute('href')); if (!el) return;
+      e.preventDefault(); closeMenu();
+      el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
     });
   });
 
-  // Widget C: Directory Scraper Mockup
-  const scrapeBtn = document.getElementById('scrape-elon-btn');
-  const detailsBox = document.getElementById('scraped-elon-details');
-  const radarOverlay = document.getElementById('sonar-radar');
-  const isTouch = document.documentElement.classList.contains('touch-device');
+  // ── Install sheet ──
+  var sheet = document.getElementById('sheet'), lastFocus = null;
+  var desktop = fine || !matchMedia('(pointer: coarse)').matches;
+  document.getElementById('sheetDesk').hidden = !desktop;
+  document.getElementById('sheetMobile').hidden = desktop;
+  function openSheet(e) { lastFocus = e && e.currentTarget; closeMenu(); sheet.hidden = false; document.getElementById('sheetX').focus(); }
+  function closeSheet() { sheet.hidden = true; if (lastFocus) lastFocus.focus(); }
+  document.querySelectorAll('[data-install]').forEach(function (b) {
+    b.addEventListener('click', function (e) { if (window.sndrWeb) window.sndrWeb('cta', 'Add to Chrome'); openSheet(e); });
+  });
+  // A fresh copy every time: the query string stops a cached older zip being served.
+  document.getElementById('downloadBtn').addEventListener('click', function (e) {
+    e.preventDefault();
+    var a = document.createElement('a');
+    a.href = 'sndr-extension.zip?v=2.4.67&t=' + Date.now();
+    a.download = 'sndr-extension.zip';
+    document.body.appendChild(a); a.click(); a.remove();
+    if (window.sndrWeb) window.sndrWeb('download');
+  });
+  document.getElementById('sheetX').addEventListener('click', closeSheet);
+  sheet.addEventListener('click', function (e) { if (e.target === sheet) closeSheet(); });
+  sheet.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSheet(); });
 
-  if (scrapeBtn && detailsBox) {
-    scrapeBtn.addEventListener('click', function() {
-      const btn = this;
-      btn.disabled = true;
+  // ── Hero inbox: three more replies land, one at a time ──
+  var ARRIVALS = [
+    ['Priya Sharma', '#c4b5fd', 'Re: Summer analyst, quick question', 'Thanks for following up! Are you free on Thursday for a quick call?'],
+    ['Arjun Mehta', '#7dd3fc', 'Re: Analyst role at Nova Fintech', "Could you send me your latest CV? I'll share it with the team."],
+    ['Sara Khan', '#fdba74', 'Re: Strategy internship at Arc Labs', "Good timing, we're hiring for this right now. Can we talk tomorrow?"]
+  ];
+  var mails = document.getElementById('mails'), newN = document.getElementById('newN');
+  function mailRow(m) {
+    var li = document.createElement('li'); li.className = 'm unread new';
+    li.innerHTML = '<div class="mi"><span class="av"></span><div class="mt"><p class="l1"><b></b><time></time></p><p class="l2"></p><p class="l3"></p></div></div>';
+    var av = li.querySelector('.av'); av.style.background = m[1];
+    av.textContent = m[0].split(' ').map(function (w) { return w[0]; }).join('');
+    li.querySelector('.l1 b').textContent = m[0];
+    li.querySelector('time').textContent = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
+    li.querySelector('.l2').textContent = m[2];
+    li.querySelector('.l3').textContent = m[3];
+    return li;
+  }
+  function arrive(i) {
+    if (i >= ARRIVALS.length) return;
+    mails.insertBefore(mailRow(ARRIVALS[i]), mails.firstChild);
+    newN.textContent = String(+newN.textContent + 1);
+    setTimeout(function () { while (mails.children.length > 4) mails.removeChild(mails.lastElementChild); }, 700);
+    setTimeout(function () { arrive(i + 1); }, 4500);
+  }
+  if (!reduce) setTimeout(function () { arrive(0); }, introMs + 1800);
 
-      const revealDetails = () => {
-        detailsBox.innerHTML = `
-          <div class="mock-detail-row">
-            <span class="label">Direct:</span>
-            <span class="value" style="color:var(--primary); font-weight:700;">mayank@razorpay.com</span>
-          </div>
-          <div class="mock-detail-row">
-            <span class="label">Department:</span>
-            <span class="value">Talent Operations</span>
-          </div>
-        `;
-      };
+  // ── Supporters belt: a second copy makes the loop seamless ──
+  var belt = document.getElementById('belt');
+  if (!reduce) Array.prototype.slice.call(belt.children).forEach(function (li) {
+    var copy = li.cloneNode(true); copy.setAttribute('aria-hidden', 'true');
+    copy.querySelectorAll('img').forEach(function (i) { i.alt = ''; });
+    belt.appendChild(copy);
+  });
 
-      // Mobile keeps the plain, fast "Finding... -> Found" flow tuned for
-      // phones (no radar overlay, no sound). Desktop restores the fuller
-      // radar-scan + SFX version.
-      if (isTouch) {
-        btn.innerHTML = `<span class="material-symbols-outlined placeholder-pulse">sync</span><span>Finding...</span>`;
-        setTimeout(() => {
-          btn.innerHTML = `<span class="material-symbols-outlined">verified</span><span>Found</span>`;
-          btn.style.background = 'linear-gradient(135deg, var(--tertiary) 0%, #10b981 100%)';
-          revealDetails();
-        }, 900);
+  // ── Emails sent: the real total from the SNDR server ──
+  // Read every 30 s. In between, the number counts up a step each second
+  // toward the newest total, never past it. Until the first answer (or if
+  // the server can't be reached) it stays at 1,00,000+.
+  var liveN = document.getElementById('liveN'), shown = null, target = null;
+  function readTotal() {
+    fetch('https://api.sndr.co.in/t/emails-sent', { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) {
+        if (!j || !(j.total > 0)) return;
+        target = j.total;
+        if (shown === null) { shown = target; liveN.textContent = shown.toLocaleString('en-IN'); }
+      })
+      .catch(function () {});
+  }
+  readTotal(); setInterval(readTotal, 30000);
+  setInterval(function () {
+    if (shown === null || shown >= target) return;
+    shown = Math.min(target, shown + Math.max(1, Math.round((target - shown) / 30)));
+    liveN.textContent = shown.toLocaleString('en-IN');
+    if (!reduce) { liveN.classList.remove('tick'); void liveN.offsetWidth; liveN.classList.add('tick'); }
+  }, 1000);
+
+  // ── Windows: grab one and throw it around, like on a Mac ──
+  // Mouse: grab anywhere. Touch: grab the title bar, so the page still scrolls.
+  // It leans toward the cursor on hover, tilts with your swing while dragged,
+  // and glides and bounces off the screen edges when you let go. Once it
+  // comes to rest it flies back to its place on its own.
+  // Red and yellow close it and it pops back; green, or a double click on
+  // the title bar, sends it home straight away.
+  var stepper = document.getElementById('stepper'), zTop = 5;
+  document.querySelectorAll('.win').forEach(function (w) {
+    var bar = w.querySelector('.bar');
+    var ox = 0, oy = 0, sx = 0, sy = 0, box = null, dragging = false, vx = 0, vy = 0, lx = 0, ly = 0, lt = 0, fling = 0, rot = 0, backT = 0;
+    function homeSoon(ms) { clearTimeout(backT); backT = setTimeout(home, ms); }
+    function bounds() { var r = w.getBoundingClientRect(); box = { l: r.left - ox, t: r.top - oy, w: r.width, h: r.height }; }
+    // Keep the whole window on screen and below the nav.
+    function clampX(x) { return Math.max(8 - box.l, Math.min(innerWidth - 8 - box.l - box.w, x)); }
+    function clampY(y) { return Math.max(NAV_H + 8 - box.t, Math.min(innerHeight - 8 - box.t - box.h, y)); }
+    function paint() { w.style.translate = ox + 'px ' + oy + 'px'; w.style.rotate = rot.toFixed(2) + 'deg'; }
+    function home() { clearTimeout(backT); cancelAnimationFrame(fling); ox = oy = rot = 0; w.classList.remove('flying'); w.style.translate = ''; w.style.rotate = ''; }
+    w.addEventListener('pointerdown', function (e) {
+      if (e.button !== 0 || e.target.closest('.bar i')) return;
+      if (e.pointerType !== 'mouse' && !e.target.closest('.bar')) return;
+      clearTimeout(backT); cancelAnimationFrame(fling); w.classList.remove('flying'); w.style.transform = '';
+      bounds();
+      sx = e.clientX - ox; sy = e.clientY - oy; dragging = true;
+      lx = e.clientX; ly = e.clientY; lt = performance.now(); vx = vy = 0;
+      w.style.zIndex = String(Math.min(++zTop, 50));
+      w.setPointerCapture(e.pointerId); w.classList.add('dragging'); stepper.classList.add('hold');
+      e.preventDefault();
+    });
+    w.addEventListener('pointermove', function (e) {
+      if (!dragging) {
+        // Lean a little toward the cursor while hovering.
+        if (e.pointerType === 'mouse' && !reduce && !w.classList.contains('flying')) {
+          var r = w.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
+          w.style.transform = 'perspective(900px) rotateY(' + (px * 6).toFixed(2) + 'deg) rotateX(' + (-py * 6).toFixed(2) + 'deg)';
+        }
         return;
       }
-
-      btn.innerHTML = `<span class="material-symbols-outlined placeholder-pulse">sync</span><span>Scraping...</span>`;
-      playSFX('scrape');
-
-      if (radarOverlay) {
-        radarOverlay.style.display = 'flex';
-        setTimeout(() => {
-          radarOverlay.classList.add('active');
-          radarOverlay.querySelectorAll('.radar-blip').forEach(blip => blip.classList.add('active'));
-        }, 50);
-      }
-
-      setTimeout(() => {
-        btn.innerHTML = `<span class="material-symbols-outlined">verified</span><span>Scraped</span>`;
-        btn.style.background = 'linear-gradient(135deg, var(--tertiary) 0%, #10b981 100%)';
-
-        if (radarOverlay) {
-          radarOverlay.classList.remove('active');
-          setTimeout(() => { radarOverlay.style.display = 'none'; }, 300);
-        }
-
-        playSFX('success');
-        revealDetails();
-      }, 2200);
+      var now = performance.now(), dt = Math.max(1, now - lt);
+      vx = vx * 0.6 + ((e.clientX - lx) / dt) * 0.4; vy = vy * 0.6 + ((e.clientY - ly) / dt) * 0.4;
+      lx = e.clientX; ly = e.clientY; lt = now;
+      ox = clampX(e.clientX - sx); oy = clampY(e.clientY - sy);
+      rot = reduce ? 0 : Math.max(-10, Math.min(10, vx * 6));
+      paint();
     });
-  }
+    w.addEventListener('pointerleave', function () { if (!dragging) w.style.transform = ''; });
+    function drop() {
+      if (!dragging) return;
+      dragging = false; w.classList.remove('dragging'); stepper.classList.remove('hold');
+      if (reduce || performance.now() - lt > 80 || Math.hypot(vx, vy) < 0.15) { rot = 0; paint(); homeSoon(900); return; }
+      // Glide with the speed it was thrown at, bouncing off the edges.
+      w.classList.add('flying');
+      var last = performance.now(), fx = vx * 16, fy = vy * 16;
+      (function step(now) {
+        var k = Math.min(3, (now - last) / 16); last = now;
+        ox += fx * k; oy += fy * k;
+        var cx = clampX(ox), cy = clampY(oy);
+        if (cx !== ox) { ox = cx; fx = -fx * 0.6; }
+        if (cy !== oy) { oy = cy; fy = -fy * 0.6; }
+        fx *= Math.pow(0.93, k); fy *= Math.pow(0.93, k);
+        rot = Math.max(-10, Math.min(10, fx * 0.4)) * 0.9;
+        paint();
+        if (Math.hypot(fx, fy) > 0.3) fling = requestAnimationFrame(step);
+        else { w.classList.remove('flying'); rot = 0; paint(); homeSoon(700); }
+      })(last);
+    }
+    w.addEventListener('pointerup', drop); w.addEventListener('pointercancel', drop);
+    bar.addEventListener('dblclick', home);
+    var dots = bar.querySelectorAll('i');
+    dots[2].addEventListener('click', home);
+    [dots[0], dots[1]].forEach(function (dot, k) {
+      dot.addEventListener('click', function () {
+        if (reduce || !w.animate) return;
+        w.animate(k ? [{ scale: 1, opacity: 1, transform: 'none' }, { scale: 0.2, opacity: 0, transform: 'translateY(40vh)', offset: 0.4 }, { scale: 0.2, opacity: 0, transform: 'translateY(40vh)', offset: 0.6 }, { scale: 1, opacity: 1, transform: 'none' }]
+          : [{ scale: 1, opacity: 1 }, { scale: 0.6, opacity: 0, offset: 0.35 }, { scale: 0.6, opacity: 0, offset: 0.6 }, { scale: 1, opacity: 1 }],
+          { duration: 1100, easing: 'cubic-bezier(.34, 1.4, .64, 1)' });
+      });
+    });
+  });
 
-}
-
-/* ==========================================
-   7. CV Matcher & AI Chatbot advisor
-   ========================================== */
-function initCVMatcher() {
-  const tabs = document.querySelectorAll('.cv-select-tab');
-  const sheet = document.getElementById('cv-sheet-content');
-  const chatbotFeed = document.getElementById('chatbot-feed-container');
-  const matchBox = document.getElementById('company-cards-box');
-  const draftBox = document.getElementById('cv-draft-text');
-  const copyBtn = document.getElementById('cv-copy-btn');
-  const targetHeader = document.getElementById('draft-target-name');
-  let gaugeInterval = null;
-
-  if (!sheet || !chatbotFeed) return;
-
-  const dataTemplates = {
-    tanishq: {
-      name: "Tanishq Ray",
-      email: "tanishq.ray@srcc.du.ac.in",
-      cvHtml: `
-        <div class="cv-hero">
-          <div class="cv-initials finance">TR</div>
-          <div class="cv-title-block">
-            <h4>Tanishq Ray</h4>
-            <p class="cv-subtitle">B.Com (Hons) | SRCC Delhi</p>
-          </div>
-        </div>
-        <div class="cv-body-grid">
-          <div class="cv-col">
-            <h5 class="cv-section-title">Core Skills</h5>
-            <div class="cv-skills-pills">
-              <span class="cv-skill-pill">Valuation Models</span>
-              <span class="cv-skill-pill">Financial Analysis</span>
-              <span class="cv-skill-pill">Excel Forecasting</span>
-              <span class="cv-skill-pill">Outbound Outreach</span>
-            </div>
-          </div>
-          <div class="cv-col">
-            <h5 class="cv-section-title">Projects</h5>
-            <ul class="cv-projects-list">
-              <li><strong>Outbound portfolio modeling</strong> - Automated growth analytics.</li>
-              <li><strong>R-code database analytics</strong> - Treasury query builder.</li>
-            </ul>
-          </div>
-        </div>
-      `,
-      chat: [
-        { type: 'bot', text: 'Analyzing Tanishq Ray\'s profile...' },
-        { type: 'bot', text: 'Education: SRCC Finance. Key strength: valuation formulas & Excel forecasting models.' },
-        { type: 'bot', text: 'Target matches identified: SaaSFlow (financial forecasting hand needed) and Razorpay (treasury intern role).' }
-      ],
-      matches: [
-        {
-          company: 'SaaSFlow',
-          role: 'Finance Analyst Intern',
-          score: '94% Match',
-          toVal: 'Arnav (SaaSFlow Finance)',
-          subjectVal: 'SaaSFlow Finance Intern Application',
-          draft: "Dear Arnav,\n\nI noticed SaaSFlow's expanding financial planning and forecasting needs. As a Finance honors student at SRCC, I've built portfolio models that automate forecasting limits. I'd love to pitch my analytical support as a finance analyst intern."
-        },
-        {
-          company: 'Razorpay',
-          role: 'Treasury Analyst Intern',
-          score: '89% Match',
-          toVal: 'Saksham (Razorpay Treasury)',
-          subjectVal: 'SRCC Finance Intern Application',
-          draft: "Dear Saksham,\n\nI noticed Razorpay's scaling transaction treasury operations. As a Finance honors student at SRCC, I've built portfolio models that automate forecasting limits. I'd love to pitch my analytical support as a treasury analyst intern."
-        }
-      ]
+  // ── How it works: each window plays out what SNDR does in that step ──
+  // The markup holds each window's finished state. play() resets it to the
+  // start and runs it forward; T() drops any step that belongs to an older run.
+  var SCRIPTS = {
+    find: function (w, T) {
+      var rows = w.querySelectorAll('.row'), n = w.querySelector('[data-n]'), saved = 0;
+      n.textContent = '0';
+      Array.prototype.forEach.call(rows, function (r, i) {
+        var p = r.querySelector('.pill'), t0 = 250 + i * 520;
+        r.classList.add('pre'); p.classList.add('ghost');
+        T(t0, function () { r.classList.remove('pre'); });
+        T(t0 + 180, function () { p.className = 'pill grey'; p.textContent = 'Saving…'; });
+        T(t0 + 440, function () { p.className = 'pill'; p.textContent = 'Saved'; n.textContent = String(++saved); });
+      });
     },
-    saksham: {
-      name: "Saksham",
-      email: "saksham.cse@iitb.ac.in",
-      cvHtml: `
-        <div class="cv-hero">
-          <div class="cv-initials tech">S</div>
-          <div class="cv-title-block">
-            <h4>Saksham</h4>
-            <p class="cv-subtitle">B.Tech CSE | IIT Bombay</p>
-          </div>
-        </div>
-        <div class="cv-body-grid">
-          <div class="cv-col">
-            <h5 class="cv-section-title">Core Skills</h5>
-            <div class="cv-skills-pills">
-              <span class="cv-skill-pill">React</span>
-              <span class="cv-skill-pill">Node.js</span>
-              <span class="cv-skill-pill">WebAssembly</span>
-              <span class="cv-skill-pill">Distributed Locks</span>
-              <span class="cv-skill-pill">DB Indexing</span>
-            </div>
-          </div>
-          <div class="cv-col">
-            <h5 class="cv-section-title">Projects</h5>
-            <ul class="cv-projects-list">
-              <li><strong>Raft consensus engine</strong> - Distributed state sync.</li>
-              <li><strong>Vite build automation</strong> - Bundler optimization.</li>
-            </ul>
-          </div>
-        </div>
-      `,
-      chat: [
-        { type: 'bot', text: 'Analyzing Saksham\'s profile...' },
-        { type: 'bot', text: 'Education: IIT Bombay CSE. Key strength: distributed systems, React interfaces, WebAssembly compilers.' },
-        { type: 'bot', text: 'Target matches identified: SaaSFlow (Engineering division) and Razorpay (API integration group).' }
-      ],
-      matches: [
-        {
-          company: 'SaaSFlow',
-          role: 'Frontend Architect Intern',
-          score: '96% Match',
-          toVal: 'Arnav (SaaSFlow Engineering)',
-          subjectVal: 'IIT Bombay CSE Intern Outbound',
-          draft: "Hi Arnav,\n\nSaw SaaSFlow's development updates. I built a Raft consensus engine dashboard using React and custom Outfit grids. I'd love to explore joining your engineering team as a React frontend intern."
-        },
-        {
-          company: 'Razorpay',
-          role: 'Backend API Engineering Intern',
-          score: '92% Match',
-          toVal: 'Saksham (Razorpay API Integration)',
-          subjectVal: 'IIT Bombay CSE Backend Application',
-          draft: "Dear Saksham,\n\nI noticed Razorpay's expanding backend API engineering group. As a Computer Science student at IIT Bombay with experience in distributed locks and database indexing, I'd love to explore joining your team as a backend API intern."
-        }
-      ]
+    emails: function (w, T) {
+      var fmt = w.querySelector('[data-fmt]'), fmtPill = w.querySelector('.fmt .pill'), FMT = 'firstname.lastname@novafintech.com';
+      fmt.textContent = 'Working it out…'; fmt.classList.add('dim'); fmtPill.classList.add('ghost');
+      T(650, function () { fmt.textContent = FMT; fmt.classList.remove('dim'); fmtPill.classList.remove('ghost'); });
+      Array.prototype.forEach.call(w.querySelectorAll('[data-email]'), function (s, i) {
+        var email = s.getAttribute('data-email'), pill = s.parentNode.parentNode.querySelector('.pill'), t0 = 1050 + i * 620;
+        s.textContent = 'Waiting for the format…'; pill.classList.add('ghost');
+        T(t0, function () { s.textContent = ''; });
+        for (var k = 1; k <= email.length; k++) (function (k) { T(t0 + k * 15, function () { s.textContent = email.slice(0, k); }); })(k);
+        T(t0 + email.length * 15 + 80, function () { pill.classList.remove('ghost'); });
+      });
+    },
+    send: function (w, T) {
+      var first = w.querySelector('[data-v="first"]'), co = w.querySelector('[data-v="co"]'), meter = w.querySelector('[data-meter]'), sent = w.querySelector('[data-sent]'), state = w.querySelector('[data-state]');
+      var TO = [['Priya', 'Nova Fintech'], ['Arjun', 'Bluepeak Capital'], ['Sara', 'Northwind Bank'], ['Rohan', 'Kite Finance'], ['Neha', 'Orbit Credit']];
+      first.textContent = '{{firstName}}'; co.textContent = '{{company}}';
+      meter.style.width = '0%'; sent.textContent = '0'; state.className = 'pill grey'; state.textContent = 'Ready';
+      for (var k = 1; k <= 50; k++) (function (k) {
+        T(550 + k * 55, function () {
+          sent.textContent = String(k); meter.style.width = (k * 2) + '%';
+          if (k % 10 === 1) {
+            var to = TO[(k - 1) / 10]; first.textContent = to[0]; co.textContent = to[1];
+            [first, co].forEach(function (v) { v.classList.remove('flash'); void v.offsetWidth; v.classList.add('flash'); });
+          }
+          if (k === 1) { state.className = 'pill'; state.textContent = 'Sending'; }
+          if (k === 50) { state.className = 'pill ok'; state.textContent = 'All sent'; }
+        });
+      })(k);
+    },
+    follow: function (w, T) {
+      var rows = w.querySelectorAll('.row'), last = rows[3], ls = last.querySelector('small'), lp = last.querySelector('.pill');
+      Array.prototype.forEach.call(rows, function (r) { r.classList.add('pre'); });
+      last.classList.remove('stopped'); ls.textContent = 'Scheduled for next Mon'; lp.className = 'pill'; lp.textContent = 'Scheduled';
+      [250, 800, 1400, 1950].forEach(function (t, i) { T(t, function () { rows[i].classList.remove('pre'); }); });
+      T(2600, function () { last.classList.add('stopped'); ls.textContent = 'Stopped automatically'; lp.className = 'pill grey'; lp.textContent = 'Cancelled'; });
     }
   };
-
-  // Typing indicator helper
-  function appendTypingIndicator() {
-    const indicator = document.createElement('div');
-    indicator.className = 'chat-bubble bot typing-indicator';
-    indicator.id = 'chatbot-typing-indicator';
-    indicator.innerHTML = `
-      <span class="dot"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-    `;
-    chatbotFeed.appendChild(indicator);
-    chatbotFeed.scrollTop = chatbotFeed.scrollHeight;
+  function play(w) {
+    var run = {}; w._run = run;
+    SCRIPTS[w.getAttribute('data-play')](w, function (ms, fn) { setTimeout(function () { if (w._run === run) fn(); }, ms); });
   }
 
-  function removeTypingIndicator() {
-    const indicator = document.getElementById('chatbot-typing-indicator');
-    if (indicator) {
-      indicator.remove();
-    }
+  // Steps move on by themselves: the thin bar under the open step fills in
+  // 5 seconds, then the next one opens. Clicking a step opens it and carries
+  // on from there. It holds while a window is being dragged and while the
+  // section is off screen.
+  var sts = Array.prototype.slice.call(document.querySelectorAll('.st')), seen = false;
+  function show(t, focus) {
+    sts.forEach(function (x) { var sel = x === t; x.setAttribute('aria-selected', String(sel)); x.tabIndex = sel ? 0 : -1; document.getElementById(x.getAttribute('aria-controls')).hidden = !sel; });
+    if (!reduce && seen) play(document.getElementById(t.getAttribute('aria-controls')));
+    if (focus) t.focus();
   }
-
-  function updateActiveMatch(match) {
-    if (!match) return;
-    
-    // Update Pitch draft composer fields
-    targetHeader.textContent = `New Message (Pitch for ${match.company})`;
-    document.getElementById('composer-to-val').textContent = match.toVal;
-    document.getElementById('composer-subject-val').textContent = match.subjectVal;
-    draftBox.textContent = match.draft;
-
-    // Animate profile fit circular gauge and score val
-    const matchScoreVal = parseInt(match.score) || 0;
-    const gaugeFill = document.getElementById('cv-match-gauge-fill');
-    const gaugeVal = document.getElementById('cv-match-gauge-val');
-    
-    if (gaugeFill && gaugeVal) {
-      if (gaugeInterval) clearInterval(gaugeInterval);
-      let currentVal = 0;
-      gaugeFill.style.strokeDasharray = '0, 100';
-      
-      gaugeInterval = setInterval(() => {
-        currentVal += 2;
-        if (currentVal >= matchScoreVal) {
-          currentVal = matchScoreVal;
-          clearInterval(gaugeInterval);
-        }
-        gaugeVal.textContent = `${currentVal}%`;
-        
-        const fillPct = currentVal * 0.75;
-        gaugeFill.style.strokeDasharray = `${fillPct}, 100`;
-      }, 15);
-    }
-
-    // Animate composer entry
-    gsap.fromTo('.email-composer',
-      { opacity: 0.95, y: 5 },
-      { opacity: 1, y: 0, duration: 0.3, ease: 'power1.out' }
-    );
-  }
-
-  function renderCV(key) {
-    const info = dataTemplates[key];
-    if (!info) return;
-
-    // Clear any active gauge animation
-    if (gaugeInterval) {
-      clearInterval(gaugeInterval);
-      gaugeInterval = null;
-    }
-
-    // Render left sheet
-    sheet.innerHTML = info.cvHtml;
-
-    // Stream chatbot bubbles
-    chatbotFeed.innerHTML = '';
-    
-    // Add user query bubble first
-    const queryBubble = document.createElement('div');
-    queryBubble.className = 'chat-bubble user';
-    queryBubble.textContent = `Map matching roles for ${info.name}.`;
-    chatbotFeed.appendChild(queryBubble);
-
-    // Initial typing indicator
-    setTimeout(() => {
-      appendTypingIndicator();
-    }, 300);
-
-    // Stream bot answers with delay
-    info.chat.forEach((msg, idx) => {
-      setTimeout(() => {
-        removeTypingIndicator();
-        
-        const bubble = document.createElement('div');
-        bubble.className = 'chat-bubble bot';
-        bubble.textContent = msg.text;
-        chatbotFeed.appendChild(bubble);
-        chatbotFeed.scrollTop = chatbotFeed.scrollHeight;
-        
-        if (idx < info.chat.length - 1) {
-          setTimeout(() => {
-            appendTypingIndicator();
-          }, 200);
-        }
-      }, (idx + 1) * 1000);
+  function restartBar() { if (reduce || !seen) return; stepper.classList.remove('auto'); void stepper.offsetWidth; stepper.classList.add('auto'); }
+  sts.forEach(function (t, i) {
+    t.addEventListener('click', function () { var again = t.getAttribute('aria-selected') === 'true'; show(t); if (again) restartBar(); });
+    t.addEventListener('keydown', function (e) {
+      var k = e.key, n = null;
+      if (k === 'ArrowDown' || k === 'ArrowRight') n = sts[(i + 1) % sts.length];
+      if (k === 'ArrowUp' || k === 'ArrowLeft') n = sts[(i - 1 + sts.length) % sts.length];
+      if (n) { e.preventDefault(); show(n, true); }
     });
-
-    // Render matches and composer
-    setTimeout(() => {
-      matchBox.innerHTML = '';
-      info.matches.forEach((m, mIdx) => {
-        const mNode = document.createElement('div');
-        mNode.className = `company-match-card${mIdx === 0 ? ' active' : ''}`;
-        mNode.innerHTML = `
-          <div class="company-logo-avatar">${m.company.charAt(0)}</div>
-          <div class="company-match-info">
-            <h6>${m.company}</h6>
-            <p>${m.role}</p>
-          </div>
-        `;
-        matchBox.appendChild(mNode);
-
-        // Click handler to select target match
-        mNode.addEventListener('click', () => {
-          const siblings = matchBox.querySelectorAll('.company-match-card');
-          siblings.forEach(sibling => sibling.classList.remove('active'));
-          mNode.classList.add('active');
-          playSFX('match');
-          updateActiveMatch(m);
-        });
-
-        // GSAP animate each card in
-        gsap.from(mNode, {
-          opacity: 0,
-          x: 15,
-          duration: 0.4,
-          delay: mIdx * 0.1,
-          ease: 'power2.out'
-        });
-      });
-      
-      // Update with the first match and play sound
-      playSFX('match');
-      updateActiveMatch(info.matches[0]);
-    }, 3200);
-  }
-
-  tabs.forEach(tab => {
-    tab.addEventListener('click', function() {
-      tabs.forEach(t => t.classList.remove('active'));
-      this.classList.add('active');
-      renderCV(this.getAttribute('data-sample'));
-    });
+    t.querySelector('.tm i').addEventListener('animationend', function () { if (stepper.classList.contains('auto')) show(sts[(i + 1) % sts.length]); });
   });
-
-  // Load first template by default
-  renderCV('tanishq');
-
-  // Copy handler
-  if (copyBtn) {
-    copyBtn.addEventListener('click', () => {
-      navigator.clipboard.writeText(draftBox.textContent).then(() => {
-        const textSpan = copyBtn.querySelector('span:not(.material-symbols-outlined)');
-        if (textSpan) {
-          const originalText = textSpan.textContent;
-          textSpan.textContent = 'Copied!';
-          setTimeout(() => { textSpan.textContent = originalText; }, 1500);
-        }
-      });
-    });
-  }
-}
-
-/* ==========================================
-   8. Checkout/Action Modal Loop
-   ========================================== */
-function initModals() {
-  const modal = document.getElementById('checkout-modal');
-  const closeBtn = document.getElementById('close-modal');
-  const installBtn = document.getElementById('modal-action-btn');
-  const progressFill = document.getElementById('modal-progress-fill');
-  const statusText = document.getElementById('modal-status-text');
-  const planName = document.getElementById('modal-plan-name');
-  
-  // Select plan buttons
-  const planBtns = document.querySelectorAll('.pricing-btn, nav .primary-btn, .hero-buttons .primary-btn');
-
-  planBtns.forEach(btn => {
-    btn.addEventListener('click', function(e) {
-      e.preventDefault();
-      
-      const modalTitle = document.getElementById('modal-title');
-      const modalBodyText = document.getElementById('modal-body-text');
-      
-      // Determine if they clicked "Add to Chrome" directly
-      const isChromeBtn = this.id === 'hero-chrome-btn' || (this.classList.contains('hover-glare') && !this.closest('.pricing-card'));
-      
-      if (isChromeBtn) {
-        if (modalTitle) modalTitle.textContent = 'Install SNDR. Extension';
-        if (modalBodyText) modalBodyText.innerHTML = 'Setting up your browser extension workspace...';
-      } else {
-        // Determine plan name
-        let plan = 'Pro';
-        const pricingCard = this.closest('.pricing-card');
-        if (pricingCard) {
-          const header = pricingCard.querySelector('.card-plan-header h3');
-          if (header) plan = header.textContent;
-        }
-        if (modalTitle) modalTitle.textContent = `Launch SNDR. ${plan}`;
-        if (modalBodyText) modalBodyText.innerHTML = `You have selected the <strong id="modal-plan-name">${plan}</strong> plan. Setting up your browser extension workspace...`;
+  if (!reduce && window.IntersectionObserver) {
+    new IntersectionObserver(function (es) {
+      var on = es[0].isIntersecting;
+      if (on && !seen) {
+        seen = true; stepper.classList.add('auto');
+        play(document.getElementById(sts.filter(function (x) { return x.getAttribute('aria-selected') === 'true'; })[0].getAttribute('aria-controls')));
       }
-      
-      if (modal) modal.classList.remove('hidden');
-      if (window.sndrWeb) window.sndrWeb('cta', isChromeBtn ? 'Add to Chrome' : (modalTitle ? modalTitle.textContent.replace(/^Launch\s+SNDR\.\s*/, '') + ' plan' : 'Pricing plan'));
+      stepper.classList.toggle('away', !on);
+    }, { threshold: 0.35 }).observe(stepper);
+  }
 
-      // Reset progress
-      if (progressFill) progressFill.style.width = '0%';
-      if (statusText) statusText.textContent = 'Ready to integrate...';
-      if (installBtn) {
-        installBtn.disabled = false;
-        installBtn.textContent = 'Install Extension';
+  // ── Features: tabs with a sliding highlight ──
+  var ftabs = Array.prototype.slice.call(document.querySelectorAll('.ftab')), fhl = document.getElementById('fhl');
+  function moveFhl() {
+    var t = ftabs.filter(function (x) { return x.getAttribute('aria-selected') === 'true'; })[0]; if (!t) return;
+    fhl.style.width = t.offsetWidth + 'px'; fhl.style.height = t.offsetHeight + 'px';
+    fhl.style.transform = 'translate(' + t.offsetLeft + 'px, ' + t.offsetTop + 'px)';
+  }
+  function fselect(t, focus) {
+    ftabs.forEach(function (x) { var sel = x === t; x.setAttribute('aria-selected', String(sel)); x.tabIndex = sel ? 0 : -1; document.getElementById(x.getAttribute('aria-controls')).hidden = !sel; });
+    moveFhl(); if (focus) t.focus();
+  }
+  // A guided tour: each tab plays its demo for you (types a company, taps the
+  // teams, makes Priya reply, asks the AI), then the next tab opens when the
+  // bar under it fills in 8 seconds. Picking a tab jumps there and the tour
+  // carries on. Clicking or typing inside a demo hands it over to you, and the
+  // tour waits until you've left it alone for 12 seconds.
+  var ftabsEl = document.querySelector('.ftabs'), fstage = document.querySelector('.fstage');
+  var tourRun = null, tourSeen = false, idleT = 0, tourN = 0;
+  function later(run, ms, fn) { setTimeout(function () { if (tourRun === run) fn(); }, ms); }
+  var TOUR = {
+    fp1: function (run) {
+      var name = ['Bluepeak Capital', 'Northwind Bank', 'Kite Finance'][tourN % 3];
+      later(run, 300, function () { coIn.value = ''; });
+      for (var k = 1; k <= name.length; k++) (function (k) { later(run, 300 + k * 55, function () { coIn.value = name.slice(0, k); }); })(k);
+      later(run, 300 + name.length * 55 + 300, function () { if (!d1go.disabled) d1go.click(); });
+    },
+    fp2: function (run) {
+      document.getElementById('d2reset').click();
+      Array.prototype.forEach.call(document.querySelectorAll('#d2chips .chip2'), function (b, i) { later(run, 700 + i * 750, function () { b.click(); }); });
+    },
+    fp3: function (run) {
+      if (replied) d3go.click();
+      later(run, 1500, function () { if (!replied) d3go.click(); });
+    },
+    fp4: function (run) {
+      var chips = document.querySelectorAll('#prompts .chip2');
+      later(run, 600, function () { chips[1 + (tourN % 3)].click(); });
+      later(run, 4200, function () { chips[1 + ((tourN + 1) % 3)].click(); });
+    }
+  };
+  function tour(t) {
+    if (reduce || !tourSeen) return;
+    var run = {}; tourRun = run; tourN++;
+    TOUR[t.getAttribute('aria-controls')](run);
+  }
+  function go(t, focus) {
+    var again = t.getAttribute('aria-selected') === 'true';
+    clearTimeout(idleT); ftabsEl.classList.remove('hold');
+    fselect(t, focus); tour(t);
+    if (again && tourSeen && !reduce) { ftabsEl.classList.remove('auto'); void ftabsEl.offsetWidth; ftabsEl.classList.add('auto'); }
+  }
+  ftabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { go(t); });
+    t.addEventListener('keydown', function (e) {
+      var k = e.key, n = null;
+      if (k === 'ArrowRight' || k === 'ArrowDown') n = ftabs[(i + 1) % ftabs.length];
+      if (k === 'ArrowLeft' || k === 'ArrowUp') n = ftabs[(i - 1 + ftabs.length) % ftabs.length];
+      if (n) { e.preventDefault(); go(n, true); }
+    });
+    t.querySelector('.tm i').addEventListener('animationend', function () { if (ftabsEl.classList.contains('auto')) go(ftabs[(i + 1) % ftabs.length]); });
+  });
+  document.querySelectorAll('.nextf').forEach(function (b) { b.addEventListener('click', function (e) { e.stopPropagation(); go(document.getElementById(b.getAttribute('data-go'))); }); });
+  ['pointerdown', 'keydown', 'focusin'].forEach(function (ev) {
+    fstage.addEventListener(ev, function (e) {
+      if (!e.isTrusted || e.target.closest('.nextf')) return;
+      tourRun = null; ftabsEl.classList.add('hold');
+      clearTimeout(idleT); idleT = setTimeout(function () { ftabsEl.classList.remove('hold'); }, 12000);
+    });
+  });
+  if (!reduce && window.IntersectionObserver) {
+    new IntersectionObserver(function (es) {
+      var on = es[0].isIntersecting;
+      if (on && !tourSeen) {
+        tourSeen = true; ftabsEl.classList.add('auto');
+        tour(ftabs.filter(function (x) { return x.getAttribute('aria-selected') === 'true'; })[0]);
       }
+      ftabsEl.classList.toggle('away', !on);
+    }, { threshold: 0.35 }).observe(fstage);
+  }
+  addEventListener('resize', moveFhl); moveFhl();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(moveFhl);
+
+  // ── Film plays on its own when it's on screen ──
+  var video = document.getElementById('video'), sound = document.getElementById('sound');
+  function setSound(onSound) { video.muted = !onSound; sound.setAttribute('aria-pressed', String(onSound)); sound.setAttribute('aria-label', onSound ? 'Turn sound off' : 'Turn sound on'); }
+  function startFilm() {
+    // Browsers allow sound only after the viewer has clicked something on the page.
+    setSound(navigator.userActivation ? navigator.userActivation.hasBeenActive : false);
+    var p = video.play();
+    if (p && p.catch) p.catch(function () { setSound(false); video.play().catch(function () {}); });
+  }
+  if (reduce) video.removeAttribute('loop');
+  if (window.IntersectionObserver) new IntersectionObserver(function (es) { if (es[0].isIntersecting) startFilm(); else video.pause(); }, { threshold: 0.45 }).observe(video);
+  sound.addEventListener('click', function () { setSound(video.muted); if (video.paused) video.play(); });
+
+  // ── Demo 1: LinkedIn in, work emails out ──
+  var PEOPLE = [['Priya', 'Sharma', 'HR Business Partner', '#c4b5fd'], ['Arjun', 'Mehta', 'Talent Acquisition', '#7dd3fc'], ['Sara', 'Khan', 'Campus Recruiter', '#fdba74'], ['Rohan', 'Iyer', 'Hiring Manager', '#f9a8d4'], ['Neha', 'Kapoor', "Founder's Office", '#86efac']];
+  var d1go = document.getElementById('d1go'), d1list = document.getElementById('d1list'), d1status = document.getElementById('d1status'), coIn = document.getElementById('co');
+  function wait(ms) { return new Promise(function (r) { setTimeout(r, reduce ? 0 : ms); }); }
+  function setStatus(before, bold, after) {
+    d1status.textContent = before;
+    var b = document.createElement('b'); b.textContent = bold; d1status.appendChild(b);
+    if (after) d1status.appendChild(document.createTextNode(after));
+  }
+  function domainOf(company) { return (company.toLowerCase().replace(/[^a-z0-9]+/g, '') || 'company') + '.com'; }
+  function emailOf(person, domain) { return (person[0] + '.' + person[1]).toLowerCase() + '@' + domain; }
+  function personRow(person, email) {
+    var li = document.createElement('li');
+    li.innerHTML = '<span class="av"></span><span class="t"><b></b><small></small></span><span class="em"></span>';
+    li.querySelector('.av').style.background = person[3];
+    li.querySelector('.av').textContent = person[0][0] + person[1][0];
+    li.querySelector('b').textContent = person[0] + ' ' + person[1];
+    li.querySelector('small').textContent = person[2];
+    li.querySelector('.em').textContent = email;
+    d1list.appendChild(li); return li;
+  }
+  // At rest it shows a finished run for Nova Fintech, so the card is never empty.
+  PEOPLE.forEach(function (p) { personRow(p, emailOf(p, 'novafintech.com')); });
+  setStatus('Found ', '5 work emails', ' at Nova Fintech. Try any other company.');
+  d1go.addEventListener('click', function () {
+    var company = coIn.value.trim() || 'Nova Fintech', domain = domainOf(company);
+    d1go.disabled = true; d1list.innerHTML = '';
+    setStatus('Reading ', company + "'s", ' people on LinkedIn…');
+    var rows = [];
+    PEOPLE.reduce(function (p, person, i) {
+      return p.then(function () { return wait(i ? 260 : 500); }).then(function () { rows.push([personRow(person, 'Saved'), person]); });
+    }, Promise.resolve()).then(function () { return wait(600); }).then(function () {
+      setStatus('Email format found: ', 'firstname.lastname@' + domain);
+      return rows.reduce(function (p, r) { return p.then(function () { return wait(220); }).then(function () { r[0].querySelector('.em').textContent = emailOf(r[1], domain); }); }, Promise.resolve());
+    }).then(function () {
+      setStatus('', '5 work emails ready', ', in about the time it took to read this.');
+      d1go.disabled = false;
     });
   });
 
-  if (closeBtn && modal) {
-    closeBtn.addEventListener('click', () => {
-      modal.classList.add('hidden');
-    });
-
-    // Close on overlay click
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        modal.classList.add('hidden');
-      }
-    });
+  // ── Demo 2: past LinkedIn's limit ──
+  var d2n = document.getElementById('d2n'), d2bar = document.getElementById('d2bar'), d2msg = document.getElementById('d2msg'), reached = 74;
+  var START_MSG = 'LinkedIn stopped the list at 74. Tap a team to open a new list.';
+  function showReach(to) {
+    var from = reached; reached = to;
+    d2bar.style.width = Math.max(3.9, to / 1908 * 100) + '%';
+    if (reduce) { d2n.textContent = to.toLocaleString('en-IN'); return; }
+    var t0 = performance.now();
+    (function step(now) {
+      var k = Math.min(1, (now - t0) / 800), e = 1 - Math.pow(1 - k, 3);
+      d2n.textContent = Math.round(from + (to - from) * e).toLocaleString('en-IN');
+      if (k < 1) requestAnimationFrame(step);
+    })(t0);
   }
-
-  if (installBtn) {
-    installBtn.addEventListener('click', function() {
-      this.disabled = true;
-      let progress = 0;
-      
-      const states = [
-        { threshold: 15, text: 'Resolving chrome extension repository...' },
-        { threshold: 45, text: 'Mounting outbound throttling algorithms...' },
-        { threshold: 75, text: 'Bundling AI subject templates...' },
-        { threshold: 95, text: 'Synchronizing landing variables...' },
-        { threshold: 100, text: 'Integration Complete!' }
-      ];
-
-      const interval = setInterval(() => {
-        progress += 1;
-        if (progressFill) progressFill.style.width = `${progress}%`;
-        
-        const state = states.find(s => progress <= s.threshold);
-        if (state && statusText) {
-          statusText.textContent = state.text;
-        }
-
-        if (progress >= 100) {
-          clearInterval(interval);
-          installBtn.textContent = 'Installed!';
-
-          // Trigger download of the zip file. Append a unique cache-busting token
-          // so the browser never serves a stale copy of a previously downloaded zip
-          // (the filename is fixed, so without this some browsers reuse the old file).
-          const a = document.createElement('a');
-          a.href = 'sndr-extension.zip?v=2.4.67&t=' + Date.now();
-          a.download = 'sndr-extension.zip';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          if (window.sndrWeb) window.sndrWeb('download');
-
-          setTimeout(() => {
-            if (modal) modal.classList.add('hidden');
-          }, 800);
-        }
-      }, 30);
-    });
-  }
-}
-
-/* ==========================================
-   9. Founders Canvas initials and Scroll Reveal
-   ========================================== */
-function initScrollReveal() {
-  // Register GSAP ScrollTrigger plugin if available
-  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
-    // Failsafe: make all content visible if GSAP script fails to load
-    document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
-    document.documentElement.classList.remove('js-active');
-    return;
-  }
-
-  gsap.registerPlugin(ScrollTrigger);
-
-  // Mobile browsers report scroll position in large, uneven jumps during
-  // momentum/fling scrolling (compounded by the address bar hiding/showing,
-  // which changes the real viewport height mid-scroll) instead of the smooth
-  // per-frame deltas desktop wheel scrolling gives ScrollTrigger. For a
-  // scrubbed + pinned timeline like the intro below, that means the actual
-  // native scroll can leap clean past the pin's release point between two
-  // touchmove events even though the math (pin distance, snap, buffer) is
-  // correct — no amount of tuning end/snap fixes a problem that's really
-  // about *how* the scroll position itself arrives. normalizeScroll fixes
-  // this at the source by simulating scrolling via transforms on touch
-  // devices instead of trusting the browser's native touch-scroll deltas.
-  if (ScrollTrigger.isTouch) {
-    ScrollTrigger.normalizeScroll(true);
-  }
-
-  // Initialize Canvas Avatars for Founders (keep existing logic)
-  const canvases = document.querySelectorAll('.founder-avatar-canvas');
-  canvases.forEach(canvas => {
-    const initials = canvas.getAttribute('data-initials');
-    const color = canvas.closest('.founder-card').getAttribute('data-color') || '#005ac2';
-    
-    const ctx = canvas.getContext('2d');
-    canvas.width = 180;
-    canvas.height = 180;
-
-    // Background circle
-    ctx.beginPath();
-    ctx.arc(90, 90, 85, 0, Math.PI * 2);
-    ctx.fillStyle = color;
-    ctx.fill();
-
-    // Text initials
-    ctx.font = 'bold 64px Outfit';
-    ctx.fillStyle = '#ffffff';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(initials, 90, 90);
-  });
-
-  // Setup animations once page is fully loaded to ensure Y coordinates are fully settled
-  if (document.readyState === 'complete') {
-    setupGSAPTimelines();
-  } else {
-    window.addEventListener('load', () => {
-      setupGSAPTimelines();
-    });
-  }
-}
-
-function setupGSAPTimelines() {
-  console.log('[SNDR] Setting up GSAP Timelines...');
-  try {
-  // 3. INTERACTIVE 3D SCROLL-SCRUBBED UNFOLDING FOR ALL SECTIONS
-  
-  // Section A: Outreach Sandbox
-  const playgroundTl = gsap.timeline({
-    scrollTrigger: {
-      trigger: '#playground',
-      start: 'top 95%',
-      end: 'top 45%',
-      scrub: 0.8
-    }
-  });
-  playgroundTl.fromTo('#playground > .container', 
-    { rotationX: -30, opacity: 0, z: -100, transformOrigin: 'top center' },
-    { rotationX: 0, opacity: 1, z: 0, duration: 1.0, ease: 'power1.out' }
-  )
-  .fromTo('#playground .section-intro', { opacity: 0, y: 35 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.8')
-  .fromTo('#playground .sandbox-container', { opacity: 0, y: 35 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.6')
-  .fromTo('#playground .leads-shelf', { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.6 }, '-=0.4')
-  .fromTo('#playground .sandbox-dropzone', { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.6 }, '-=0.4')
-  .fromTo('#playground .sandbox-output', { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.6 }, '-=0.4');
-
-  // Section B: Bento Grid Features
-  const featuresTl = gsap.timeline({
-    scrollTrigger: {
-      trigger: '#features',
-      start: 'top 95%',
-      end: 'top 45%',
-      scrub: 0.8
-    }
-  });
-  featuresTl.fromTo('#features > .container', 
-    { rotationX: -30, opacity: 0, z: -100, transformOrigin: 'top center' },
-    { rotationX: 0, opacity: 1, z: 0, duration: 1.0, ease: 'power1.out' }
-  )
-  .fromTo('#features .section-intro', { opacity: 0, y: 35 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.8')
-  .fromTo('#features .bento-item', { opacity: 0, y: 50, rotationX: 15 }, { opacity: 1, y: 0, rotationX: 0, stagger: 0.15, duration: 0.8 }, '-=0.6');
-
-  // Section C: CV Matcher Chatbot
-  const cvMatcherTl = gsap.timeline({
-    scrollTrigger: {
-      trigger: '#cv-matcher',
-      start: 'top 95%',
-      end: 'top 45%',
-      scrub: 0.8
-    }
-  });
-  cvMatcherTl.fromTo('#cv-matcher > .container', 
-    { rotationX: -30, opacity: 0, z: -100, transformOrigin: 'top center' },
-    { rotationX: 0, opacity: 1, z: 0, duration: 1.0, ease: 'power1.out' }
-  )
-  .fromTo('#cv-matcher .section-intro', { opacity: 0, y: 35 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.8')
-  .fromTo('#cv-matcher .cv-matcher-container', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.8 }, '-=0.6');
-
-  // Section: About SNDR
-  const aboutTl = gsap.timeline({
-    scrollTrigger: {
-      trigger: '#about',
-      start: 'top 95%',
-      end: 'top 50%',
-      scrub: 0.8
-    }
-  });
-  aboutTl.fromTo('#about > .container',
-    { rotationX: -30, opacity: 0, z: -100, transformOrigin: 'top center' },
-    { rotationX: 0, opacity: 1, z: 0, duration: 1.0, ease: 'power1.out' }
-  )
-  .fromTo('#about .section-intro', { opacity: 0, y: 35 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.8')
-  .fromTo('#about .about-card', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.8 }, '-=0.6');
-
-  // Section E: Founders
-  const foundersTl = gsap.timeline({
-    scrollTrigger: {
-      trigger: '#founders',
-      start: 'top 95%',
-      end: 'top 50%',
-      scrub: 0.8
-    }
-  });
-  foundersTl.fromTo('#founders > .container', 
-    { rotationX: -30, opacity: 0, z: -100, transformOrigin: 'top center' },
-    { rotationX: 0, opacity: 1, z: 0, duration: 1.0, ease: 'power1.out' }
-  )
-  .fromTo('#founders .section-intro', { opacity: 0, y: 35 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.8')
-  .fromTo('#founders .founder-card', { opacity: 0, y: 40 }, { opacity: 1, y: 0, stagger: 0.15, duration: 0.8 }, '-=0.6');
-    console.log('[SNDR] GSAP Timelines setup completed successfully.');
-  } catch (error) {
-    console.error('[SNDR] Error in GSAP timeline setup:', error);
-  }
-}
-
-/* ==========================================
-   10. Interactive 3D Hover Tilt Effects
-   ========================================== */
-function initTilt() {
-  const elements = document.querySelectorAll('.hover-tilt, .founder-card, .pricing-card');
-  elements.forEach(el => {
-    el.addEventListener('mousemove', (e) => {
-      const rect = el.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      
-      const xc = rect.width / 2;
-      const yc = rect.height / 2;
-      
-      const angleX = (yc - y) / 15;
-      const angleY = (x - xc) / 15;
-      
-      el.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg) translateY(-4px)`;
-      el.style.boxShadow = `0 16px 36px rgba(0, 90, 194, 0.12)`;
-    });
-    
-    el.addEventListener('mouseleave', () => {
-      el.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
-      el.style.boxShadow = '';
+  document.querySelectorAll('#d2chips .chip2').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (b.classList.contains('done')) return;
+      b.classList.add('done'); b.textContent = b.getAttribute('data-name') + ' ✓';
+      showReach(reached + (+b.getAttribute('data-add')));
+      var left = document.querySelectorAll('#d2chips .chip2:not(.done)').length;
+      d2msg.textContent = left ? '+' + b.getAttribute('data-add') + ' new people from ' + b.getAttribute('data-name') + '. Anyone you already had was skipped.'
+        : 'You reached ' + reached + ' people, about ' + Math.round(reached / 74) + '× what LinkedIn showed at first.';
     });
   });
-}
+  document.getElementById('d2reset').addEventListener('click', function () {
+    document.querySelectorAll('#d2chips .chip2').forEach(function (b) { b.classList.remove('done'); b.textContent = b.getAttribute('data-name'); });
+    showReach(74); d2msg.textContent = START_MSG;
+  });
 
-/* ==========================================
-   3D Parallax Tilt Hover Effect
-   ========================================== */
-function init3DParallax() {
-  const sim = document.querySelector('.hero-simulator');
-  if (sim) {
-    const parallaxLayers = sim.querySelectorAll('.layer-parallax');
-    
-    sim.addEventListener('mousemove', (e) => {
-      const rect = sim.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const xc = rect.width / 2;
-      const yc = rect.height / 2;
-      
-      const angleX = (yc - y) / 40;
-      const angleY = (x - xc) / 40;
-      
-      sim.style.transform = `perspective(1200px) rotateX(${angleX}deg) rotateY(${angleY}deg)`;
-      
-      parallaxLayers.forEach(layer => {
-        const depth = parseFloat(layer.getAttribute('data-depth')) || 30;
-        const px = (x - xc) * (depth / 1500);
-        const py = (y - yc) * (depth / 1500);
-        layer.style.transform = `translate3d(${px}px, ${py}px, ${depth}px)`;
-      });
+  // ── Demo 3: follow ups that stop on a reply ──
+  var d3go = document.getElementById('d3go'), d3note = document.getElementById('d3note'), fus = document.querySelectorAll('.tl .fu'), replied = false;
+  var NOTE = d3note.textContent;
+  d3go.addEventListener('click', function () {
+    replied = !replied;
+    d3note.classList.toggle('reply', replied);
+    d3note.textContent = replied ? 'Priya: "Thanks for following up! Free on Thursday for a quick call?"' : NOTE;
+    Array.prototype.forEach.call(fus, function (li, i) {
+      setTimeout(function () { li.classList.toggle('off', replied); li.querySelector('em').textContent = replied ? 'Cancelled' : 'Scheduled'; }, replied && !reduce ? 350 + i * 250 : 0);
     });
-    
-    sim.addEventListener('mouseleave', () => {
-      sim.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg)';
-      parallaxLayers.forEach(layer => {
-        const depth = parseFloat(layer.getAttribute('data-depth')) || 30;
-        layer.style.transform = `translate3d(0px, 0px, ${depth}px)`;
-      });
-    });
-    
-    // Also style default state of parallax layers to be positioned in Z depth
-    parallaxLayers.forEach(layer => {
-      const depth = parseFloat(layer.getAttribute('data-depth')) || 30;
-      layer.style.transform = `translate3d(0px, 0px, ${depth}px)`;
-    });
-  }
-}
+    d3go.textContent = replied ? 'Start over' : 'Make Priya reply';
+  });
 
-/* ==========================================
-   Dynamic Web Audio API Synthesizer & SFX Toggle
-   ========================================== */
-let sfxEnabled = true;
-
-function initSFX() {
-  const sfxBtn = document.getElementById('sfx-toggle');
-  if (sfxBtn) {
-    const sfxOnIcon = sfxBtn.querySelector('.sfx-on-icon');
-    const sfxOffIcon = sfxBtn.querySelector('.sfx-off-icon');
-    sfxBtn.addEventListener('click', () => {
-      sfxEnabled = !sfxEnabled;
-      if (sfxEnabled) {
-        sfxOnIcon.style.display = 'inline-block';
-        sfxOffIcon.style.display = 'none';
-        playSFX('click');
-      } else {
-        sfxOnIcon.style.display = 'none';
-        sfxOffIcon.style.display = 'inline-block';
-      }
-    });
-  }
-}
-
-// Desktop-only: single choke point so nothing plays on mobile regardless
-// of which desktop-restored feature calls this (scrape/match/success/
-// click), without needing to gate every call site individually.
-function playSFX(type) {
-  if (!sfxEnabled) return;
-  if (document.documentElement.classList.contains('touch-device')) return;
-  try {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-
-    const now = ctx.currentTime;
-
-    if (type === 'click') {
-      osc.frequency.setValueAtTime(850, now);
-      osc.frequency.exponentialRampToValueAtTime(180, now + 0.06);
-      gain.gain.setValueAtTime(0.06, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
-      osc.start(now);
-      osc.stop(now + 0.06);
-    } else if (type === 'scrape') {
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(320, now);
-      osc.frequency.exponentialRampToValueAtTime(1100, now + 0.45);
-      gain.gain.setValueAtTime(0.03, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
-      osc.start(now);
-      osc.stop(now + 0.45);
-    } else if (type === 'match') {
-      // Dual note chord chime
-      osc.frequency.setValueAtTime(523.25, now); // C5
-      osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
-      gain.gain.setValueAtTime(0.04, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
-      osc.start(now);
-      osc.stop(now + 0.22);
-    } else if (type === 'success') {
-      // Satisfying pleasant rising major chord
-      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
-      notes.forEach((freq, idx) => {
-        const oNode = ctx.createOscillator();
-        const gNode = ctx.createGain();
-        oNode.connect(gNode);
-        gNode.connect(ctx.destination);
-        oNode.frequency.setValueAtTime(freq, now + idx * 0.06);
-        gNode.gain.setValueAtTime(0.035, now + idx * 0.06);
-        gNode.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.28);
-        oNode.start(now + idx * 0.06);
-        oNode.stop(now + idx * 0.06 + 0.28);
-      });
-    }
-  } catch (err) {
-    console.warn('Web Audio synthesis failed:', err.message);
-  }
-}
-
-/* ==========================================
-   Generic Sound UI feedback trigger
-   ========================================== */
-function initHapticClicks() {
-  // Trigger soft clicks on all primary UI elements
-  const interactiveNodes = document.querySelectorAll(
-    'a, button, .cv-select-tab, .sim-nav-item, .drag-lead, .chart-toggle-btn'
-  );
-  interactiveNodes.forEach(node => {
-    node.addEventListener('click', () => {
-      playSFX('click');
+  // ── Demo 4: an AI that has read your CV ──
+  var ANSWERS = [
+    'Three fixes before you apply:\n1. Lead with your DCF model project, numbers first.\n2. Cut the hobbies line.\n3. Name one deal you followed closely and what you learned.',
+    'Subject: Summer analyst, quick question\n\nHi Priya, I built a lending model on Nova Fintech\'s last two quarters and would love to help your analyst team this summer. Could we talk for ten minutes this week?',
+    'Strong fits for your profile:\n• Nova Fintech, credit analyst\n• Bluepeak Capital, summer analyst\n• Arc Labs, strategy intern\nWant me to find their recruiters\' emails?',
+    'Expect these three:\n1. Walk me through a DCF.\n2. Why this firm, not a bigger one?\n3. A time you worked under pressure.\nShall we practise the first one?'
+  ];
+  var chat = document.getElementById('chat'), busy = false;
+  function bubble(text, me) { var d = document.createElement('div'); d.className = 'bub' + (me ? ' me' : ''); d.textContent = text; chat.appendChild(d); chat.scrollTop = chat.scrollHeight; return d; }
+  document.querySelectorAll('#prompts .chip2').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (busy) return; busy = true;
+      bubble(b.textContent, true);
+      var full = ANSWERS[+b.getAttribute('data-a')], d = bubble('…', false), i = 0;
+      setTimeout(function step() {
+        i = Math.min(full.length, i + (reduce ? full.length : 4));
+        d.textContent = full.slice(0, i); chat.scrollTop = chat.scrollHeight;
+        if (i < full.length) setTimeout(step, 16); else busy = false;
+      }, reduce ? 0 : 450);
     });
   });
-}
+
+  // ── FAQ: one answer open at a time ──
+  var qa = document.querySelectorAll('#qa details');
+  qa.forEach(function (d) { d.addEventListener('toggle', function () { if (d.open) qa.forEach(function (o) { if (o !== d) o.open = false; }); }); });
+})();

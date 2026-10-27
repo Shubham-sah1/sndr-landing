@@ -130,6 +130,16 @@ h1, h2, h3 { margin: 0; font-family: var(--display); color: var(--text); text-wr
 .sub { margin: 0; font-size: clamp(16px, calc(var(--fit) * 1.25), 19px); line-height: 1.6; color: var(--text-2); max-width: 44ch; }
 .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
 .aside { margin: -8px 0 0; font-size: 14px; line-height: 1.55; color: var(--muted); max-width: 44ch; }
+/* Live email count: hidden (space kept) until the server's first answer. */
+.live { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin: -4px 0 0; font: 500 15px/1.4 var(--body); color: var(--text-2); opacity: 0; visibility: hidden; transition: opacity .5s ease, visibility 0s .5s; }
+.live.on { opacity: 1; visibility: visible; transition: opacity .5s ease; }
+.live b { font: 700 18px/1.2 var(--display); letter-spacing: -0.01em; color: var(--text); font-variant-numeric: tabular-nums; }
+.live .tick { animation: tick .7s ease-out; }
+.live-tag { display: inline-flex; align-items: center; gap: 7px; padding: 3px 10px 3px 9px; border-radius: 999px; background: var(--ok-soft); color: var(--ok); font: 600 12px/1.4 var(--body); letter-spacing: .06em; text-transform: uppercase; }
+.live-dot { position: relative; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.live-dot::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: currentColor; animation: livePulse 1.8s ease-out infinite; }
+@keyframes livePulse { from { transform: scale(1); opacity: .7; } to { transform: scale(3.2); opacity: 0; } }
+@media (max-width: 380px) { .live { gap: 6px 8px; font-size: 14px; } .live b { font-size: 17px; } }
 
 .inbox { width: 100%; max-width: 540px; justify-self: end; --row: 78px; }
 .ibox-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 0 16px; height: 44px; border-bottom: 1px solid var(--line); font-size: 13.5px; color: var(--muted); }

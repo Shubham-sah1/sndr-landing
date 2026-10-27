@@ -130,16 +130,23 @@
 
   // ── Emails sent: the real total from the SNDR server ──
   // Read every 30 s. In between, the number counts up a step each second
-  // toward the newest total, never past it. Until the first answer (or if
-  // the server can't be reached) it stays at 1,00,000+.
-  var liveN = document.getElementById('liveN'), shown = null, target = null;
+  // toward the newest total, never past it. Shown in the hero ("Live" line,
+  // hidden until the first answer) and in the stats, which stay at 1,00,000+
+  // if the server can't be reached.
+  var liveEls = document.querySelectorAll('[data-live-count]'), liveHero = document.getElementById('liveHero'), shown = null, target = null;
+  function paintTotal(tick) {
+    liveEls.forEach(function (el) {
+      el.textContent = shown.toLocaleString('en-IN');
+      if (tick && !reduce) { el.classList.remove('tick'); void el.offsetWidth; el.classList.add('tick'); }
+    });
+  }
   function readTotal() {
     fetch('https://api.sndr.co.in/t/emails-sent', { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (j) {
         if (!j || !(j.total > 0)) return;
         target = j.total;
-        if (shown === null) { shown = target; liveN.textContent = shown.toLocaleString('en-IN'); }
+        if (shown === null) { shown = target; paintTotal(false); liveHero.classList.add('on'); }
       })
       .catch(function () {});
   }
@@ -147,8 +154,7 @@
   setInterval(function () {
     if (shown === null || shown >= target) return;
     shown = Math.min(target, shown + Math.max(1, Math.round((target - shown) / 30)));
-    liveN.textContent = shown.toLocaleString('en-IN');
-    if (!reduce) { liveN.classList.remove('tick'); void liveN.offsetWidth; liveN.classList.add('tick'); }
+    paintTotal(true);
   }, 1000);
 
   // ── Windows: grab one and throw it around, like on a Mac ──

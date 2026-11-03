@@ -528,4 +528,11 @@
   // ── FAQ: one answer open at a time ──
   var qa = document.querySelectorAll('#qa details');
   qa.forEach(function (d) { d.addEventListener('toggle', function () { if (d.open) qa.forEach(function (o) { if (o !== d) o.open = false; }); }); });
+  // A link to an answer (e.g. the extension's "Download update" → #update) opens it.
+  function openFromHash() {
+    var d = location.hash && document.getElementById(location.hash.slice(1));
+    if (d && d.tagName === 'DETAILS') { d.open = true; setTimeout(function () { d.scrollIntoView({ block: 'center' }); }, introMs + 100); }
+  }
+  openFromHash();
+  addEventListener('hashchange', openFromHash);
 })();

@@ -18,8 +18,8 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
   <script>
-    // The page follows the device's light/dark setting. A choice saved by the
-    // previous site's theme toggle still applies, before first paint.
+    // The page follows the device's light/dark setting until the visitor picks
+    // one with the theme button; that choice is applied before first paint.
     try {
       var savedTheme = localStorage.getItem('theme');
       if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.setAttribute('data-theme', savedTheme);
@@ -60,7 +60,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;900&family=Inter:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="style.css?v=3.1">
+  <link rel="stylesheet" href="style.css?v=3.2">
   <script src="track.js" defer></script>
 </head>
 <body>
@@ -70,6 +70,7 @@
   <div class="in wrap">
     <a class="brand" href="#top" aria-label="SNDR home"><svg width="96" height="20" viewBox="0 0 25 5" shape-rendering="crispEdges" role="img" aria-label="SNDR"><path fill="currentColor" d="M0 0h5v1H0zM0 1h1v1H0zM0 2h5v1H0zM4 3h1v1H4zM0 4h5v1H0zM6 0h1v5H6zM7 1h1v1H7zM8 2h1v1H8zM9 3h1v1H9zM10 0h1v5h-1zM12 0h4v1h-4zM12 1h1v3h-1zM16 1h1v3h-1zM12 4h4v1h-4zM18 0h4v1h-4zM18 1h1v4h-1zM22 1h1v1h-1zM19 2h4v1h-4zM21 3h1v1h-1zM22 4h1v1h-1z"></path><rect x="24" y="4" width="1" height="1" style="fill:var(--accent)"></rect></svg></a>
     <nav aria-label="Main"><a href="#how">How it works</a><a href="#features">Features</a><a href="#team">Team</a><a href="#faq">FAQ</a></nav>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="Switch to light mode" title="Switch light / dark"><svg class="i-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg><svg class="i-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z"/></svg></button>
     <button class="btn main sm cta" type="button" data-install>Add to Chrome</button>
     <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2 5h12M2 11h12"></path></svg></button>
   </div>
@@ -328,6 +329,6 @@
   </div>
 </div>
 
-<script src="app.js?v=3.2"></script>
+<script src="app.js?v=3.3"></script>
 </body>
 </html>

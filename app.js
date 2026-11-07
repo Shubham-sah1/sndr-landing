@@ -61,6 +61,23 @@
   menuBtn.addEventListener('click', function () { menu.hidden = false; menuBtn.setAttribute('aria-expanded', 'true'); document.getElementById('menuClose').focus(); });
   document.getElementById('menuClose').addEventListener('click', function () { closeMenu(); menuBtn.focus(); });
 
+  // Light/dark switch. Until it's used the page follows the device setting;
+  // after that the choice is saved and applied before first paint (index.html).
+  var themeBtn = document.getElementById('themeBtn');
+  var darkQuery = matchMedia('(prefers-color-scheme: dark)');
+  function currentTheme() { return document.documentElement.getAttribute('data-theme') || (darkQuery.matches ? 'dark' : 'light'); }
+  function labelThemeBtn() { themeBtn.setAttribute('aria-label', currentTheme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'); }
+  if (themeBtn) {
+    labelThemeBtn();
+    if (darkQuery.addEventListener) darkQuery.addEventListener('change', labelThemeBtn);
+    themeBtn.addEventListener('click', function () {
+      var next = currentTheme() === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('theme', next); } catch (e) {}
+      labelThemeBtn();
+    });
+  }
+
   // In-page links scroll smoothly and leave the address alone.
   document.querySelectorAll('a[href^="#"]').forEach(function (a) {
     a.addEventListener('click', function (e) {

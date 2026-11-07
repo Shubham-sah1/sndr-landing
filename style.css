@@ -99,6 +99,15 @@ h1, h2, h3 { margin: 0; font-family: var(--display); color: var(--text); text-wr
 .nav nav a { color: var(--text-2); text-decoration: none; transition: color .15s; }
 .nav nav a:hover { color: var(--accent-text); }
 .nav .cta { margin-left: auto; }
+/* Light/dark switch: shows the sun in dark mode (click for light) and the moon in light mode. */
+.theme-btn { margin-left: auto; margin-right: -28px; width: 42px; height: 42px; flex-shrink: 0; border-radius: 10px; border: 1px solid var(--line-2); background: var(--raised); color: var(--text); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color .15s, color .15s; }
+.theme-btn:hover { border-color: var(--accent); color: var(--accent-text); }
+.theme-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.theme-btn .i-sun { display: none; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .theme-btn .i-sun { display: block; } :root:not([data-theme="light"]) .theme-btn .i-moon { display: none; } }
+:root[data-theme="dark"] .theme-btn .i-sun { display: block; }
+:root[data-theme="dark"] .theme-btn .i-moon { display: none; }
+.nav .theme-btn ~ .cta, .nav .theme-btn ~ .menu-btn { margin-left: 0; }
 .menu-btn { display: none; margin-left: auto; width: 42px; height: 42px; border-radius: 10px; border: 1px solid var(--line-2); background: var(--raised); color: var(--text); align-items: center; justify-content: center; cursor: pointer; }
 .sheet-menu { position: fixed; inset: 0; z-index: 65; background: var(--bg); display: flex; flex-direction: column; padding-top: calc(var(--nav-h) + env(safe-area-inset-top, 0px) + 12px); }
 .sheet-menu a { font: 700 26px/1.2 var(--display); text-decoration: none; padding-block: 14px; border-bottom: 1px solid var(--line); color: var(--text); }

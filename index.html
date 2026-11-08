@@ -65,7 +65,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;900&family=Inter:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="style.css?v=3.2">
+  <link rel="stylesheet" href="style.css?v=3.3">
   <script src="track.js" defer></script>
 </head>
 <body>
@@ -284,7 +284,7 @@
 
   <section class="faq section gut" id="faq" aria-labelledby="faqT">
     <div class="in wrap">
-      <div class="faq-side"><h2 class="h2" id="faqT">Questions, answered</h2><p>Didn't find yours? Write to us at <b>contact@sndr.co.in</b> and we'll get back to you.</p></div>
+      <div class="faq-side"><h2 class="h2" id="faqT">Questions, answered</h2><p>Didn't find yours? <a href="#feedback">Write to the SNDR team</a>, or email <b>contact@sndr.co.in</b> and we'll get back to you.</p></div>
       <div class="qa" id="qa">
         <details open><summary>Is SNDR really free?<i aria-hidden="true"></i></summary><div class="a">Yes. Install it, connect your Gmail and start sending. No card, no trial timer.</div></details>
         <details><summary>Which Gmail account should I use?<i aria-hidden="true"></i></summary><div class="a"><b>Best:</b> a Google Workspace account on your own domain. Google lets those send about 2,000 emails a day, so SNDR's 500 has plenty of room.<br><b>Fine:</b> a personal Gmail you've used for months.<br><b>Avoid:</b> a new account. Use it normally for a couple of weeks first.</div></details>
@@ -293,6 +293,32 @@
         <details><summary>Is it safe to use on LinkedIn?<i aria-hidden="true"></i></summary><div class="a">SNDR reads the names already on your screen while you scroll. It never clicks, scrolls, messages or sends connection requests for you.</div></details>
         <details><summary>How do I install it?<i aria-hidden="true"></i></summary><div class="a">On a laptop with Chrome, click <b>Add to Chrome</b>, unzip the download, and load it on <b>chrome://extensions</b> with Developer mode on. It takes about a minute, and SNDR tells you when there's an update.</div></details>
         <details id="update"><summary>How do I update SNDR?<i aria-hidden="true"></i></summary><div class="a">Download the new version with <b>Add to Chrome</b>, unzip it and copy the files into your existing SNDR folder, replacing the old ones. Then open <b>chrome://extensions</b> and click the reload button on SNDR. If you can't find the old folder, remove SNDR there and use <b>Load unpacked</b> with the new folder; you'll sign in again and your campaigns are kept. From version 2.4.71, SNDR checks your Gmail for replies by itself while Chrome is open, and sends follow-ups only after checking your inbox in the last 12 hours.</div></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="fbw section gut" id="feedback" aria-labelledby="fbT">
+    <div class="in wrap">
+      <div class="fbw-side">
+        <h2 class="h2" id="fbT">Write to the SNDR team</h2>
+        <p>Loved something, hit a bug, or have an idea? Your note goes straight to the people building SNDR.</p>
+        <form class="fb-mail" id="fbForm" novalidate>
+          <div class="fb-mail-top"><span>New message</span><span class="fb-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+          <div class="fb-row"><span class="fb-k">To</span>The SNDR team</div>
+          <div class="fb-row fb-subj"><span class="fb-k" id="fbSubj">Subject</span><div class="fb-chips" role="radiogroup" aria-labelledby="fbSubj"><button type="button" role="radio" aria-checked="false" data-mood="love"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13.5s-5.5-3.2-5.5-7A2.9 2.9 0 0 1 8 4.7a2.9 2.9 0 0 1 5.5 1.8c0 3.8-5.5 7-5.5 7z"></path></svg>I love this</button><button type="button" role="radio" aria-checked="false" data-mood="idea"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12.5h4M6.6 14.5h2.8M8 1.5a4.5 4.5 0 0 0-2.7 8.1c.5.4.7.9.7 1.4h4c0-.5.2-1 .7-1.4A4.5 4.5 0 0 0 8 1.5z"></path></svg>I have an idea</button><button type="button" role="radio" aria-checked="false" data-mood="broke"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 6.5a2.5 2.5 0 0 1 5 0v3a2.5 2.5 0 0 1-5 0zM8 7v5M2.5 8h3M10.5 8h3M3.5 4.5l2 1.5M12.5 4.5l-2 1.5M3.5 12.5l2-1.5M12.5 12.5l-2-1.5"></path></svg>Something broke</button><button type="button" role="radio" aria-checked="false" data-mood="unhappy"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6.5"></circle><path d="M5.5 11.2c.6-.8 1.5-1.3 2.5-1.3s1.9.5 2.5 1.3M6 6.5h.01M10 6.5h.01"></path></svg>Not happy</button></div></div>
+          <textarea id="fbMsg" rows="5" maxlength="2000" aria-label="Your message" placeholder="Spill the tea. What should SNDR do better?"></textarea>
+          <div class="fb-row"><label class="fb-k" for="fbEmail">Reply to</label><input id="fbEmail" type="email" maxlength="120" autocomplete="email" placeholder="you@example.com (optional, if you'd like an answer)"></div>
+          <label class="fb-pin"><input type="checkbox" id="fbPin"> OK to pin this on the wall as <input type="text" id="fbName" maxlength="40" placeholder="your first name" aria-label="Name shown with your note"></label>
+          <input type="text" id="fbHp" class="fb-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="fb-err" id="fbErr" role="alert"></div>
+          <div class="fb-foot"><span class="fb-hint">Only the SNDR team reads it. Nothing is shown on the wall without your OK.</span>
+            <button class="btn main sm" type="submit" id="fbSend"><svg class="fb-plane" width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 1.5L7 9M14.5 1.5L10 14.5 7 9 1.5 6z"></path></svg><span>Send</span></button></div>
+        </form>
+      </div>
+      <div class="fb-wall">
+        <h3 id="wallT">The wall</h3>
+        <p class="fb-wall-sub">Notes from SNDR users, pinned with their OK.</p>
+        <div class="fb-notes" id="fbWall" aria-labelledby="wallT"><div class="fb-note fb-empty">Your note could be the first one here.</div></div>
       </div>
     </div>
   </section>
@@ -310,7 +336,7 @@
 <footer class="gut">
   <div class="in wrap">
     <div><svg width="96" height="20" viewBox="0 0 25 5" shape-rendering="crispEdges" role="img" aria-label="SNDR"><path fill="currentColor" d="M0 0h5v1H0zM0 1h1v1H0zM0 2h5v1H0zM4 3h1v1H4zM0 4h5v1H0zM6 0h1v5H6zM7 1h1v1H7zM8 2h1v1H8zM9 3h1v1H9zM10 0h1v5h-1zM12 0h4v1h-4zM12 1h1v3h-1zM16 1h1v3h-1zM12 4h4v1h-4zM18 0h4v1h-4zM18 1h1v4h-1zM22 1h1v1h-1zM19 2h4v1h-4zM21 3h1v1h-1zM22 4h1v1h-1z"></path><rect x="24" y="4" width="1" height="1" style="fill:var(--accent)"></rect></svg><p>Find the recruiter, send from your Gmail, and follow up until they reply.</p></div>
-    <div><h4>Product</h4><ul><li><a href="#how">How it works</a></li><li><a href="#features">Features</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+    <div><h4>Product</h4><ul><li><a href="#how">How it works</a></li><li><a href="#features">Features</a></li><li><a href="#faq">FAQ</a></li><li><a href="#feedback">Feedback</a></li></ul></div>
     <div><h4>Company</h4><ul><li><a href="#team">Team</a></li><li><a href="https://www.linkedin.com/company/sndrai/" target="_blank" rel="noopener">LinkedIn ↗</a></li><li><a href="privacy.html">Privacy policy</a></li></ul></div>
     <div><h4>Contact</h4><ul><li><span>contact@sndr.co.in</span></li></ul></div>
     <div class="small">© 2026 SNDR</div>
@@ -335,5 +361,6 @@
 </div>
 
 <script src="app.js?v=3.3"></script>
+<script src="feedback.js?v=1"></script>
 </body>
 </html>

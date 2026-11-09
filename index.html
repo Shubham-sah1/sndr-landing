@@ -291,8 +291,8 @@
         <details><summary>Will my Gmail get blocked?<i aria-hidden="true"></i></summary><div class="a">SNDR sends at most 500 emails a day, spaces them out, and pauses when you hit your limit. Keep emails personal and relevant, and your account stays in good standing.</div></details>
         <details><summary>Does SNDR read my inbox?<i aria-hidden="true"></i></summary><div class="a">No. SNDR only asks Google for permission to send. While Chrome is open (Gmail doesn't need to be), the extension checks your inbox for replies and bounces from people you emailed through SNDR, sorts replies with AI so you know who to answer first, and stops their follow-ups. It never opens your emails, never sends anything you didn't set up, and your Gmail is never used to train AI. More in our <a href="privacy.html">privacy policy</a>.</div></details>
         <details><summary>Is it safe to use on LinkedIn?<i aria-hidden="true"></i></summary><div class="a">SNDR reads the names already on your screen while you scroll. It never clicks, scrolls, messages or sends connection requests for you.</div></details>
-        <details><summary>How do I install it?<i aria-hidden="true"></i></summary><div class="a">On a laptop with Chrome, click <b>Add to Chrome</b>, unzip the download, and load it on <b>chrome://extensions</b> with Developer mode on. It takes about a minute, and SNDR tells you when there's an update.</div></details>
-        <details id="update"><summary>How do I update SNDR?<i aria-hidden="true"></i></summary><div class="a">Download the new version with <b>Add to Chrome</b>, unzip it and copy the files into your existing SNDR folder, replacing the old ones. Then open <b>chrome://extensions</b> and click the reload button on SNDR. If you can't find the old folder, remove SNDR there and use <b>Load unpacked</b> with the new folder; you'll sign in again and your campaigns are kept. From version 2.4.71, SNDR checks your Gmail for replies by itself while Chrome is open, and sends follow-ups only after checking your inbox in the last 12 hours.</div></details>
+        <details><summary>How do I install it?<i aria-hidden="true"></i></summary><div class="a">On a laptop or desktop with Chrome, click <b>Add to Chrome</b>. It opens SNDR on the Chrome Web Store: click <b>Add to Chrome</b> there and pin SNDR to your toolbar. Chrome keeps it up to date by itself.<br>If your school or work Chrome blocks the Web Store, <a href="sndr-extension.zip" id="downloadBtn" download>download SNDR as a zip</a> instead, unzip it, and load it on <b>chrome://extensions</b> with Developer mode on (<b>Load unpacked</b>).</div></details>
+        <details id="update"><summary>How do I update SNDR?<i aria-hidden="true"></i></summary><div class="a">If you installed SNDR from the Chrome Web Store, you don't need to: Chrome updates it by itself.<br>If you installed it from a downloaded zip, switch to the Web Store version once and it will update itself from then on. Open <b>chrome://extensions</b>, click <b>Remove</b> on SNDR, then click <b>Add to Chrome</b> on this page. Sign in again and your campaigns, contacts and templates are all there. Only the people waiting on the Find Emails screen are cleared, so use <b>Download CSV</b> there first if you still need them.</div></details>
       </div>
     </div>
   </section>
@@ -347,20 +347,12 @@
   <div class="card2">
     <button class="x" id="sheetX" type="button" aria-label="Close"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"></path></svg></button>
     <h3 id="sheetT">Add SNDR to Chrome</h3>
-    <p class="lead">Free, and takes about a minute.</p>
-    <div id="sheetDesk">
-      <ol>
-        <li><span>Download SNDR and unzip the file.</span></li>
-        <li><span>Open <span class="k">chrome://extensions</span> and switch on <b>Developer mode</b> (top right).</span></li>
-        <li><span>Click <b>Load unpacked</b> and pick the unzipped folder. Pin SNDR to your toolbar.</span></li>
-      </ol>
-      <a class="btn main" id="downloadBtn" href="sndr-extension.zip" download style="width:100%"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v9M4 7l4 4 4-4M3 14h10"></path></svg>Download SNDR</a>
-    </div>
-    <div id="sheetMobile" class="mobile-note" hidden>Chrome extensions only work on a laptop or desktop. Open <b>sndr.co.in</b> there to install SNDR.</div>
+    <p class="lead">Free, from the Chrome Web Store.</p>
+    <div id="sheetMobile" class="mobile-note">Chrome extensions only work on a laptop or desktop. Open <b>sndr.co.in</b> there to install SNDR.</div>
   </div>
 </div>
 
-<script src="app.js?v=3.3"></script>
+<script src="app.js?v=3.4"></script>
 <script src="feedback.js?v=1"></script>
 </body>
 </html>

@@ -88,23 +88,32 @@
   });
 
   // ── Install sheet ──
+  // On a laptop/desktop, Add to Chrome opens SNDR on the Chrome Web Store
+  // (installs from there update themselves). On a phone, the sheet explains
+  // that extensions need a computer.
+  var STORE_URL = 'https://chromewebstore.google.com/detail/sndr/ddmcnkmgabdjfnmcnheiaenmflnciaei?utm_source=sndr.co.in';
   var sheet = document.getElementById('sheet'), lastFocus = null;
   var desktop = fine || !matchMedia('(pointer: coarse)').matches;
-  document.getElementById('sheetDesk').hidden = !desktop;
-  document.getElementById('sheetMobile').hidden = desktop;
   function openSheet(e) { lastFocus = e && e.currentTarget; closeMenu(); sheet.hidden = false; document.getElementById('sheetX').focus(); }
   function closeSheet() { sheet.hidden = true; if (lastFocus) lastFocus.focus(); }
   document.querySelectorAll('[data-install]').forEach(function (b) {
-    b.addEventListener('click', function (e) { if (window.sndrWeb) window.sndrWeb('cta', 'Add to Chrome'); openSheet(e); });
+    b.addEventListener('click', function (e) {
+      if (window.sndrWeb) window.sndrWeb('cta', 'Add to Chrome');
+      if (!desktop) { openSheet(e); return; }
+      closeMenu();
+      window.open(STORE_URL, '_blank', 'noopener');
+      if (window.sndrWeb) window.sndrWeb('download', 'Chrome Web Store');
+    });
   });
+  // The zip, for Chrome profiles that block the Web Store (the install FAQ).
   // A fresh copy every time: the query string stops a cached older zip being served.
   document.getElementById('downloadBtn').addEventListener('click', function (e) {
     e.preventDefault();
     var a = document.createElement('a');
-    a.href = 'sndr-extension.zip?v=2.4.67&t=' + Date.now();
+    a.href = 'sndr-extension.zip?t=' + Date.now();
     a.download = 'sndr-extension.zip';
     document.body.appendChild(a); a.click(); a.remove();
-    if (window.sndrWeb) window.sndrWeb('download');
+    if (window.sndrWeb) window.sndrWeb('download', 'zip');
   });
   document.getElementById('sheetX').addEventListener('click', closeSheet);
   sheet.addEventListener('click', function (e) { if (e.target === sheet) closeSheet(); });
